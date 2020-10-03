@@ -31,11 +31,31 @@
 	;;ld		de, #16
 	;;call	cpct_setPalette_asm 
 
+render_ground:
+	ld		de, #0xC000
+	ld		bc, #0x9000
+	call	cpct_getScreenPtr_asm
+
+	ex		de, hl
+	ld		 a, #0xF0
+	ld		bc, #0x0440
+	call	cpct_drawSolidBox_asm
+
+	ld		de, #0xC000
+	ld		bc, #0x9040
+	call	cpct_getScreenPtr_asm
+
+	ex		de, hl
+	ld		 a, #0xF0
+	ld		bc, #0x0410
+	call	cpct_drawSolidBox_asm
+
+	ret
 
 ;;INPUT:	 
 ;;DESTROY:  
 render_init::
-	 
+	call	render_ground
 	ret
 
 ;;Render the player entitie.
@@ -44,7 +64,7 @@ render_init::
 render_player_draw::
 	ld		de, #0xC000
 	ld		 b, player_y_coord(ix)
-	ld		 c, #0x00
+	ld		 c, player_x_coord(ix)
 	call	cpct_getScreenPtr_asm
 
 	ex		de, hl
@@ -59,7 +79,7 @@ render_player_draw::
 render_player_erase::
 	ld		de, #0xC000
 	ld		 b, player_y_coord(ix)
-	ld		 c, #0x00
+	ld		 c, player_x_coord(ix)
 	call	cpct_getScreenPtr_asm
 	
 	ex		de, hl
@@ -70,9 +90,9 @@ render_player_erase::
 	ret
 render_update::
 	ld		a, player_y_speed(ix)
-	sub	 player_y_coord(ix)
+	sub	 	player_y_coord(ix)
 	call	render_player_erase
 	ld		a, player_y_speed(ix)
-	add	 a, player_y_coord(ix)
+	add	 	a, player_y_coord(ix)
 	call	render_player_draw
 	ret

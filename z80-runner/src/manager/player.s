@@ -4,7 +4,7 @@
 player_main:: player_define
 
 player_init::
-    player_fill #player_main, #5, #16, #0x90
+    player_fill #player_main, #10, #0x10, #0x88
     ret
 
 player_update:
