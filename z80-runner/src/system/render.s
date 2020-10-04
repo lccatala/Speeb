@@ -91,7 +91,11 @@ render_entity_erase::
 
 	ret
 render_update::
-	ld       ix, #entity_main_player
+	ld      ix, #entity_main_player
+	call	render_entity_erase
+	call	render_entity_draw
+	ld      ix, #entity_enemy
 	call	render_entity_erase
 	call	render_entity_draw
 	ret
+	
