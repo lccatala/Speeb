@@ -2,6 +2,7 @@
 .include "manager/player.h.s"
 .include "system/render.h.s"
 .include "system/physics.h.s"
+.include "utility/keyboard.h.s"
 
 .area _DATA
 .area _CODE
@@ -16,10 +17,12 @@ _main::
    call     render_init
    
 loop:
+   call     keyboard_update
    call     physics_update
    call     render_update
    
 
+   ;; 10 FPS
    .rept 5
       halt
       halt
