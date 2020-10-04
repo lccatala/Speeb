@@ -21,7 +21,7 @@ game_loop::
    call     render_update
    
    ;; 50/3 FPS? fix
-   .rept 5
+   .rept 2
       halt
       halt
       call     cpct_waitVSYNC_asm
