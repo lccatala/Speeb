@@ -1,5 +1,5 @@
 .include "cpctelera.h.s"
-.include "manager/player.h.s"
+.include "manager/entity.h.s"
 .include "system/render.h.s"
 .include "system/physics.h.s"
 .include "utility/keyboard.h.s"
@@ -13,7 +13,7 @@
 _main::
    call     cpct_disableFirmware_asm
    
-   call     player_init
+   call     entity_init
    call     render_init
    
 loop:
