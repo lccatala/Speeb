@@ -5,7 +5,10 @@
 player_y_speed = 0
 player_x_coord = 1
 player_y_coord = 2
-player_size    = 3
+player_last_screen = 3 ;;2
+player_last_screen_l = 3
+player_last_screen_h = 4
+player_size    = 5
 
 .macro player_define
     .rept #player_size

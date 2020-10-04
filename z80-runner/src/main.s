@@ -15,7 +15,6 @@ _main::
    call     render_init
    
 loop:
-   ld       ix, #player_main
    call     render_update
 
    .rept 2
