@@ -1,19 +1,24 @@
 .include "physics.h.s"
+.include "../manager/player.h.s"
 
-;; Decrease player speed and position along Y axis if it's not touching the ground
-;; INPUT: B: player_y, C: player_speed_y
-;; OUTPUT: B = player_y, C = player_speed_y
-;; BREAKS: AF, BC
-physics_update::
-	ld	a,	b
-	cp	#0x00
-	jr	Z,	physics_update_grounded
+;; Update player speed and position along Y axis if it's not touching the ground
+;; INPUT: none
+;; OUTPUT: none
+;; BREAKS: AF
+physics_update::	
+	ld	ix,	#player_main
+	inc	player_y_speed(ix)
 
+	ld	a,	player_y_coord(ix)
+	sub	player_y_speed(ix)
+	ld	player_y_coord(ix),	a
 
-	add	c
-	ld	b,	a
+	;; if player_y < 184: ret 
+	sub	#184
+	ret	c
 
-	dec	c ;; Decrease speed
+	;; player_y > 184
+	ld	player_y_speed(ix),	#-16
+	ld	player_y_coord(ix),	#184
 
-physics_update_grounded:
 	ret

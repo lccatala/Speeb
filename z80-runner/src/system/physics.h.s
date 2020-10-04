@@ -1,1 +1,2 @@
-.globl physics_update
+.module	physics
+.globl	physics_update
