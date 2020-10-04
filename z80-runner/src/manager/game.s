@@ -8,7 +8,7 @@
 
 .globl cpct_waitVSYNC_asm
 
-game_level_speed:: .db #-5
+game_level_speed:: .db #-1
 
 game_init::
     call     entity_init
@@ -21,7 +21,7 @@ game_loop::
    call     render_update
    
    ;; 50/3 FPS? fix
-   .rept 3
+   .rept 5
       halt
       halt
       call     cpct_waitVSYNC_asm

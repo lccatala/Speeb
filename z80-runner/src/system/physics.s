@@ -1,6 +1,7 @@
 .include "physics.h.s"
 .include "../manager/entity.h.s"
 .include "../utility/keyboard.h.s"
+.include "../manager/game.h.s"
 
 
 ;; Update player speed and position along Y axis and, if it's touching the ground, checks for jumps
@@ -40,15 +41,22 @@ physics_player_update::
 ;; OUTPUT: none
 ;; BREAKS: AF, IX BC
 physics_entities_update::
-	ld,	ix,	#entity_enemy
+	ld	ix,	#entity_enemy
 	ld	a,	(game_level_speed)
 	add	entity_x_speed(ix)
 	ld	b,	a ;; B = total speed
 
 	ld	a,	entity_x_coord(ix)
-	sub	b
-	
+	add	b
+
+	ld	entity_x_coord(ix),	a
+
+	ret nz
+
+	;; When enemy reaches left border, move it to right border
+	ld	entity_x_coord(ix), #79
 	ret
+
 
 ;; Update speed and position of all entities in the level
 ;; INPUT: none

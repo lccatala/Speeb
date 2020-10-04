@@ -9,6 +9,3 @@ entity_init::
 
     entity_fill #entity_enemy, #0, #50, #0x70, #0x01, #0x20, #0xFF
     ret
-
-entity_update:
-    ret

@@ -28,6 +28,7 @@ entity_size           = 9
 ;;DESTROYS: ix
 .macro entity_fill _ENTITY, _Y_SPEED, _X_COORD, _Y_COORD, _WIDTH, _HEIGHT, _COLOR
     ld ix, _ENTITY
+    ld entity_x_speed(ix), #0 ;; TODO: temporary
     ld entity_y_speed(ix), _Y_SPEED
     ld entity_x_coord(ix), _X_COORD
     ld entity_y_coord(ix), _Y_COORD
