@@ -71,8 +71,9 @@ render_entity_draw::
 	ld		entity_last_screen_h(ix), h
 
 	ex		de, hl
-	ld		 a, #0x0F
-	ld		bc, #0x0802
+	ld		 a, entity_color(ix)
+	ld		 b, entity_height(ix)
+	ld		 c, entity_width(ix)
 	call	cpct_drawSolidBox_asm
 
 	ret
@@ -84,12 +85,17 @@ render_entity_erase::
 	ld 		e, entity_last_screen_l(ix)
 	ld 		d, entity_last_screen_h(ix)
 	ld		 a, #0x00
-	ld		bc, #0x0802
+	ld		 b, entity_height(ix)
+	ld		 c, entity_width(ix)
 	call	cpct_drawSolidBox_asm
 
 	ret
 render_update::
-	ld       ix, #entity_main_player
+	ld      ix, #entity_main_player
+	call	render_entity_erase
+	call	render_entity_draw
+	ld      ix, #entity_enemy
 	call	render_entity_erase
 	call	render_entity_draw
 	ret
+	
