@@ -22,7 +22,7 @@ loop:
    call     render_update
    
 
-   ;; 10 FPS
+   ;; 50/3 FPS? fix
    .rept 3
       halt
       halt
