@@ -32,6 +32,28 @@
 	;;ld		de, #16
 	;;call	cpct_setPalette_asm 
 
+
+render_clean:
+	ld		de, #0xC000
+	ld		bc, #0x5000
+	call	cpct_getScreenPtr_asm
+
+	ex		de, hl
+	ld		 a, #0x00
+	ld		bc, #0x7840
+	call	cpct_drawSolidBox_asm
+
+	ld		de, #0xC000
+	ld		bc, #0x5040
+	call	cpct_getScreenPtr_asm
+
+	ex		de, hl
+	ld		 a, #0x00
+	ld		bc, #0x7810
+	call	cpct_drawSolidBox_asm
+
+	ret
+
 render_ground:
 	ld		de, #0xC000
 	ld		bc, #0x9000
