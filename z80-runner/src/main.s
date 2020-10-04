@@ -1,6 +1,7 @@
 .include "cpctelera.h.s"
 .include "manager/player.h.s"
 .include "system/render.h.s"
+.include "system/physics.h.s"
 
 .area _DATA
 .area _CODE
@@ -15,9 +16,11 @@ _main::
    call     render_init
    
 loop:
+   call     physics_update
    call     render_update
+   
 
-   .rept 2
+   .rept 5
       halt
       halt
       call     cpct_waitVSYNC_asm
