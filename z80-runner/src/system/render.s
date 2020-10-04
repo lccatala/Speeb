@@ -91,7 +91,5 @@ render_player_erase::
 render_update::
 	ld       ix, #player_main
 	call	render_player_erase
-	ld		a, player_y_speed(ix)
-	add	 	a, player_y_coord(ix)
 	call	render_player_draw
 	ret
