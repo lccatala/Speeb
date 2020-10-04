@@ -2,13 +2,14 @@
 .globl entity_main_player
 .globl entity_enemy
 
-entity_y_speed = 0
-entity_x_coord = 1
-entity_y_coord = 2
-entity_last_screen = 3 ;;2
-entity_last_screen_l = 3
-entity_last_screen_h = 4
-entity_size    = 5
+entity_x_speed = 0
+entity_y_speed = 1
+entity_x_coord = 2
+entity_y_coord = 3
+entity_last_screen = 4 ;;2
+entity_last_screen_l = 4
+entity_last_screen_h = 5
+entity_size    = 6
 
 .macro entity_define
     .rept #entity_size

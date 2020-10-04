@@ -3,7 +3,7 @@
 .include "../utility/keyboard.h.s"
 
 
-;; Update player speed and position along Y axis if it's not touching the ground
+;; Update player speed and position along Y axis and, if it's touching the ground, checks for jumps
 ;; INPUT: none
 ;; OUTPUT: none
 ;; BREAKS: AF, IX
@@ -35,6 +35,18 @@ physics_player_update::
 	ld		entity_y_speed(ix), #-10 ;; jumps
 	ret
 
+;; Update speed and position of all entities in the level except the player
+;; INPUT: none
+;; OUTPUT: none
+;; BREAKS: AF, IX
+physics_entities_update::
+	ret
+
+;; Update speed and position of all entities in the level
+;; INPUT: none
+;; OUTPUT: none
+;; BREAKS: AF, IX
 physics_update::
 	call	physics_player_update
+	call	physics_entities_update
 	ret
