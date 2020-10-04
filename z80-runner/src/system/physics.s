@@ -2,13 +2,14 @@
 .include "../manager/player.h.s"
 .include "../utility/keyboard.h.s"
 
+
 ;; Update player speed and position along Y axis if it's not touching the ground
 ;; INPUT: none
 ;; OUTPUT: none
 ;; BREAKS: AF, IX
-physics_update::	
-	ld		ix,	#player_main
 
+physics_player_update::
+	ld		ix,	#player_main
 
 	;; move
 	ld		a, player_y_coord(ix)
@@ -33,4 +34,8 @@ physics_update::
 	ret 	nz
 
 	ld		player_y_speed(ix), #-10 ;; jumps
+	ret
+
+physics_update::
+	call	physics_player_update
 	ret
