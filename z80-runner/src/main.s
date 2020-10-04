@@ -19,7 +19,7 @@
 ;; Include all CPCtelera constant definitions, macros and variables
 .include "cpctelera.h.s"
 .include "manager/player.h.s"
-
+.include "utility/keyboard.h.s"
 ;;
 ;; Start of _DATA area 
 ;;  SDCC requires at least _DATA and _CODE areas to be declared, but you may use
@@ -40,6 +40,7 @@
 ;; symbols for functions you do not use.
 ;;
 .globl cpct_disableFirmware_asm
+.globl cpct_waitVSYNC_asm
 
 ;;
 ;; MAIN function. This is the entry point of the application.
@@ -47,9 +48,22 @@
 ;;
 _main::
    ;; Disable firmware to prevent it from interfering with string drawing
-   call cpct_disableFirmware_asm
+   call  cpct_disableFirmware_asm
    
-   call player_init
+   call  player_init
    ;; Loop forever
 loop:
+   call  cpct_waitVSYNC_asm
+   halt
+   halt
+
+   call  keyboard_update
+   
+   call  keyboard_check_key_space_released
+   jr nz,   loop
+   ld hl,   #0xC000
+   ld a, (hl)
+   xor   #0xFF
+   ld (hl), a
+
    jr    loop
