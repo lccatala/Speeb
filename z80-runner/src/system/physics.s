@@ -1,5 +1,6 @@
 .include "physics.h.s"
 .include "../manager/player.h.s"
+.include "../utility/keyboard.h.s"
 
 ;; Update player speed and position along Y axis if it's not touching the ground
 ;; INPUT: none
@@ -23,6 +24,8 @@ physics_update::
 	;; if y >= 88 (on the ground or lower)
 	ld 	player_y_coord(ix), #136 ;; puts player on the ground
 	;; if key just pressed
-	ld	player_y_speed(ix), #-10 ;; jumps
+	call keyboard_check_key_space_just_pressed
+	ret nz
 
+	ld	player_y_speed(ix), #-10 ;; jumps
 	ret

@@ -23,7 +23,7 @@ loop:
    
 
    ;; 10 FPS
-   .rept 5
+   .rept 3
       halt
       halt
       call     cpct_waitVSYNC_asm
