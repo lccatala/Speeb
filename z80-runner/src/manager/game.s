@@ -9,6 +9,7 @@
 .globl cpct_waitVSYNC_asm
 
 game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen
+game_collision_detected:: .db #0x00
 
 game_init::
     call     entity_init
