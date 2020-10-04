@@ -13,7 +13,7 @@
 
 string: .asciz "You died! Press SPACE to restart";
 
-game_level_speed:: .db #-1
+game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen
 
 game_init::
     call     entity_init

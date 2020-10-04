@@ -61,7 +61,7 @@ render_ground:
 
 	ex		de, hl
 	ld		 a, #0xF0
-	ld		bc, #0x0440
+	ld		bc, #0x3840
 	call	cpct_drawSolidBox_asm
 
 	ld		de, #0xC000
@@ -70,7 +70,7 @@ render_ground:
 
 	ex		de, hl
 	ld		 a, #0xF0
-	ld		bc, #0x0410
+	ld		bc, #0x3810
 	call	cpct_drawSolidBox_asm
 
 	ret
@@ -78,6 +78,7 @@ render_ground:
 ;;INPUT:	 
 ;;DESTROY:  
 render_init::
+	cpctm_setBorder_asm	0x14
 	call	render_ground
 	ret
 
