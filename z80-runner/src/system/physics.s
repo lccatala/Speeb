@@ -38,14 +38,22 @@ physics_player_update::
 ;; Update speed and position of all entities in the level except the player
 ;; INPUT: none
 ;; OUTPUT: none
-;; BREAKS: AF, IX
+;; BREAKS: AF, IX BC
 physics_entities_update::
+	ld,	ix,	#entity_enemy
+	ld	a,	(game_level_speed)
+	add	entity_x_speed(ix)
+	ld	b,	a ;; B = total speed
+
+	ld	a,	entity_x_coord(ix)
+	sub	b
+	
 	ret
 
 ;; Update speed and position of all entities in the level
 ;; INPUT: none
 ;; OUTPUT: none
-;; BREAKS: AF, IX
+;; BREAKS: AF, IX, BC
 physics_update::
 	call	physics_player_update
 	call	physics_entities_update
