@@ -61,8 +61,7 @@ physics_entities_update::
 ;; BREAKS: AF, IX, IY, BC
 physics_check_collision::
 
-	ld	a,	#0x00
-	ld	(#0xc000),	a
+	ld	(game_collision_detected), #0x00
 
 	ld	b,	#0x00
 
@@ -99,8 +98,7 @@ physics_check_collision_third_check:
 	ret	nz
 
 	;; COLLISION
-	ld	a,	#0xff
-	ld	(#0xc000),	a
+	ld	(game_collision_detected), #0x01
 	ret
 
 
