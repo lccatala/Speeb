@@ -1,0 +1,1 @@
+.globl game_level_speed
