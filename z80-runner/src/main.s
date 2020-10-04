@@ -59,7 +59,7 @@ loop:
 
    call  keyboard_update
    
-   call  keyboard_check_key_space_released
+   call  keyboard_check_key_space_just_pressed
    jr nz,   loop
    ld hl,   #0xC000
    ld a, (hl)

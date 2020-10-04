@@ -1,9 +1,9 @@
 .globl keyboard_update
-.globl keyboard_check_key_space_released
+.globl keyboard_check_key_space_just_pressed
 
 keyboard_not_pressed_state = 0x00
 keyboard_pressed_state = 0x01
-keyboard_released_state = 0x02
+keyboard_just_pressed_state = 0x02
 
 keyboard_key_space = 0x8005
 
