@@ -33,8 +33,9 @@ game_loop::
       call     cpct_waitVSYNC_asm
    .endm
    
-	call	keyboard_check_key_space_just_pressed
-   jr    nz,   game_loop ;;if collision==0
+	ld a, (game_collision_detected)
+   cp #0x00
+   jr    z,   game_loop ;;if collision==0
    call  render_clean
 
    ld    d, #0         ;; D = Background PEN (0)
@@ -52,6 +53,6 @@ game_loop::
 	   call	keyboard_check_key_space_just_pressed
       jr    nz,   game_loop_death
    call  render_clean
-   call  render_init
+   call  game_init
    jr    game_loop    
    ret
