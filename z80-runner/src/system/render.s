@@ -1,6 +1,6 @@
 .include "render.h.s"
 .include "cpctelera.h.s"
-.include "manager/player.h.s"
+.include "manager/entity.h.s"
 
 .globl cpct_drawSolidBox_asm
 .globl cpct_getScreenPtr_asm
@@ -59,39 +59,39 @@ render_init::
 	call	render_ground
 	ret
 
-;;Render the player entitie.
-;;INPUT:   IX (#player_main)  
+;;Render the entity entitie.
+;;INPUT:   IX (#entity_main_player)  
 ;;DESTROY: AF, BC, DE, HL, 
-render_one_draw::
+render_entity_draw::
 	ld		de, #0xC000
-	ld		 b, player_y_coord(ix)
-	ld		 c, player_x_coord(ix)
+	ld		 b, entity_y_coord(ix)
+	ld		 c, entity_x_coord(ix)
 	call	cpct_getScreenPtr_asm
-	ld 		player_last_screen_l(ix), l
-	ld		player_last_screen_h(ix), h
+	ld 		entity_last_screen_l(ix), l
+	ld		entity_last_screen_h(ix), h
 
 	ex		de, hl
-	ld		 a, player_color(ix)
-	ld		 b, player_height(ix)
-	ld		 c, player_width(ix)
+	ld		 a, entity_color(ix)
+	ld		 b, entity_height(ix)
+	ld		 c, entity_width(ix)
 	call	cpct_drawSolidBox_asm
 
 	ret
-;;Erase the last player entitie.
-;;INPUT:   IX (#player_main)  
+;;Erase the last entity entitie.
+;;INPUT:   IX (#entity_main_player)  
 ;;DESTROY: AF, BC, DE, HL, 
-render_one_erase::
+render_entity_erase::
 	ld		de, #0xC000
-	ld 		e, player_last_screen_l(ix)
-	ld 		d, player_last_screen_h(ix)
+	ld 		e, entity_last_screen_l(ix)
+	ld 		d, entity_last_screen_h(ix)
 	ld		 a, #0x00
-	ld		 b, player_height(ix)
-	ld		 c, player_width(ix)
+	ld		 b, entity_height(ix)
+	ld		 c, entity_width(ix)
 	call	cpct_drawSolidBox_asm
 
 	ret
 render_update::
-	ld       ix, #player_main
-	call	render_one_erase
-	call	render_one_draw
+	ld       ix, #entity_main_player
+	call	render_entity_erase
+	call	render_entity_draw
 	ret
