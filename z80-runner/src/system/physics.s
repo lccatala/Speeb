@@ -57,12 +57,59 @@ physics_entities_update::
 	ld	entity_x_coord(ix), #79
 	ret
 
+;; Check if player collides with enemy
+;; BREAKS: AF, IX, IY, BC
+physics_check_collision::
+
+	ld	a,	#0x00
+	ld	(#0xc000),	a
+
+	ld	b,	#0x00
+
+	;; TODO: this is temporary, in the future any 2 entities could be loaded in IX and IY
+	ld	ix,	#entity_enemy
+	ld	iy,	#entity_main_player
+
+	ld	a,	entity_x_coord(ix)
+	sub	entity_x_coord(iy)
+	jp	p,	physics_check_collision_second_check
+	ld	a,	#0x01
+	or	b
+	ld	b,	a
+
+;; player starting x is left of enemy starting x
+physics_check_collision_second_check:
+	ld	a,	entity_x_coord(ix)
+	add	entity_width(ix) ;; A contains enemy ending x
+	sub	entity_x_coord(iy)
+	jp	p,	physics_check_collision_third_check
+	ld	a,	#0x10
+	or	b
+	ld	b,	a
+
+;; player ending x is left of enemy ending x
+physics_check_collision_third_check:
+	ld	a,	entity_y_coord(ix)
+	;add	entity_height(ix)
+	sub	entity_y_coord(iy)
+	ret	p
+	
+	ld	a,	b
+	sub	#0x11
+	ret	nz
+
+	;; COLLISION
+	ld	a,	#0xff
+	ld	(#0xc000),	a
+	ret
+
 
 ;; Update speed and position of all entities in the level
 ;; INPUT: none
 ;; OUTPUT: none
 ;; BREAKS: AF, IX, BC
 physics_update::
+	call	physics_check_collision
 	call	physics_player_update
 	call	physics_entities_update
 	ret

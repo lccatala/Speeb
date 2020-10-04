@@ -8,7 +8,7 @@
 
 .globl cpct_waitVSYNC_asm
 
-game_level_speed:: .db #-1
+game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen
 
 game_init::
     call     entity_init
@@ -21,7 +21,7 @@ game_loop::
    call     render_update
    
    ;; 50/3 FPS? fix
-   .rept 5
+   .rept 2
       halt
       halt
       call     cpct_waitVSYNC_asm
