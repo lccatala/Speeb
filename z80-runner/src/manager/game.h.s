@@ -1,1 +1,3 @@
-game_level_speed: .db #-5
+.globl game_level_speed
+.globl game_init
+.globl game_loop
