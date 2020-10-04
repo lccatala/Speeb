@@ -62,7 +62,7 @@ render_init::
 ;;Render the player entitie.
 ;;INPUT:   IX (#player_main)  
 ;;DESTROY: AF, BC, DE, HL, 
-render_player_draw::
+render_one_draw::
 	ld		de, #0xC000
 	ld		 b, player_y_coord(ix)
 	ld		 c, player_x_coord(ix)
@@ -71,25 +71,27 @@ render_player_draw::
 	ld		player_last_screen_h(ix), h
 
 	ex		de, hl
-	ld		 a, #0x0F
-	ld		bc, #0x0802
+	ld		 a, player_color(ix)
+	ld		 b, player_height(ix)
+	ld		 c, player_width(ix)
 	call	cpct_drawSolidBox_asm
 
 	ret
 ;;Erase the last player entitie.
 ;;INPUT:   IX (#player_main)  
 ;;DESTROY: AF, BC, DE, HL, 
-render_player_erase::
+render_one_erase::
 	ld		de, #0xC000
 	ld 		e, player_last_screen_l(ix)
 	ld 		d, player_last_screen_h(ix)
 	ld		 a, #0x00
-	ld		bc, #0x0802
+	ld		 b, player_height(ix)
+	ld		 c, player_width(ix)
 	call	cpct_drawSolidBox_asm
 
 	ret
 render_update::
 	ld       ix, #player_main
-	call	render_player_erase
-	call	render_player_draw
+	call	render_one_erase
+	call	render_one_draw
 	ret
