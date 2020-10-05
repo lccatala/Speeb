@@ -59,46 +59,41 @@ physics_entities_update::
 	ld	entity_x_coord(ix), #79
 	ret
 
-;; Check if player collides with enemy
-;; BREAKS: AF, IX, IY, BC
+;; Collision considers entities as squares, having starting and ending points for both their x and y.
+;; we consider the coordinates to be the start, and the coordinates + width/height to be the end
+;; if startIY < endIX &&  startIX < endIY, then the entities "collide" in that axis
+;; INPUTS:
+;;	IX:		first entity pointer
+;;	IY:		second entity pointer
+;; DESTROYS: AF, IX, IY, BC
 physics_check_collision::
-
+	;; Resets the collision flag
 	xor	a
 	ld	(physics_collision_detected), a
 
-	ld	b,	#0x00
-
-	;; TODO: this is temporary, in the future any 2 entities could be loaded in IX and IY
-	ld	ix,	#entity_enemy
-	ld	iy,	#entity_main_player
-
+	;; X AXIS: startIY < endIX
 	ld	a,	entity_x_coord(ix)
+	add entity_width(ix)
 	sub	entity_x_coord(iy)
-	jp	p,	physics_check_collision_second_check
-	ld	a,	#0x01
-	or	b
-	ld	b,	a
-
-;; player starting x is left of enemy starting x
-physics_check_collision_second_check:
-	ld	a,	entity_x_coord(ix)
-	add	entity_width(ix) ;; A contains enemy ending x
-	sub	entity_x_coord(iy)
-	jp	p,	physics_check_collision_third_check
-	ld	a,	#0x10
-	or	b
-	ld	b,	a
-
-;; player ending x is left of enemy ending x
-physics_check_collision_third_check:
-	ld	a,	entity_y_coord(ix)
-	;add	entity_height(ix)
-	sub	entity_y_coord(iy)
-	ret	p
+	ret m ;;if substraction is negative, endIX < startIY
 	
-	ld	a,	b
-	sub	#0x11
-	ret	nz
+	;; X AXIS: startIX < endIY
+	ld a, entity_x_coord(iy)
+	add entity_width(iy)
+	sub entity_x_coord(ix)
+	ret m ;; if substraction is negative, endIY < startIX
+
+	;; Y AXIS: startIY < endIX
+	ld	a,	entity_y_coord(ix)
+	add entity_height(ix)
+	sub	entity_y_coord(iy)
+	ret m ;;if substraction is negative, endIX < startIY
+	
+	;; Y AXIS: startIX < endIY
+	ld a, entity_y_coord(iy)
+	add entity_height(iy)
+	sub entity_y_coord(ix)
+	ret m ;; if substraction is negative, endIY < startIX
 
 	;; COLLISION: set collision flag to 01
 	ld	a,	#0x01
@@ -111,6 +106,8 @@ physics_check_collision_third_check:
 ;; OUTPUT: none
 ;; BREAKS: AF, IX, BC
 physics_update::
+	ld	ix,	#entity_enemy
+	ld	iy,	#entity_main_player
 	call	physics_check_collision
 	call	physics_player_update
 	call	physics_entities_update
