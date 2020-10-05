@@ -32,91 +32,50 @@
 	;;ld		de, #16
 	;;call	cpct_setPalette_asm 
 
-
+;;DESTROYS: AF, BC, DE, HL
 render_clean:
-	ld		de, #0xC000
-	ld		bc, #0x5000
-	call	cpct_getScreenPtr_asm
-
-	ex		de, hl
-	ld		 a, #0x00
-	ld		bc, #0x7840
-	call	cpct_drawSolidBox_asm
-
-	ld		de, #0xC000
-	ld		bc, #0x5040
-	call	cpct_getScreenPtr_asm
-
-	ex		de, hl
-	ld		 a, #0x00
-	ld		bc, #0x7810
-	call	cpct_drawSolidBox_asm
-
+	render_draw_solid_box_at #0x00, #0x50, #0x00, #0x40, #0x78
+	render_draw_solid_box_at #0x40, #0x50, #0x00, #0x10, #0x78
 	ret
 
+;;DESTROYS: AF, BC, DE, HL
 render_ground:
-	ld		de, #0xC000
-	ld		bc, #0x9000
-	call	cpct_getScreenPtr_asm
-
-	ex		de, hl
-	ld		 a, #0xF0
-	ld		bc, #0x3840
-	call	cpct_drawSolidBox_asm
-
-	ld		de, #0xC000
-	ld		bc, #0x9040
-	call	cpct_getScreenPtr_asm
-
-	ex		de, hl
-	ld		 a, #0xF0
-	ld		bc, #0x3810
-	call	cpct_drawSolidBox_asm
-
+	render_draw_solid_box_at #0x00, #0x90, #0xF0, #0x40, #0x38
+	render_draw_solid_box_at #0x40, #0x90, #0xF0, #0x10, #0x38
 	ret
 
-;;INPUT:	 
-;;DESTROY:  
+;;DESTROY: AF, BC, DE, HL
 render_init::
 	cpctm_setBorder_asm	0x14
 	call	render_ground
 	ret
 
-;;Render the entity entitie.
-;;INPUT:   IX (#entity_main_player)  
-;;DESTROY: AF, BC, DE, HL, 
+;;Render the entity.
+;;INPUT:   IX (entity) 
+;;DESTROY: AF, BC, DE, HL 
 render_entity_draw::
-	ld		de, #0xC000
-	ld		 b, entity_y_coord(ix)
-	ld		 c, entity_x_coord(ix)
-	call	cpct_getScreenPtr_asm
+	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
 	ld 		entity_last_screen_l(ix), l
 	ld		entity_last_screen_h(ix), h
-
 	ex		de, hl
-	ld		 a, entity_color(ix)
-	ld		 b, entity_height(ix)
-	ld		 c, entity_width(ix)
-	call	cpct_drawSolidBox_asm
-
+	render_draw_solid_box entity_color(ix), entity_width(ix), entity_height(ix)
 	ret
-;;Erase the last entity entitie.
-;;INPUT:   IX (#entity_main_player)  
-;;DESTROY: AF, BC, DE, HL, 
+
+;;Erase the last entity.
+;;INPUT:   IX (entity)  
+;;DESTROY: AF, BC, DE, HL
 render_entity_erase::
-	ld		de, #0xC000
 	ld 		e, entity_last_screen_l(ix)
 	ld 		d, entity_last_screen_h(ix)
-	ld		 a, #0x00
-	ld		 b, entity_height(ix)
-	ld		 c, entity_width(ix)
-	call	cpct_drawSolidBox_asm
-
+	render_draw_solid_box #0x00, entity_width(ix), entity_height(ix)
 	ret
+
+;;DESTROYS: AF, BC, DE, HL, IX
 render_update::
 	ld      ix, #entity_enemy
 	call	render_entity_erase
 	call	render_entity_draw
+
 	ld      ix, #entity_main_player
 	call	render_entity_erase
 	call	render_entity_draw

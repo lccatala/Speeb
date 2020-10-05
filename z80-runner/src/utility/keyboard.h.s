@@ -8,8 +8,8 @@ keyboard_just_pressed_state = 0x02
 keyboard_space = 0x8005
 
 ;;INPUT:
-;;  _KEY:   adress to the key state direction
-;;  _VALUE: value to check
+;;  _KEY:   adress to the key state direction, can be **
+;;  _VALUE: value to check, can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
 ;;RETURNS:
 ;;  z if _KEY is set at _VALUE, nz otherwise
 ;;DESTROYS: AF
@@ -20,7 +20,7 @@ keyboard_space = 0x8005
 
 ;;INPUT:
 ;;  HL:         key code
-;;  _OUTPUT:    state byte for the key/set of keys
+;;  _OUTPUT:    state byte for the key/set of keys, can be **
 ;;DESTROYS: AF, BC, DE, HL
 .macro keyboard_update_state _OUTPUT
     call    cpct_isKeyPressed_asm

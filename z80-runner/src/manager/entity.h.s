@@ -23,10 +23,10 @@ entity_size           = entity_color+1
 ;; As readable and neat this macro might be, it wastes space to some extent
 ;; Usual way to do this is having a value-filled prototype in memory, and ldir the _ENTITY you wanna fill
 ;;INPUT:
-;;  _ENTITY: direct or indirect 2 byte adress
-;;  _Y_SPEED: 1 byte number or registers: a, b, c, d, e, h, l
-;;  _X_COORD: 1 byte number or registers: a, b, c, d, e, h, l
-;;  _Y_COORD: 1 byte number or registers: a, b, c, d, e, h, l
+;;  _ENTITY: can be **, (**)
+;;  _Y_SPEED: can be *, a, b, c, d, e, h, l
+;;  _X_COORD: can be *, a, b, c, d, e, h, l
+;;  _Y_COORD: can be *, a, b, c, d, e, h, l
 ;;DESTROYS: ix
 .macro entity_fill _ENTITY, _Y_SPEED, _X_COORD, _Y_COORD, _WIDTH, _HEIGHT, _COLOR
     ld ix, _ENTITY
