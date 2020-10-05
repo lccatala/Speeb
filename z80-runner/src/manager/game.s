@@ -7,21 +7,19 @@
 .include "utility/keyboard.h.s"
 
 .globl cpct_waitVSYNC_asm
-.globl cpct_setDrawCharM1_asm
-.globl cpct_drawStringM1_asm
 .globl cpct_getScreenPtr_asm
 
 game_death_message: .asciz "You died! Press SPACE to restart";
 
 game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
 
-;;DESTROYS: 
+;;DESTROYS: AF, BC, DE, HL, IX
 game_init::
     call     entity_init
     call     render_init
     ret
 
-;;DESTROYS: 
+;;DESTROYS: AF, BC, DE, HL, IX, IY
 game_loop::
    call     keyboard_update
    call     physics_update
@@ -43,17 +41,7 @@ game_loop::
    call  render_clean
 
    ;; Death message is written
-   ld    d, #0 ;; background dark blue
-   ld    e, #1 ;; letters yellow
-   call cpct_setDrawCharM1_asm
-
-   ld   de, #0xC000
-   ld    b, #0x85
-   ld    c, #8
-   call cpct_getScreenPtr_asm
-
-   ld   iy, #game_death_message
-   call cpct_drawStringM1_asm
+   render_draw_text_at #0x08, #0x85, #0, #1, #game_death_message
 
    ;; Game waits until you press space
    game_loop_death:

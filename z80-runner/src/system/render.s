@@ -2,10 +2,6 @@
 .include "cpctelera.h.s"
 .include "manager/entity.h.s"
 
-.globl cpct_drawSolidBox_asm
-.globl cpct_getScreenPtr_asm
-.globl cpct_setVideoMode_asm
-.globl cpct_setPalette_asm
 
 	;;[======================================================]
 	;;| Identifier		  | Value| Identifier		  | Value|

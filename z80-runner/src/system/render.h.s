@@ -4,7 +4,33 @@
 .globl render_update
 .globl render_clean
 
+.globl cpct_drawSolidBox_asm
+.globl cpct_getScreenPtr_asm
+.globl cpct_setVideoMode_asm
+.globl cpct_setPalette_asm
+.globl cpct_setDrawCharM1_asm
+.globl cpct_drawStringM1_asm
+
 render_vid_mem_start = 0xC000
+
+;;INPUT:
+;;  _X:                 X coordinate (c for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
+;;  _Y:                 Y coordinate (b for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
+;;  _BACKGROUND_COLOR:  Background color (d for setDrawCharM1) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
+;;  _FONT_COLOR:        Font color (e for setDrawCharM1) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
+;;  _STRING:            String to write (iy for drawStringM1) can be **, (**)
+;;DESTROYS: AF, BC, DE, HL, IY
+.macro  render_draw_text_at _X, _Y, _BACKGROUND_COLOR, _FONT_COLOR, _STRING
+   ld    d, _BACKGROUND_COLOR ;; background dark blue
+   ld    e, _FONT_COLOR ;; letters yellow
+   call cpct_setDrawCharM1_asm
+
+   render_get_screen_pointer _X, _Y
+
+   ld   iy, _STRING
+   call cpct_drawStringM1_asm
+.endm
+
 
 ;;INPUT:
 ;;	_X:		X coordinate (c for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
