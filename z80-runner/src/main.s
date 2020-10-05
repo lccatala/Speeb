@@ -9,6 +9,4 @@
 _main::
    call     cpct_disableFirmware_asm
    call     game_init
-   call     game_loop
-   loop:
-      jr loop
+   jp       game_loop

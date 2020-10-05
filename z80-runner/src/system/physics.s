@@ -4,6 +4,8 @@
 .include "../manager/game.h.s"
 
 
+physics_collision_detected:: .db #0x00 ;; flag for collision detection, should be changed by an array
+
 ;; Update player speed and position along Y axis and, if it's touching the ground, checks for jumps
 ;; INPUT: none
 ;; OUTPUT: none
@@ -30,7 +32,7 @@ physics_player_update::
 	ld 		entity_y_coord(ix), #136	;; puts entity on the ground
 	ld		entity_y_speed(ix), #0		;; entity has no speed
 	;; if key just pressed
-	call	keyboard_check_key_space_just_pressed
+	call	keyboard_check_space_just_pressed
 	ret 	nz
 
 	ld		entity_y_speed(ix), #-10 ;; jumps
@@ -62,7 +64,7 @@ physics_entities_update::
 physics_check_collision::
 
 	xor	a
-	ld	(game_collision_detected), a
+	ld	(physics_collision_detected), a
 
 	ld	b,	#0x00
 
@@ -100,7 +102,7 @@ physics_check_collision_third_check:
 
 	;; COLLISION: set collision flag to 01
 	ld	a,	#0x01
-	ld	(game_collision_detected), a
+	ld	(physics_collision_detected), a
 	ret
 
 
