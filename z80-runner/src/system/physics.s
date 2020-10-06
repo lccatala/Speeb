@@ -1,17 +1,47 @@
 .include "physics.h.s"
-.include "../manager/entity.h.s"
-.include "../utility/keyboard.h.s"
-.include "../manager/game.h.s"
+.include "manager/entity.h.s"
+.include "manager/game.h.s"
+.include "macros/cpct_undocumentedOpcodes.h.s"
 
 
-physics_collision_detected:: .db #0x00 ;; flag for collision detection, should be changed by an array
+physics_collision_detected:: .db #0x00 ;; flag for collision detection, should be changed to an array
 
-;; Update player speed and position along Y axis and, if it's touching the ground, checks for jumps
-;; INPUT: none
-;; OUTPUT: none
-;; BREAKS: AF, IX
-physics_player_update::
-	ld		ix,	#entity_main_player
+;; call the action specified on the entity, destroys whatever that action destroys
+;; INPUT:
+;;	IX:		entity to act
+;; DESTROYS: AF, HL
+physics_act:
+	xor	a
+	cp	entity_next_action_h(ix)
+	jr	nz, physics_act_not_empty
+	cp	entity_next_action_l(ix)
+	ret	z ;; action empy
+	physics_act_not_empty:
+	ld	l,	entity_next_action_l(ix)
+	ld	h,	entity_next_action_h(ix)
+	ld (physics_act_call+1), hl
+	physics_act_call: call #0xABAC
+	ret
+
+;; Action: jump!
+;; INPUT:
+;;	IX:		entity to move
+;; DESTROYS: AF
+physics_action_jump::
+	;; ground level?
+	ld		a,	#physics_ground_level
+	sub		entity_height(ix)
+	cp		entity_y_coord(ix)
+	ret nz
+
+	ld		entity_y_speed(ix), #physics_jump_initial_speed ;; jumps
+	ret
+
+;; move y
+;; INPUT:
+;;	IX:		entity to move
+;; DESTROYS: AF
+physics_entity_move_y:
 
 	;; move
 	ld		a, entity_y_coord(ix)
@@ -19,7 +49,8 @@ physics_player_update::
 	ld		entity_y_coord(ix), a
 
 	;; where is the entity in relation to the ground?
-	add		#(256-136)
+	add		entity_height(ix)
+	add		#(256-physics_ground_level)
 	jr 		c,	physics_update_on_the_ground
 
 	;; if y < 88 (over the ground)
@@ -29,32 +60,40 @@ physics_player_update::
 
 	physics_update_on_the_ground:
 	;; if y >= 88 (on the ground or lower)
-	ld 		entity_y_coord(ix), #136	;; puts entity on the ground
+	ld		a, #physics_ground_level
+	sub		entity_height(ix)
+	ld 		entity_y_coord(ix), a		;; puts entity on the ground
 	ld		entity_y_speed(ix), #0		;; entity has no speed
-	;; if key just pressed
-	call	keyboard_check_space_just_pressed
-	ret 	nz
 
-	ld		entity_y_speed(ix), #-10 ;; jumps
 	ret
 
-;; Update speed and position of all entities in the level except the player
-;; INPUT: none
-;; OUTPUT: none
-;; BREAKS: AF, IX BC
-physics_entities_update::
-	ld	ix,	#entity_enemy
+;; move x
+;; INPUT:
+;;	IX:		entity to move
+;; DESTROYS: AF, BC
+physics_entity_move_x:
+	ld	a,	#entity_main_player
+	cp__ixl
+	jr	nz, physics_entity_move_x_not_player
+	ld	a,	#(entity_main_player+1)
+	cp__ixh
+	jr	nz,	physics_entity_move_x_not_player
+	xor a
+	jr	physics_entity_move_x_player
+
+	physics_entity_move_x_not_player:
 	ld	a,	(game_level_speed)
+
+	physics_entity_move_x_player:
 	add	entity_x_speed(ix)
 	ld	b,	a ;; B = total speed
 
 	ld	a,	entity_x_coord(ix)
 	add	b
-
 	ld	entity_x_coord(ix),	a
 
 	ret nz
-
+	;; TODO: HACK, FIX!
 	;; When enemy reaches left border, move it to right border
 	ld	entity_x_coord(ix), #79
 	ret
@@ -65,7 +104,7 @@ physics_entities_update::
 ;; INPUTS:
 ;;	IX:		first entity pointer
 ;;	IY:		second entity pointer
-;; DESTROYS: AF, IX, IY, BC
+;; DESTROYS: AF
 physics_check_collision::
 	;; Resets the collision flag
 	xor	a
@@ -106,9 +145,15 @@ physics_check_collision::
 ;; OUTPUT: none
 ;; BREAKS: AF, IX, BC
 physics_update::
+	;; physics_entity_move (update should do other stuff too?)
+	ld ix, #entity_main_player
+	call	physics_entity_move_y
+	call 	physics_act
+	ld ix, #entity_enemy
+	call	physics_entity_move_y
+	call	physics_entity_move_x
+	call 	physics_act
 	ld	ix,	#entity_enemy
 	ld	iy,	#entity_main_player
 	call	physics_check_collision
-	call	physics_player_update
-	call	physics_entities_update
 	ret

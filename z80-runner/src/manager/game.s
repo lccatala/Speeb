@@ -5,6 +5,7 @@
 .include "system/render.h.s"
 .include "system/physics.h.s"
 .include "utility/keyboard.h.s"
+.include "system/control.h.s"
 
 .globl cpct_waitVSYNC_asm
 .globl cpct_getScreenPtr_asm
@@ -15,13 +16,15 @@ game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to
 
 ;;DESTROYS: AF, BC, DE, HL, IX
 game_init::
-    call     entity_init
-    call     render_init
-    ret
+   call     entity_init
+   call     render_init
+   call     control_init
+   ret
 
 ;;DESTROYS: AF, BC, DE, HL, IX, IY
 game_loop::
    call     keyboard_update
+   call     control_update
    call     physics_update
    call     render_update
    

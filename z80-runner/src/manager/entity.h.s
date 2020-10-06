@@ -2,17 +2,20 @@
 .globl entity_main_player
 .globl entity_enemy
 
-entity_x_speed        = 0
-entity_y_speed        = entity_x_speed+1
-entity_x_coord        = entity_y_speed+1
-entity_y_coord        = entity_x_coord+1
-entity_last_screen    = entity_y_coord+1 ;; pointer to last place in video memory, 2 bytes
-entity_last_screen_l  = entity_last_screen
-entity_last_screen_h  = entity_last_screen+1
-entity_width          = entity_last_screen+2
-entity_height         = entity_width+1
-entity_color          = entity_height+1
-entity_size           = entity_color+1
+entity_x_speed          = 0
+entity_y_speed          = entity_x_speed+1
+entity_x_coord          = entity_y_speed+1
+entity_y_coord          = entity_x_coord+1
+entity_last_screen      = entity_y_coord+1 ;; pointer to last place in video memory, 2 bytes
+entity_last_screen_l    = entity_last_screen
+entity_last_screen_h    = entity_last_screen+1
+entity_width            = entity_last_screen+2
+entity_height           = entity_width+1
+entity_color            = entity_height+1
+entity_next_action      = entity_color+1  ;; control system! 2 bytes
+entity_next_action_l    = entity_next_action
+entity_next_action_h    = entity_next_action+1
+entity_size             = entity_next_action+2
 
 .macro entity_define
     .rept #entity_size
@@ -37,4 +40,6 @@ entity_size           = entity_color+1
     ld entity_width(ix),     _WIDTH
     ld entity_height(ix),   _HEIGHT
     ld entity_color(ix),     _COLOR
+    ld entity_next_action_l(ix),    #0x00
+    ld entity_next_action_h(ix),    #0x00
 .endm
