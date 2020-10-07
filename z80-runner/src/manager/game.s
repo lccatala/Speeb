@@ -10,6 +10,19 @@
 .globl cpct_waitVSYNC_asm
 .globl cpct_getScreenPtr_asm
 
+;;INPUT:
+;; A: number of times to wait
+;;DESTROYS: AF, BC
+game_wait_cycles:
+   halt
+   halt
+   push af
+   call     cpct_waitVSYNC_asm
+   pop af
+   dec a
+   jr nz, game_wait_cycles
+   ret
+
 game_death_message: .asciz "You died! Press SPACE to restart";
 
 game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
@@ -29,16 +42,17 @@ game_loop::
    call     render_update
    
    ;; Screen synchronization, the more repts, the more the game slows down
-   .rept 2
-      halt
-      halt
-      call     cpct_waitVSYNC_asm
-   .endm
+   ld a, #2
+   call game_wait_cycles
    
    ;; If collision was not detected, game continues as usual
 	ld a, (physics_collision_detected)
    cp #0x00
    jr    z,   game_loop ;;if collision==0
+
+   ;; Waits a bit so you see how you died!
+   ld a, #25
+   call game_wait_cycles
 
    ;; If collision was detected screen is cleaned 
    call  render_clean
