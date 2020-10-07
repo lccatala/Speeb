@@ -72,10 +72,11 @@ physics_entity_move_y:
 ;;	IX:		entity to move
 ;; DESTROYS: AF, BC
 physics_entity_move_x:
-	ld	a,	#entity_main_player
+	ld	bc,	#entity_main_player
+	ld	a,	c
 	cp__ixl
 	jr	nz, physics_entity_move_x_not_player
-	ld	a,	#(entity_main_player+1)
+	ld	a,	b
 	cp__ixh
 	jr	nz,	physics_entity_move_x_not_player
 	xor a
@@ -109,50 +110,46 @@ physics_check_collision::
 	;; Resets the collision flag
 	xor	a
 	ld	(physics_collision_detected), a
-
-	;; X AXIS: startIY < endIX
-	ld	a,	entity_x_coord(ix)
-	add entity_width(ix)
-	sub	entity_x_coord(iy)
-	ret m ;;if substraction is negative, endIX < startIY
 	
+	;; X AXIS: startIY < endIX
+	physics_ret_if_start_lesser_end entity_x_coord, entity_width, iy, ix 
+
 	;; X AXIS: startIX < endIY
-	ld a, entity_x_coord(iy)
-	add entity_width(iy)
-	sub entity_x_coord(ix)
-	ret m ;; if substraction is negative, endIY < startIX
+	physics_ret_if_start_lesser_end entity_x_coord, entity_width, ix, iy
 
 	;; Y AXIS: startIY < endIX
-	ld	a,	entity_y_coord(ix)
-	add entity_height(ix)
-	sub	entity_y_coord(iy)
-	ret m ;;if substraction is negative, endIX < startIY
+	physics_ret_if_start_lesser_end entity_y_coord, entity_height, iy, ix
 	
 	;; Y AXIS: startIX < endIY
-	ld a, entity_y_coord(iy)
-	add entity_height(iy)
-	sub entity_y_coord(ix)
-	ret m ;; if substraction is negative, endIY < startIX
+	physics_ret_if_start_lesser_end entity_y_coord, entity_height, ix, iy
 
 	;; COLLISION: set collision flag to 01
 	ld	a,	#0x01
 	ld	(physics_collision_detected), a
+
 	ret
 
+;; Destroys whatever the action function destroys (be craneful mai fren!)
+;; INPUT:
+;;	IX:		entity to move
+;; DESTROYS: AF, BC, HL
+physics_update_entity:
+	call physics_entity_move_y
+	call physics_entity_move_x
+	call physics_act
+	ret
 
 ;; Update speed and position of all entities in the level
 ;; INPUT: none
 ;; OUTPUT: none
-;; BREAKS: AF, IX, BC
+;; BREAKS: AF, BC, IX, IY
 physics_update::
 	;; physics_entity_move (update should do other stuff too?)
 	ld ix, #entity_main_player
-	call	physics_entity_move_y
-	call 	physics_act
+	call physics_update_entity
 	ld ix, #entity_enemy
-	call	physics_entity_move_y
-	call	physics_entity_move_x
-	call 	physics_act
+	call	physics_update_entity
+
 	ld	ix,	#entity_enemy
 	ld	iy,	#entity_main_player
 	call	physics_check_collision
