@@ -1,5 +1,6 @@
 .module	physics
 
+.globl physics_init
 .globl physics_collision_detected
 .globl physics_update
 .globl physics_action_jump 
