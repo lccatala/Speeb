@@ -36,26 +36,34 @@ keyboard_d     = 0x2007
 
     ld hl, _KEY_CODE
     call    cpct_isKeyPressed_asm
-    jr      z,  .+2 +3+2+2 +2+3+2 +2+3+2        ;; (jr was key 'pressed'?)
+    jr      z,  .+2 +3+2+2 +3+2+2 +2+3+2 +2+3+2        ;; (jr was key 'pressed'?)
 
     ;; was key 'not pressed' before?
     ld  a,  (_OUTPUT)                           ;;  3 bytes
     cp  #keyboard_not_pressed_state             ;;  2 bytes
+    jr  z,  .+2 +3+2+2 +2+3+2                   ;;  2 bytes (jr just pressed)
+
+    ld  a,  (_OUTPUT)                           ;;  3 bytes
+    cp  #keyboard_just_released_state           ;;  2 bytes
     jr  z,  .+2 +2+3+2                          ;;  2 bytes (jr just pressed)
 
     ;;  pressed
         ld  a,  #keyboard_pressed_state         ;;  2 bytes
         ld  (_OUTPUT), a                        ;;  3 bytes
-        jr  .+2 +2+3+2 +3+2+2 +2+3+2 +2+3       ;;  2 bytes (jr continue)
+        jr  .+2 +3+2+2 +2+3+2 +3+2+2 +2+3+2 +2+3;;  2 bytes (jr continue)
 
     ;;  just_pressed
         ld  a,  #keyboard_just_pressed_state    ;;  2 bytes
         ld  (_OUTPUT), a                        ;;  3 bytes
-        jr  .+2 +3+2+2 +2+3+2 +2+3              ;;  2 bytes (jr continue)
+        jr  .+2 +3+2+2 +3+2+2 +2+3+2 +2+3       ;;  2 bytes (jr continue)
 
     ;; was key 'pressed' before?
     ld  a,  (_OUTPUT)                           ;;  3 bytes
     cp  #keyboard_pressed_state                 ;;  2 bytes
+    jr  z,  .+2 +3+2+2 +2+3+2                   ;;  2 bytes (jr released)
+
+    ld  a,  (_OUTPUT)                           ;;  3 bytes
+    cp  #keyboard_just_pressed_state            ;;  2 bytes
     jr  z,  .+2 +2+3+2                          ;;  2 bytes (jr released)
 
     ;;  not_pressed
@@ -64,7 +72,7 @@ keyboard_d     = 0x2007
         jr  .+2 +2+3                            ;;  2 bytes (jr continue)
 
     ;; released
-        ld  a,  #keyboard_released_state        ;;  2 bytes
+        ld  a,  #keyboard_just_released_state   ;;  2 bytes
         ld  (_OUTPUT), a                        ;;  3 bytes
 
     ;;  continue:
