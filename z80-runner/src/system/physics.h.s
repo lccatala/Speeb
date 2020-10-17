@@ -7,8 +7,13 @@
 .globl physics_action_dodge_left
 .globl physics_action_dodge_right
 
-physics_ground_level = 0x90
-physics_jump_initial_speed = -10
+physics_ground_level              = 0x90
+physics_jump_initial_speed        = -10
+physics_dodge_initial_speed_left  = -2
+physics_dodge_initial_speed_right = 2
+physics_dodge_initial_x_coord     = 12
+physics_dodge_limit_x_coord_left  = 8
+physics_dodge_limit_x_coord_right = 16
 
 ;;INPUT:
 ;;  _COORD_OFFSET:  offset of entity coordinate, can be **

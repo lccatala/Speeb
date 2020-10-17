@@ -41,24 +41,21 @@ physics_action_jump::
 ;; INPUT:
 ;; DESTROYS: A
 physics_action_shoot::
-	ld  a,	#0xFF
-	ld (#0xc000), a
+	
 	ret
 
 ;; Action: dodge left!
 ;; INPUT:
 ;; DESTROYS: A
 physics_action_dodge_left::
-	ld  a,	#0x0F
-	ld (#0xc000), a
+	ld		entity_x_speed(ix), #physics_dodge_initial_speed_left
 	ret
 
 ;; Action: dodge right!
 ;; INPUT:
 ;; DESTROYS: A
 physics_action_dodge_right::
-	ld  a,	#0xF0
-	ld (#0xc000), a
+	ld		entity_x_speed(ix), #physics_dodge_initial_speed_right
 	ret
 
 ;; move y
@@ -103,13 +100,12 @@ physics_entity_move_x:
 	ld	a,	b
 	cp__ixh
 	jr	nz,	physics_entity_move_x_not_player
-	xor a
-	jr	physics_entity_move_x_player
+	;;If the entity is main player, move x means dash
+	jr	physics_main_player_dash
 
 	physics_entity_move_x_not_player:
 	ld	a,	(game_level_speed)
 
-	physics_entity_move_x_player:
 	add	entity_x_speed(ix)
 	ld	b,	a ;; B = total speed
 
@@ -122,6 +118,43 @@ physics_entity_move_x:
 	;; When enemy reaches left border, move it to right border
 	ld	entity_x_coord(ix), #79
 	ret
+
+;; INPUT:
+;;	IX:		entity to move
+;; DESTROYS: A
+physics_main_player_dash:
+	;;move on x 
+	ld		a, entity_x_coord(ix)
+	add		entity_x_speed(ix)
+	ld		entity_x_coord(ix), a
+	
+	;;direction of dash ?
+	ld		a, entity_x_coord(ix)
+	sub		#physics_dodge_initial_x_coord
+	jp		p, physics_main_player_dash_right ;;positive
+	
+	;;negative
+	ld		a, entity_x_coord(ix)
+	sub 	#physics_dodge_limit_x_coord_left
+	jp		p, physics_main_player_dash_end
+	ld		a, #physics_dodge_limit_x_coord_left
+	ld 		entity_x_coord(ix), a		;; puts entity on the limit
+	ld		entity_x_speed(ix), #0
+	jr		physics_main_player_dash_end
+
+	physics_main_player_dash_right:
+	ld		a, entity_x_coord(ix)
+	sub 	#physics_dodge_limit_x_coord_right
+	jp		m, physics_main_player_dash_end
+	ld		a, #physics_dodge_limit_x_coord_right
+	ld 		entity_x_coord(ix), a		;; puts entity on the limit
+	ld		entity_x_speed(ix), #0
+	jr		physics_main_player_dash_end
+
+
+	physics_main_player_dash_end:
+	ret
+	
 
 ;; Collision considers entities as squares, having starting and ending points for both their x and y.
 ;; we consider the coordinates to be the start, and the coordinates + width/height to be the end
@@ -169,9 +202,9 @@ physics_update_entity:
 ;; BREAKS: AF, BC, IX, IY
 physics_update::
 	;; physics_entity_move (update should do other stuff too?)
-	ld ix, #entity_main_player
-	call physics_update_entity
-	ld ix, #entity_enemy
+	ld ix,	#entity_main_player
+	call 	physics_update_entity
+	ld ix, 	#entity_enemy
 	call	physics_update_entity
 
 	ld	ix,	#entity_enemy
