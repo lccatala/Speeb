@@ -5,6 +5,7 @@
 
 
 physics_collision_detected:: .db #0x00 ;; flag for collision detection, should be changed to an array
+physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
 
 ;; call the action specified on the entity, destroys whatever that action destroys
 ;; INPUT:
@@ -48,13 +49,19 @@ physics_action_shoot::
 ;; INPUT:
 ;; DESTROYS: A
 physics_action_dodge_left::
+	;;if dash == 0, we are not in a dash 
+	ld		a, (physics_main_player_dashing)
+	xor		#1
+	ld		(physics_main_player_dashing), a
 	ld		entity_x_speed(ix), #physics_dodge_initial_speed_left
 	ret
-
 ;; Action: dodge right!
 ;; INPUT:
 ;; DESTROYS: A
 physics_action_dodge_right::
+	ld		a, (physics_main_player_dashing)
+	xor		#1
+	ld		(physics_main_player_dashing), a
 	ld		entity_x_speed(ix), #physics_dodge_initial_speed_right
 	ret
 
@@ -127,13 +134,18 @@ physics_main_player_dash:
 	ld		a, entity_x_coord(ix)
 	add		entity_x_speed(ix)
 	ld		entity_x_coord(ix), a
-	
-	;;direction of dash ?
+
+	;;dash or return?
+	ld		a, #physics_main_player_dashing
+	cp 		#0
+	jr		z, physics_main_player_return
+
+	;;direction of dash?
 	ld		a, entity_x_coord(ix)
 	sub		#physics_dodge_initial_x_coord
 	jp		p, physics_main_player_dash_right ;;positive
 	
-	;;negative
+	;;left//negative
 	ld		a, entity_x_coord(ix)
 	sub 	#physics_dodge_limit_x_coord_left
 	jp		p, physics_main_player_dash_end
@@ -150,6 +162,34 @@ physics_main_player_dash:
 	ld 		entity_x_coord(ix), a		;; puts entity on the limit
 	ld		entity_x_speed(ix), #0
 	jr		physics_main_player_dash_end
+
+
+	physics_main_player_return:
+	;;direction of dash?
+	ld		a, entity_x_coord(ix)
+	sub		#physics_dodge_initial_x_coord
+	jp		p, physics_main_player_return_left ;;positive
+	
+	;;return to inital moving with right dash
+	ld		a, entity_x_coord(ix)
+	sub 	#physics_dodge_initial_x_coord
+	jp		m, physics_main_player_dash_end
+	ld		a, #physics_dodge_initial_x_coord
+	ld 		entity_x_coord(ix), a		;; puts entity on the limit
+	ld		entity_x_speed(ix), #0
+	jr		physics_main_player_dash_end
+
+	physics_main_player_return_left:
+	ld		a, entity_x_coord(ix)
+	sub 	#physics_dodge_initial_x_coord
+	jp		p, physics_main_player_dash_end
+	ld		a, #physics_dodge_initial_x_coord
+	ld 		entity_x_coord(ix), a		;; puts entity on the limit
+	ld		entity_x_speed(ix), #0
+	jr		physics_main_player_dash_end
+	
+
+
 
 
 	physics_main_player_dash_end:
