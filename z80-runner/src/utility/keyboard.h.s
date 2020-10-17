@@ -4,12 +4,14 @@
 .globl keyboard_check_a_just_pressed
 .globl keyboard_check_d_just_pressed
 
+.globl cpct_isKeyPressed_asm
+
 keyboard_not_pressed_state = 0x00
 keyboard_pressed_state = 0x01
 keyboard_just_pressed_state = 0x02
 
 keyboard_space = 0x8005
-keyboard_enter = 0x4000
+keyboard_enter = 0x0402
 keyboard_a     = 0x2008
 keyboard_d     = 0x2007
 
@@ -28,7 +30,10 @@ keyboard_d     = 0x2007
 ;;  HL:         key code
 ;;  _OUTPUT:    state byte for the key/set of keys, can be **
 ;;DESTROYS: AF, BC, DE, HL
-.macro keyboard_update_state _OUTPUT
+.macro keyboard_update_state _OUTPUT, _KEY_CODE
+    call    cpct_scanKeyboard_asm
+
+    ld hl, _KEY_CODE
     call    cpct_isKeyPressed_asm
     jr      z,  .+2 +3+2+2 +3+3+2               ;; (jr not pressed)
 
