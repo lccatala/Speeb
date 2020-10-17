@@ -3,6 +3,9 @@
 .globl physics_collision_detected
 .globl physics_update
 .globl physics_action_jump 
+.globl physics_action_shoot
+.globl physics_action_dodge_left
+.globl physics_action_dodge_right
 
 physics_ground_level = 0x90
 physics_jump_initial_speed = -10

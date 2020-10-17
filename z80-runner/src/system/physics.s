@@ -37,6 +37,30 @@ physics_action_jump::
 	ld		entity_y_speed(ix), #physics_jump_initial_speed ;; jumps
 	ret
 
+;; Action: shoot!
+;; INPUT:
+;; DESTROYS: A
+physics_action_shoot::
+	ld  a,	#0xFF
+	ld (#0xc000), a
+	ret
+
+;; Action: dodge left!
+;; INPUT:
+;; DESTROYS: A
+physics_action_dodge_left::
+	ld  a,	#0x0F
+	ld (#0xc000), a
+	ret
+
+;; Action: dodge right!
+;; INPUT:
+;; DESTROYS: A
+physics_action_dodge_right::
+	ld  a,	#0xF0
+	ld (#0xc000), a
+	ret
+
 ;; move y
 ;; INPUT:
 ;;	IX:		entity to move
