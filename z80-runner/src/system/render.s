@@ -76,5 +76,9 @@ render_update::
 	call	render_entity_erase
 	call	render_entity_draw
 	
+	ld      ix, #entity_end
+	call	render_entity_erase
+	call	render_entity_draw
+
 	ret
 	

@@ -1,6 +1,7 @@
 .globl entity_init
 .globl entity_main_player
 .globl entity_enemy
+.globl entity_end
 
 entity_x_speed          = 0
 entity_y_speed          = entity_x_speed+1

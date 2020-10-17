@@ -173,6 +173,8 @@ physics_update::
 	call physics_update_entity
 	ld ix, #entity_enemy
 	call	physics_update_entity
+	ld ix, #entity_end
+	call   physics_update_entity
 
 	ld	ix,	#entity_enemy
 	ld	iy,	#entity_main_player
