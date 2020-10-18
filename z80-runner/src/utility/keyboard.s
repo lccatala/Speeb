@@ -55,3 +55,45 @@ keyboard_check_a_just_pressed::
 keyboard_check_d_just_pressed::
     keyboard_check_key_value #keyboard_d_state, #keyboard_just_pressed_state
     ret
+
+;;RETURNS:
+;;  z if a is set at just pressed, nz otherwise
+;;DESTROYS: AF
+keyboard_check_a_pressed::
+    keyboard_check_key_value #keyboard_a_state, #keyboard_pressed_state
+    ret
+
+;;RETURNS:
+;;  z if d is set at just pressed, nz otherwise
+;;DESTROYS: AF
+keyboard_check_d_pressed::
+    keyboard_check_key_value #keyboard_d_state, #keyboard_pressed_state
+    ret
+
+;;RETURNS:
+;;  z if a is set at not pressed, nz otherwise
+;;DESTROYS: AF
+keyboard_check_a_not_pressed::
+    keyboard_check_key_value #keyboard_a_state, #keyboard_not_pressed_state
+    ret
+
+;;RETURNS:
+;;  z if d is set at not pressed, nz otherwise
+;;DESTROYS: AF
+keyboard_check_d_not_pressed::
+    keyboard_check_key_value #keyboard_d_state, #keyboard_not_pressed_state
+    ret
+
+;;RETURNS:
+;;  z if a is set at just released, nz otherwise
+;;DESTROYS: AF
+keyboard_check_a_just_released::
+    keyboard_check_key_value #keyboard_a_state, #keyboard_just_released_state
+    ret
+
+;;RETURNS:
+;;  z if d is set at just released, nz otherwise
+;;DESTROYS: AF
+keyboard_check_d_just_released::
+    keyboard_check_key_value #keyboard_d_state, #keyboard_just_released_state
+    ret

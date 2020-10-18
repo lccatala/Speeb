@@ -1,5 +1,6 @@
 .module	physics
 
+.globl physics_main_player_dashing
 .globl physics_collision_detected
 .globl physics_update
 .globl physics_action_jump 
@@ -9,8 +10,8 @@
 
 physics_ground_level              = 0x90
 physics_jump_initial_speed        = -10
-physics_dodge_initial_speed_left  = -2
-physics_dodge_initial_speed_right = 2
+physics_dodge_initial_speed_left  = -1
+physics_dodge_initial_speed_right = 1
 physics_dodge_initial_x_coord     = 12
 physics_dodge_limit_x_coord_left  = 8
 physics_dodge_limit_x_coord_right = 16

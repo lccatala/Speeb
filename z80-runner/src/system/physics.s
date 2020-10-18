@@ -22,6 +22,8 @@ physics_act:
 	ld	h,	entity_next_action_h(ix)
 	ld (physics_act_call+1), hl
 	physics_act_call: call #0xABAC
+	ld	entity_next_action_h(ix), #0
+	ld	entity_next_action_l(ix), #0
 	ret
 
 ;; Action: jump!
@@ -131,12 +133,14 @@ physics_entity_move_x:
 ;; DESTROYS: A
 physics_main_player_dash:
 	;;move on x 
-	ld		a, entity_x_coord(ix)
-	add		entity_x_speed(ix)
+	ld		a, entity_x_speed(ix)
+	cp 		#0
+	ret 	z
+	add		entity_x_coord(ix)
 	ld		entity_x_coord(ix), a
 
 	;;dash or return?
-	ld		a, #physics_main_player_dashing
+	ld		a, (physics_main_player_dashing)
 	cp 		#0
 	jr		z, physics_main_player_return
 
@@ -148,51 +152,44 @@ physics_main_player_dash:
 	;;left//negative
 	ld		a, entity_x_coord(ix)
 	sub 	#physics_dodge_limit_x_coord_left
-	jp		p, physics_main_player_dash_end
+	ret 	p
 	ld		a, #physics_dodge_limit_x_coord_left
 	ld 		entity_x_coord(ix), a		;; puts entity on the limit
 	ld		entity_x_speed(ix), #0
-	jr		physics_main_player_dash_end
+	ret
 
 	physics_main_player_dash_right:
 	ld		a, entity_x_coord(ix)
 	sub 	#physics_dodge_limit_x_coord_right
-	jp		m, physics_main_player_dash_end
+	ret		m
 	ld		a, #physics_dodge_limit_x_coord_right
 	ld 		entity_x_coord(ix), a		;; puts entity on the limit
 	ld		entity_x_speed(ix), #0
-	jr		physics_main_player_dash_end
+	ret
 
 
 	physics_main_player_return:
 	;;direction of dash?
-	ld		a, entity_x_coord(ix)
-	sub		#physics_dodge_initial_x_coord
-	jp		p, physics_main_player_return_left ;;positive
+	ld		a, entity_x_speed(ix)
+	cp		#0
+	jp		m, physics_main_player_return_left ;;positive
 	
 	;;return to inital moving with right dash
 	ld		a, entity_x_coord(ix)
 	sub 	#physics_dodge_initial_x_coord
-	jp		m, physics_main_player_dash_end
+	ret		m
 	ld		a, #physics_dodge_initial_x_coord
 	ld 		entity_x_coord(ix), a		;; puts entity on the limit
 	ld		entity_x_speed(ix), #0
-	jr		physics_main_player_dash_end
+	ret
 
 	physics_main_player_return_left:
 	ld		a, entity_x_coord(ix)
 	sub 	#physics_dodge_initial_x_coord
-	jp		p, physics_main_player_dash_end
+	ret		p
 	ld		a, #physics_dodge_initial_x_coord
 	ld 		entity_x_coord(ix), a		;; puts entity on the limit
 	ld		entity_x_speed(ix), #0
-	jr		physics_main_player_dash_end
-	
-
-
-
-
-	physics_main_player_dash_end:
 	ret
 	
 

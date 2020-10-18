@@ -3,6 +3,12 @@
 .globl keyboard_check_enter_just_pressed
 .globl keyboard_check_a_just_pressed
 .globl keyboard_check_d_just_pressed
+.globl keyboard_check_a_pressed
+.globl keyboard_check_d_pressed
+.globl keyboard_check_a_not_pressed
+.globl keyboard_check_d_not_pressed
+.globl keyboard_check_a_just_released
+.globl keyboard_check_d_just_released
 
 .globl cpct_isKeyPressed_asm
 
