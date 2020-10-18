@@ -22,8 +22,6 @@ physics_act:
 	ld	h,	entity_next_action_h(ix)
 	ld (physics_act_call+1), hl
 	physics_act_call: call #0xABAC
-	ld	entity_next_action_h(ix), #0
-	ld	entity_next_action_l(ix), #0
 	ret
 
 ;; Action: jump!

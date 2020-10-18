@@ -42,6 +42,8 @@ render_ground:
 
 ;;DESTROY: AF, BC, DE, HL
 render_init::
+;;	ld		c, #0 
+;;	call	cpct_setVideoMode_asm
 	cpctm_setBorder_asm	0x14
 	call	render_ground
 	ret
