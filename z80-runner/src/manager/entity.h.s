@@ -1,3 +1,5 @@
+.module entity
+
 .globl entity_init
 .globl entity_main_player
 .globl entity_for_all_enemies
@@ -36,6 +38,7 @@ entity_size             = entity_next_action+2
 
 ;; As readable and neat this macro might be, it wastes space to some extent
 ;; Usual way to do this is having a value-filled prototype in memory, and ldir the _ENTITY you wanna fill
+;; DEPRECATED!!!!!!!!!! USE PROTOTYPES AND INSTANTIATE!!!
 ;;INPUT:
 ;;  _ENTITY: can be **, (**)
 ;;  _Y_SPEED: can be *, a, b, c, d, e, h, l
@@ -54,4 +57,49 @@ entity_size             = entity_next_action+2
     ld entity_color(ix),     _COLOR
     ld entity_next_action_l(ix),    #0x00
     ld entity_next_action_h(ix),    #0x00
+.endm
+
+.macro blank_bytes _N
+    .rept _N
+        .db #0xAA
+    .endm
+.endm
+
+.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _COLOR
+    blank_bytes entity_is_dead-0
+    .db #0x00           ;; entity_is_dead
+    blank_bytes entity_x_speed-(entity_is_dead+1)
+    .db #0x00           ;; entity_x_speed
+    blank_bytes entity_y_speed-(entity_x_speed+1)
+    .db _Y_SPEED        ;; entity_y_speed
+    blank_bytes entity_width-(entity_y_speed+1)
+    .db _WIDTH          ;; entity_width
+    blank_bytes entity_height-(entity_width+1)
+    .db _HEIGHT         ;; entity_height
+    blank_bytes entity_color-(entity_height+1)
+    .db _COLOR          ;; entity_color
+    blank_bytes entity_next_action-(entity_color+1)
+    .db #0x00
+    .db #0x00 ;; entity_next_action
+    blank_bytes entity_size-(entity_next_action+2)
+.endm
+
+
+;;INPUT:
+;;  _ORIGIN:    pointer to the prototype you want to copy, can be **
+;;  _X_COORD:   left x coordinate to put the entity at, can be *
+;;  _Y_COORD:   bottom y coordinate to put the entity at, can be *
+;;  DE:         pointer to the entity you want to copy the prototype to
+;;DESTROYS: AF, BC, DE, HL, IX
+.macro entity_instantiate_prototype _ORIGIN, _X_COORD, _Y_COORD
+    ld__ixh_d
+    ld__ixl_e
+    ld hl, _ORIGIN
+    ld bc, #entity_size
+    ldir
+
+    ld a, _Y_COORD
+    sub entity_height(ix)
+    ld entity_x_coord(ix), _X_COORD
+    ld entity_y_coord(ix), a
 .endm

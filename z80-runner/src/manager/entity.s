@@ -1,22 +1,27 @@
 .include "entity.h.s"
-.include "../system/physics.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
+.include "../system/physics.h.s"
 
 ;;NOTE: reconsider whether this being public is a good idea
 entity_main_player:: entity_define
 entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
+entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F
+entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF
+
 entity_init::
-    entity_fill #entity_main_player, #0, #4, #(physics_ground_level-0x08), #0x02, #0x08, #0x0F
+    ld de, #entity_main_player
+    entity_instantiate_prototype #entity_prototype_main_player, #4, #physics_ground_level
 
     call entity_clean_enemy_array
-    entity_fill (entity_next_enemy), #0, #30, #(physics_ground_level-0x20), #0x01, #0x20, #0xFF
-    call entity_create_enemy
-    entity_fill (entity_next_enemy), #0, #70, #(physics_ground_level-0x20), #0x01, #0x20, #0xFF
-    call entity_create_enemy
-    
 
+    call entity_create_enemy
+    entity_instantiate_prototype #entity_prototype_basic_enemy, #30, #physics_ground_level
+    
+    call entity_create_enemy
+    entity_instantiate_prototype #entity_prototype_basic_enemy, #50, #physics_ground_level
+    
     ret
 
 ;; Applies a function to all enemies
