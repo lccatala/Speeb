@@ -130,11 +130,7 @@ physics_entity_move_x:
 ;;	IX:		first entity pointer
 ;;	IY:		second entity pointer
 ;; DESTROYS: AF
-physics_check_collision::
-	;; Resets the collision flag
-	xor	a
-	ld	(physics_collision_detected), a
-	
+physics_check_collision::	
 	;; X AXIS: startIY < endIX
 	physics_ret_if_start_lesser_end entity_x_coord, entity_width, iy, ix 
 
@@ -168,13 +164,26 @@ physics_update_entity:
 ;; OUTPUT: none
 ;; BREAKS: AF, BC, IX, IY
 physics_update::
+	;; Resets the collision flag
+	xor	a
+	ld	(physics_collision_detected), a
+
 	;; physics_entity_move (update should do other stuff too?)
 	ld ix, #entity_main_player
 	call physics_update_entity
+	
 	ld ix, #entity_enemy
 	call	physics_update_entity
+
+	ld hl, #physics_update_entity
+	call entity_for_all_enemies
 
 	ld	ix,	#entity_enemy
 	ld	iy,	#entity_main_player
 	call	physics_check_collision
+
+	ld hl, #physics_check_collision
+	call entity_for_all_enemies
+
+
 	ret

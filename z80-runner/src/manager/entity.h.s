@@ -1,8 +1,13 @@
 .globl entity_init
 .globl entity_main_player
 .globl entity_enemy
+.globl entity_for_all_enemies
+.globl entity_create_enemy
 
-entity_x_speed          = 0
+entity_max_enemies      = 16
+
+entity_is_dead          = 0
+entity_x_speed          = entity_is_dead+1
 entity_y_speed          = entity_x_speed+1
 entity_x_coord          = entity_y_speed+1
 entity_y_coord          = entity_x_coord+1
@@ -20,6 +25,12 @@ entity_size             = entity_next_action+2
 .macro entity_define
     .rept #entity_size
         .db #0xAA
+    .endm
+.endm
+
+.macro entity_define_array _N
+    .rept #_N
+        entity_define
     .endm
 .endm
 
