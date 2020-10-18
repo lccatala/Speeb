@@ -1,3 +1,4 @@
+.module entity
 .globl entity_init
 .globl entity_main_player
 .globl entity_for_all_enemies
@@ -25,9 +26,12 @@ entity_next_action_l    = entity_next_action
 entity_next_action_h    = entity_next_action+1
 entity_size             = entity_next_action+2
 
-entity_ai_status_no       = 0
-entity_ai_status_stand_by = 1
-entity_ai_status_move_to  = 2
+;;
+entity_ai_status_no        = 0
+entity_ai_status_stand_by  = 1
+entity_ai_status_move_to   = 2
+entity_ai_status_move_to_x = 5
+entity_ai_status_move_to_y = 4
 
 .macro entity_define
     .rept #entity_size

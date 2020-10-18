@@ -1,27 +1,27 @@
+.include "ai_control.h.s"
 .include "cpctelera.h.s"
 .include "manager/entity.h.s"
+.include "manager/game.h.s"
 
 
 
-ai_control_init::
+;;ai_control_init::
 
-    ret
+;;    ret
 
 
 
 
 ;; Updates AI for the entities
 ;; INPUT:
-;;      IX: Pointer entity array
-;;       A: Number of elements in the array
-;; DESTROYS: A
+;; DESTROYS: A, HL, IX, IY
 ai_control_update::
-    ld      (entity_counter), a
 
-entity_array_ptr = . + 2
-    ld      ix, #0x0000
+    ld      hl, #ai_control_update_entity
+    call    entity_for_all_enemies
+    ret
 
-ai_control_update_loop:
+ai_control_update_entity:
 
     ld      a, entity_ai_status(ix)
     cp      #entity_ai_status_no
@@ -29,48 +29,69 @@ ai_control_update_loop:
 
 ai_control_entity:
     call ai_control_update_aim_coords
+    ld      a, entity_ai_status(ix)
     cp #entity_ai_status_stand_by
-    call z, ai_control_stand_by
+    call    z, ai_control_stand_by
     cp #entity_ai_status_move_to
-    call z, ai_control_move_to
+    call    z, ai_control_move_to
     cp #entity_ai_status_move_to_x
-    call z, ai_control_move_to
+    call    z, ai_control_move_to_x
     cp #entity_ai_status_move_to_y
-    call z, ai_control_move_to
+    call    z, ai_control_move_to_y
 no_ai_control_entity:
-entity_counter = . +1
-    ld      a, #0
-    dec     a
-    ret     z
 
-    ld      (entity_counter), a
-    ;;jumps to the next entity
-    ld      de, #entity_size
-    add     ix, de
-    
     ret
-
+;;INFO:  Save the main player's coordinates on the aim enemy coordinates
+;;INPUT:
+;;         IX: Enemy entity
+;;DESTROY: A, IY
 ai_control_update_aim_coords::
-    ld      ix, #entity_main_player
-    ld       a, entity_x_coord(ix)
+    ld      iy, #entity_main_player
     ld       a, entity_x_coord(iy)
+    ld       a, entity_x_coord(ix)
 
-    ld       a, entity_y_coord(ix)
     ld       a, entity_y_coord(iy)
+    ld       a, entity_y_coord(ix)
 ret
 
+ai_control_game_level_speed_counter::
+    ld      a, #0
+    ld      hl, #game_level_speed
+    ld      b, (hl)
+    sub     b
+ret
 ai_control_stand_by::
-    ld      entity_x_speed(ix), #0
     ld      entity_y_speed(ix), #0
+    call    ai_control_game_level_speed_counter
+    ld      entity_x_speed(ix), a
 ret
 
 ai_control_move_to_x::
-    ;;ld      entity_y_speed(ix), #0
+    ld      entity_y_speed(ix), #0
+    ld      a, entity_ai_aim_x(ix)
+    sub     entity_x_coord(ix)
+    jr      c, ai_control_move_to_x_greater
 
-    ;;ld      a, entity_ai_aim_x(ix)
+ai_control_move_to_x_not_greater:
+    jr      z, ai_control_move_to_x_arrived
 
+ai_control_move_to_x_lesser:
+    call    ai_control_game_level_speed_counter
+    dec     a
+    ld      entity_x_speed(ix), a
+    ret
 
+ai_control_move_to_x_greater:
+    
+    call    ai_control_game_level_speed_counter
+    inc     a
+    ld      entity_x_speed(ix), a
+    ret
 
+ai_control_move_to_x_arrived:
+    call    ai_control_game_level_speed_counter
+    ld      entity_x_speed(ix), a
+    ld      entity_ai_status(ix), #entity_ai_status_stand_by
 ret
 
 ai_control_move_to_y::

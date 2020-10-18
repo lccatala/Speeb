@@ -33,7 +33,7 @@ game_init::
    call     entity_init
    call     render_init
    call     control_init
-   call     ai_control_init
+;;   call     ai_control_init
 
    ret
 
@@ -44,7 +44,6 @@ game_loop::
    call     control_update
    call     physics_update
    call     render_update
-   call     entity_update
    
    ;; Screen synchronization, the more repts, the more the game slows down
    ld a, #2

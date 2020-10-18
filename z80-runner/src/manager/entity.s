@@ -8,12 +8,14 @@ entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
 entity_init::
-    entity_fill #entity_main_player, #0, #4, #(physics_ground_level-0x08), #0x02, #0x08, #0x0F
+    entity_fill #entity_main_player, #0, #12, #(physics_ground_level-0x08), #0x02, #0x08, #0x0F, #entity_ai_status_no 
 
     call entity_clean_enemy_array
-    entity_fill (entity_next_enemy), #0, #30, #(physics_ground_level-0x20), #0x01, #0x20, #0xFF
+    entity_fill (entity_next_enemy), #0, #30, #(physics_ground_level-0x20), #0x01, #0x20, #0xFF, #entity_ai_status_stand_by 
     call entity_create_enemy
-    entity_fill (entity_next_enemy), #0, #70, #(physics_ground_level-0x20), #0x01, #0x20, #0xFF
+    entity_fill (entity_next_enemy), #0, #70, #(physics_ground_level-0x20), #0x01, #0x20, #0xFF, #entity_ai_status_stand_by 
+    call entity_create_enemy
+    entity_fill (entity_next_enemy), #0, #70, #10, #0x02, #0x04, #0xFF, #entity_ai_status_move_to_x
     call entity_create_enemy
     
 
