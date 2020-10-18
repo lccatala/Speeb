@@ -1,6 +1,5 @@
 .globl entity_init
 .globl entity_main_player
-.globl entity_enemy
 .globl entity_for_all_enemies
 .globl entity_create_enemy
 

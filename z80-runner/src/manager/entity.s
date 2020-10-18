@@ -4,7 +4,6 @@
 
 ;;NOTE: reconsider whether this being public is a good idea
 entity_main_player:: entity_define
-entity_enemy:: entity_define
 entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
@@ -18,7 +17,6 @@ entity_init::
     call entity_create_enemy
     
 
-    entity_fill #entity_enemy, #0, #50, #(physics_ground_level-0x20), #0x01, #0x20, #0xFF
     ret
 
 ;; Applies a function to all enemies

@@ -172,16 +172,11 @@ physics_update::
 	ld ix, #entity_main_player
 	call physics_update_entity
 	
-	ld ix, #entity_enemy
-	call	physics_update_entity
 
 	ld hl, #physics_update_entity
 	call entity_for_all_enemies
 
-	ld	ix,	#entity_enemy
 	ld	iy,	#entity_main_player
-	call	physics_check_collision
-
 	ld hl, #physics_check_collision
 	call entity_for_all_enemies
 
