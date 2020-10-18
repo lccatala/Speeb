@@ -1,8 +1,13 @@
 .globl entity_init
 .globl entity_main_player
-.globl entity_enemy
+.globl entity_for_all_enemies
+.globl entity_create_enemy
+.globl entity_update
 
-entity_x_speed          = 0
+entity_max_enemies      = 16
+
+entity_is_dead          = 0
+entity_x_speed          = entity_is_dead+1
 entity_y_speed          = entity_x_speed+1
 entity_x_coord          = entity_y_speed+1
 entity_y_coord          = entity_x_coord+1
@@ -30,6 +35,12 @@ entity_ai_status_move_to  = 2
     .endm
 .endm
 
+.macro entity_define_array _N
+    .rept #_N
+        entity_define
+    .endm
+.endm
+
 ;; As readable and neat this macro might be, it wastes space to some extent
 ;; Usual way to do this is having a value-filled prototype in memory, and ldir the _ENTITY you wanna fill
 ;;INPUT:
@@ -40,6 +51,7 @@ entity_ai_status_move_to  = 2
 ;;DESTROYS: ix
 .macro entity_fill _ENTITY, _Y_SPEED, _X_COORD, _Y_COORD, _WIDTH, _HEIGHT, _COLOR, _AI_STATUS
     ld ix, _ENTITY
+    ld entity_is_dead(ix), #0
     ld entity_x_speed(ix), #0 ;; TODO: temporary (everything is, memento mori)
     ld entity_y_speed(ix),         _Y_SPEED
     ld entity_x_coord(ix),         _X_COORD
