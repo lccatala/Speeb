@@ -2,6 +2,7 @@
 .globl entity_main_player
 .globl entity_for_all_enemies
 .globl entity_create_enemy
+.globl entity_update
 
 entity_max_enemies      = 16
 
@@ -43,6 +44,7 @@ entity_size             = entity_next_action+2
 ;;DESTROYS: ix
 .macro entity_fill _ENTITY, _Y_SPEED, _X_COORD, _Y_COORD, _WIDTH, _HEIGHT, _COLOR
     ld ix, _ENTITY
+    ld entity_is_dead(ix), #0
     ld entity_x_speed(ix), #0 ;; TODO: temporary (everything is, memento mori)
     ld entity_y_speed(ix), _Y_SPEED
     ld entity_x_coord(ix), _X_COORD

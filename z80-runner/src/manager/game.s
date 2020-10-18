@@ -40,6 +40,7 @@ game_loop::
    call     control_update
    call     physics_update
    call     render_update
+   call     entity_update
    
    ;; Screen synchronization, the more repts, the more the game slows down
    ld a, #2

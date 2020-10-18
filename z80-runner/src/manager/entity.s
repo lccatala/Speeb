@@ -90,7 +90,7 @@ entity_create_enemy::
     ret
 
 ;;BREAKS: AF, BC, DE, HL, IX
-entity_update:
+entity_update::
     ld hl, #entity_destroy_enemy_if_dead
     call entity_for_all_enemies
     ret
