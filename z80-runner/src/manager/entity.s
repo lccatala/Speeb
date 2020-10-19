@@ -1,4 +1,5 @@
 .include "entity.h.s"
+.include "system/ai_control.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
 .include "../system/physics.h.s"
 
@@ -7,9 +8,9 @@ entity_main_player:: entity_define
 entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
-entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F, #entity_ai_status_no
-entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #entity_ai_status_stand_by
-entity_prototype_flying_enemy: entity_create_prototype #0, #0x02, #0x08, #0xFF, #entity_ai_status_move_to_x
+entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F, #0x0000
+entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #ai_control_stand_by
+entity_prototype_flying_enemy: entity_create_prototype #0, #0x02, #0x08, #0xFF, #ai_control_move_to_x
 
 entity_init::
     ld de, #entity_main_player

@@ -22,28 +22,22 @@ ai_control_update::
     ret
 
 ai_control_update_entity:
+    
+    xor     a
+    cp      entity_ai_next_action_h(ix)
+    jr      nz, ai_control_action_not_empty
+    cp      entity_ai_next_action_l(ix)
+    ret     z
 
-    ld      a, entity_ai_status(ix)
-    cp      #entity_ai_status_no
-    jr      z, no_ai_control_entity
+    ai_control_action_not_empty:
+    ld      l, entity_ai_next_action_l(ix)
+    ld      h, entity_ai_next_action_h(ix)
 
-ai_control_entity:
-    call    ai_control_update_aim_coords
-    ld      a, entity_ai_status(ix)
-    cp      #entity_ai_status_stand_by
-    call    z, ai_control_stand_by
-    ld      a, entity_ai_status(ix)
-    cp      #entity_ai_status_move_to
-    call    z, ai_control_move_to
-    ld      a, entity_ai_status(ix)
-    cp      #entity_ai_status_move_to_x
-    call    z, ai_control_move_to_x
-    ld      a, entity_ai_status(ix)
-    cp      #entity_ai_status_move_to_y
-    call    z, ai_control_move_to_y
-no_ai_control_entity:
-
+    ld      (ai_control_action_call), hl
+    ai_control_action_call= . +1
+    call    #0xADDE
     ret
+
 ;;INFO:  Save the main player's coordinates on the aim enemy coordinates
 ;;INPUT:
 ;;         IX: Enemy entity
@@ -70,6 +64,7 @@ ai_control_stand_by::
 ret
 
 ai_control_move_to_x::
+    call    ai_control_update_aim_coords
     ld      entity_y_speed(ix), #0
     ld      a, entity_ai_aim_x(ix)
     sub     entity_x_coord(ix)
@@ -80,7 +75,7 @@ ai_control_move_to_x_lesser:
     dec     a
     ld      entity_x_speed(ix), a
     ret
-    
+
 ai_control_move_to_x_greater_or_equal:
     jr      z, ai_control_move_to_x_arrived
     call    ai_control_game_level_speed_counter
@@ -90,7 +85,9 @@ ai_control_move_to_x_greater_or_equal:
 
 ai_control_move_to_x_arrived:
     call    ai_control_stand_by
-    ld      entity_ai_status(ix), #entity_ai_status_stand_by
+    ld      hl, #ai_control_stand_by
+    ld      entity_ai_next_action_h(ix), h
+    ld      entity_ai_next_action_l(ix), l
 ret
 
 ai_control_move_to_y::
