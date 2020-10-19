@@ -31,6 +31,12 @@ render_vid_mem_start = 0xC000
    call cpct_drawStringM1_asm
 .endm
 
+.macro render_clean_and_draw_message _MESSAGE
+	call  render_clean
+
+    ;; Final message is written
+    render_draw_text_at #0x08, #0x85, #0, #1, #_MESSAGE
+.endm
 
 ;;INPUT:
 ;;	_X:		X coordinate (c for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)

@@ -66,11 +66,14 @@ game_loop::
 
    ;; Game waits until you press space
    game_death:
-      game_end game_death_message
+      ;; Waits a bit so you see hwo you died!
+      ld a, #25
+      call game_wait_cycles
+      render_clean_and_draw_message game_death_message
       jr game_loop_restart
 
    game_win:
-      game_end game_win_message
+      render_clean_and_draw_message game_win_message
 
 game_loop_restart:
    call  keyboard_update
