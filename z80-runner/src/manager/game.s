@@ -43,11 +43,11 @@ game_check_end_conditions:
 
    ;; Collision with level end
    cp #0x10
-   jr    z,   game_win
+   call z, game_win
 
    ;; Collision with enemy
    cp #0x01
-   jr    z,   game_death
+   call z, game_death
    ret
 
 ;;DESTROYS: AF, BC, DE, HL, IX, IY
@@ -70,18 +70,20 @@ game_loop::
       ld a, #25
       call game_wait_cycles
       render_clean_and_draw_message game_death_message
-      jr game_loop_restart
+      call game_restart
+      ret
 
    game_win:
       render_clean_and_draw_message game_win_message
-
-game_loop_restart:
-   call  keyboard_update
-   call	keyboard_check_space_just_pressed
-   jr    nz,   game_loop_restart
+      call game_restart
+      ret
 
 game_restart:
+   call  keyboard_update
+   call	keyboard_check_space_just_pressed
+   jr    nz,   game_restart
+
    ;; After you press space screen gets cleaned and game is restarted
    call  render_clean
    call  game_init
-   jr    game_loop
+   ret
