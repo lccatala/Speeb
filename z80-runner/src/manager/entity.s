@@ -8,7 +8,7 @@ entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
 entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F, #entity_ai_status_no
-entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #entity_ai_status_stand_by
+entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #entity_ai_status_no
 entity_prototype_flying_enemy: entity_create_prototype #0, #0x02, #0x08, #0xFF, #entity_ai_status_move_to_x
 
 entity_init::
@@ -24,7 +24,7 @@ entity_init::
     entity_instantiate_prototype #entity_prototype_basic_enemy, #50, #physics_ground_level
 
     call entity_create_enemy
-    entity_instantiate_prototype #entity_prototype_flying_enemy, #70, #10
+    entity_instantiate_prototype #entity_prototype_flying_enemy, #70, #13
     
     ret
 

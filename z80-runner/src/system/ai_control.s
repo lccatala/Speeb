@@ -32,10 +32,13 @@ ai_control_entity:
     ld      a, entity_ai_status(ix)
     cp #entity_ai_status_stand_by
     call    z, ai_control_stand_by
+    ld      a, entity_ai_status(ix)
     cp #entity_ai_status_move_to
     call    z, ai_control_move_to
+    ld      a, entity_ai_status(ix)
     cp #entity_ai_status_move_to_x
     call    z, ai_control_move_to_x
+    ld      a, entity_ai_status(ix)
     cp #entity_ai_status_move_to_y
     call    z, ai_control_move_to_y
 no_ai_control_entity:
@@ -48,10 +51,10 @@ no_ai_control_entity:
 ai_control_update_aim_coords::
     ld      iy, #entity_main_player
     ld       a, entity_x_coord(iy)
-    ld       a, entity_x_coord(ix)
+    ld       entity_ai_aim_x(ix), a
 
     ld       a, entity_y_coord(iy)
-    ld       a, entity_y_coord(ix)
+    ld       entity_ai_aim_y(ix), a 
 ret
 
 ai_control_game_level_speed_counter::
@@ -70,7 +73,7 @@ ai_control_move_to_x::
     ld      entity_y_speed(ix), #0
     ld      a, entity_ai_aim_x(ix)
     sub     entity_x_coord(ix)
-    jr      c, ai_control_move_to_x_greater
+    jr      nc, ai_control_move_to_x_greater
 
 ai_control_move_to_x_not_greater:
     jr      z, ai_control_move_to_x_arrived
@@ -82,15 +85,13 @@ ai_control_move_to_x_lesser:
     ret
 
 ai_control_move_to_x_greater:
-    
     call    ai_control_game_level_speed_counter
     inc     a
     ld      entity_x_speed(ix), a
     ret
 
 ai_control_move_to_x_arrived:
-    call    ai_control_game_level_speed_counter
-    ld      entity_x_speed(ix), a
+    call    ai_control_stand_by
     ld      entity_ai_status(ix), #entity_ai_status_stand_by
 ret
 
