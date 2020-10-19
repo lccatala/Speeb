@@ -14,7 +14,7 @@ entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F, #
 entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #ai_control_stand_by
 entity_prototype_flying_enemy: entity_create_prototype #0, #0x02, #0x08, #0xFF, #ai_control_move_to_x
 entity_prototype_end: entity_create_prototype #0, #0x02, #0x50, #0x0F, #ai_control_stand_by
-entity_prototype_bomb_enemy: entity_create_prototype #0, #0x01, #0x05, #0xFF, #ai_control_stand_by
+entity_prototype_bomb_enemy:: entity_create_prototype #0, #0x01, #0x05, #0xFF, #ai_control_stand_by
 
 
 
