@@ -19,6 +19,10 @@ ai_control_update::
 
     ld      hl, #ai_control_update_entity
     call    entity_for_all_enemies
+
+    ld      ix, #entity_end
+    call    ai_control_update_entity
+
     ret
 
 ai_control_update_entity:
@@ -94,5 +98,10 @@ ai_control_move_to_y::
 
 ret
 ai_control_move_to::
+
+ret
+
+ai_control_drop_bomb::
+    
 
 ret

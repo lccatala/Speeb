@@ -1,6 +1,7 @@
 .module entity
 .globl entity_init
 .globl entity_main_player
+.globl entity_end
 .globl entity_for_all_enemies
 .globl entity_create_enemy
 .globl entity_update

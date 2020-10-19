@@ -197,8 +197,10 @@ physics_main_player_dash:
 ;; INPUTS:
 ;;	IX:		first entity pointer
 ;;	IY:		second entity pointer
+;;   D:     flag value in case of collision
 ;; DESTROYS: AF
-physics_check_collision::	
+physics_check_collision::
+	
 	;; X AXIS: startIY < endIX
 	physics_ret_if_start_lesser_end entity_x_coord, entity_width, iy, ix 
 
@@ -211,10 +213,9 @@ physics_check_collision::
 	;; Y AXIS: startIX < endIY
 	physics_ret_if_start_lesser_end entity_y_coord, entity_height, ix, iy
 
-	;; COLLISION: set collision flag to 01
-	ld	a,	#0x01
+	;; COLLISION: set collision flag to value stored in B
+	ld	a,	d
 	ld	(physics_collision_detected), a
-
 	ret
 
 ;; Destroys whatever the action function destroys (be craneful mai fren!)
@@ -240,11 +241,18 @@ physics_update::
 	ld ix, #entity_main_player
 	call physics_update_entity
 	
-
+	ld ix, #entity_end
+	call   physics_update_entity
+	
 	ld hl, #physics_update_entity
 	call entity_for_all_enemies
 
+	ld	ix,	#entity_end
 	ld	iy,	#entity_main_player
+	ld  d,  #0x10
+	call	physics_check_collision
+	
+	ld  d,  #0x01
 	ld hl, #physics_check_collision
 	call entity_for_all_enemies
 

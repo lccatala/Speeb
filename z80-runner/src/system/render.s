@@ -71,18 +71,21 @@ render_entity_erase::
 ;;DESTROYS: AF, BC, DE, HL, IX
 render_update::
 
+	ld      ix, #entity_end
+	call	render_entity_erase
+	call	render_entity_draw
+	
 	ld hl, #render_entity_erase
 	call entity_for_all_enemies
-
-	ld      ix, #entity_main_player
-	call	render_entity_erase
-
 	ld hl, #render_entity_draw
 	call entity_for_all_enemies
 
+
 	ld      ix, #entity_main_player
+	call	render_entity_erase
 	call	render_entity_draw
 
-	
+
+
 	ret
 	
