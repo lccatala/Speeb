@@ -3,6 +3,7 @@
 .globl render_init
 .globl render_update
 .globl render_clean
+.globl render_entity_erase
 
 .globl cpct_drawSolidBox_asm
 .globl cpct_getScreenPtr_asm
