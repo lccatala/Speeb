@@ -30,8 +30,8 @@
 
 ;;DESTROYS: AF, BC, DE, HL
 render_clean:
-	render_draw_solid_box_at #0x00, #0x50, #0x00, #0x40, #0x78
-	render_draw_solid_box_at #0x40, #0x50, #0x00, #0x10, #0x78
+	render_draw_solid_box_at #0x00, #0x00, #0x00, #0x40, #0xC8
+	render_draw_solid_box_at #0x40, #0x00, #0x00, #0x10, #0xC8
 	ret
 
 ;;DESTROYS: AF, BC, DE, HL
@@ -42,6 +42,8 @@ render_ground:
 
 ;;DESTROY: AF, BC, DE, HL
 render_init::
+;;	ld		c, #0 
+;;	call	cpct_setVideoMode_asm
 	cpctm_setBorder_asm	0x14
 	call	render_ground
 	ret
@@ -58,7 +60,7 @@ render_entity_draw::
 	ret
 
 ;;Erase the last entity.
-;;INPUT:   IX (entity)  
+;;INPUT:   IX (entity)
 ;;DESTROY: AF, BC, DE, HL
 render_entity_erase::
 	ld 		e, entity_last_screen_l(ix)
@@ -68,13 +70,19 @@ render_entity_erase::
 
 ;;DESTROYS: AF, BC, DE, HL, IX
 render_update::
-	ld      ix, #entity_enemy
-	call	render_entity_erase
-	call	render_entity_draw
+
+	ld hl, #render_entity_erase
+	call entity_for_all_enemies
 
 	ld      ix, #entity_main_player
 	call	render_entity_erase
+
+	ld hl, #render_entity_draw
+	call entity_for_all_enemies
+
+	ld      ix, #entity_main_player
 	call	render_entity_draw
+
 	
 	ld      ix, #entity_end
 	call	render_entity_erase

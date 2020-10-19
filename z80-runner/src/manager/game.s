@@ -6,6 +6,7 @@
 .include "system/physics.h.s"
 .include "utility/keyboard.h.s"
 .include "system/control.h.s"
+.include "system/ai_control.h.s"
 
 .globl cpct_waitVSYNC_asm
 .globl cpct_getScreenPtr_asm
@@ -33,7 +34,7 @@ game_init::
    call     entity_init
    call     render_init
    call     control_init
-   call     physics_init
+;;   call     ai_control_init
    ret
 
 ;; DESTROYS: A
@@ -48,11 +49,13 @@ game_check_end_conditions:
    ;; Collision with enemy
    cp #0x01
    call z, game_death
+
    ret
 
 ;;DESTROYS: AF, BC, DE, HL, IX, IY
 game_loop::
    call     keyboard_update
+   call     ai_control_update
    call     control_update
    call     physics_update
    call     render_update
