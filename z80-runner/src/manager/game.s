@@ -29,6 +29,8 @@ game_win_message:   .asciz "You won! Press SPACE to restart";
 
 game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
 
+
+
 ;;DESTROYS: AF, BC, DE, HL, IX
 game_init::
    call     entity_init
@@ -82,6 +84,7 @@ game_loop::
       ret
 
 game_restart:
+   ;; Wait for player to press space
    call  keyboard_update
    call	keyboard_check_space_just_pressed
    jr    nz,   game_restart
