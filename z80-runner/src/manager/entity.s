@@ -28,11 +28,11 @@ entity_init::
 
     call entity_clean_enemy_array
 
-    call entity_create_enemy
-    entity_instantiate_prototype #entity_prototype_basic_enemy, #70, #physics_ground_level
+    ;call entity_create_enemy
+    ;entity_instantiate_prototype #entity_prototype_basic_enemy, #70, #physics_ground_level
     
     call entity_create_enemy
-    entity_instantiate_prototype #entity_prototype_basic_enemy, #50, #physics_ground_level
+    entity_instantiate_prototype #entity_prototype_basic_enemy, #60, #physics_ground_level
 
     call entity_create_enemy
     entity_instantiate_prototype #entity_prototype_flying_enemy, #30, #13
