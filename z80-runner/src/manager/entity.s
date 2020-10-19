@@ -40,11 +40,7 @@ entity_init::
     entity_instantiate_prototype #entity_prototype_basic_enemy, #50, #physics_ground_level
 
     call entity_create_enemy
-<<<<<<< HEAD
-    entity_instantiate_prototype #entity_prototype_flying_enemy, #70, #13
-=======
     entity_instantiate_prototype #entity_prototype_flying_enemy, #30, #13
->>>>>>> came
 
     
     ret
