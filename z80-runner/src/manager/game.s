@@ -54,11 +54,14 @@ game_check_end_conditions:
 
 ;;DESTROYS: AF, BC, DE, HL, IX, IY
 game_loop::
+   
    call     keyboard_update
    call     ai_control_update
+   call     entity_update
    call     control_update
    call     physics_update
    call     render_update
+   
    
    ;; Screen synchronization, the more repts, the more the game slows down
    ld a, #2

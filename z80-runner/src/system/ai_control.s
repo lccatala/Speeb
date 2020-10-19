@@ -89,7 +89,7 @@ ai_control_move_to_x_greater_or_equal:
 
 ai_control_move_to_x_arrived:
     call    ai_control_stand_by
-    ld      hl, #ai_control_drop_bomb
+    ld      hl, #ai_control_suicide
     ld      entity_ai_next_action_h(ix), h
     ld      entity_ai_next_action_l(ix), l
 ret
@@ -100,6 +100,18 @@ ret
 ai_control_move_to::
 
 ret
+
+ai_control_suicide::
+
+    ld      a, entity_y_coord(ix)
+    cp      #0x88
+    jr      z, ai_control_suicide_killyourself
+    ret
+ai_control_suicide_killyourself:
+    ld      entity_is_dead(ix), #1   
+    
+ret
+
 
 ai_control_drop_bomb::
     ld      entity_y_speed(ix), #0
