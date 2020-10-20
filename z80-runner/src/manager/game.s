@@ -3,6 +3,7 @@
 
 .include "manager/entity.h.s"
 .include "system/render.h.s"
+.include "manager/menu.h.s"
 .include "system/physics.h.s"
 .include "utility/keyboard.h.s"
 .include "system/control.h.s"
@@ -24,9 +25,6 @@ game_wait_cycles:
    jr nz, game_wait_cycles
    ret
 
-game_death_message: .asciz "You died! Press SPACE to restart";
-game_win_message:   .asciz "You won! Press SPACE to restart";
-
 game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
 
 
@@ -45,11 +43,11 @@ game_check_end_conditions:
 	ld a, (physics_collision_detected)
 
    ;; Collision with level end
-   cp #0x10
+   cp #physics_collision_with_end
    call z, game_win
 
    ;; Collision with enemy
-   cp #0x01
+   cp #physics_collision_with_enemy
    call z, game_death
 
    ret
@@ -72,19 +70,23 @@ game_loop::
    call game_check_end_conditions
    jr game_loop
 
-   ;; Game waits until you press space
-   game_death:
-      ;; Waits a bit so you see hwo you died!
-      ld a, #25
-      call game_wait_cycles
-      render_clean_and_draw_message game_death_message
-      call game_restart
-      ret
+;; Game waits until you press space
+game_death:
+   ;; Waits a bit so you see hwo you died!
+   ld a, #25
+   call game_wait_cycles
 
-   game_win:
-      render_clean_and_draw_message game_win_message
-      call game_restart
-      ret
+	call  render_clean
+   render_draw_message #0x08, #0x85, #0, #1, #menu_death_message
+   call game_restart
+   ret
+
+game_win:
+
+	call  render_clean
+   render_draw_message #0x08, #0x85, #0, #1, #menu_win_message
+   call game_restart
+   ret
 
 game_restart:
    ;; Wait for player to press space

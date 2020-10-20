@@ -237,7 +237,7 @@ physics_update::
 	xor	a
 	ld	(physics_collision_detected), a
 
-	;; physics_entity_move (update should do other stuff too?)
+	;; move stuff
 	ld ix, #entity_main_player
 	call physics_update_entity
 	
@@ -247,14 +247,16 @@ physics_update::
 	ld hl, #physics_update_entity
 	call entity_for_all_enemies
 
-	ld	ix,	#entity_end
-	ld	iy,	#entity_main_player
-	ld  d,  #0x10
-	call	physics_check_collision
+	;; detect collisions (end is checked last so collision with end overwrites death)
 	
-	ld  d,  #0x01
+	ld  d,  #physics_collision_with_enemy
 	ld hl, #physics_check_collision
 	call entity_for_all_enemies
+	
+	ld	ix,	#entity_end
+	ld	iy,	#entity_main_player
+	ld  d,  #physics_collision_with_end
+	call	physics_check_collision
 
 
 	ret

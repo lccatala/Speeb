@@ -16,6 +16,9 @@ physics_dodge_initial_x_coord     = 12
 physics_dodge_limit_x_coord_left  = 8
 physics_dodge_limit_x_coord_right = 16
 
+physics_collision_with_enemy        = 0x01
+physics_collision_with_end          = 0x10
+
 ;;INPUT:
 ;;  _COORD_OFFSET:  offset of entity coordinate, can be **
 ;;  _SIZE_OFFSET:   offset of entity axis-dependant size (height/width), can be **

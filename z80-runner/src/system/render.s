@@ -68,6 +68,32 @@ render_entity_erase::
 	render_draw_solid_box #0x00, entity_width(ix), entity_height(ix)
 	ret
 
+;; Not use direcly, render_message makes it more readable
+;;INPUT:
+;;	A:	Y
+;;	B:	X
+;;	D:	BACKGROUND COLOR
+;;	E:	FONT COLOR
+;;	IY:	STRING
+;; DESTROYS: AF, BC, DE, HL, IY
+render_draw_text_at::
+    ld (render_draw_text_at_y), a
+	ld a, b
+    ld (render_draw_text_at_x), a
+
+	call cpct_setDrawCharM1_asm
+
+	ld		de, #render_vid_mem_start
+	render_draw_text_at_y = .+1
+	ld		b, #0xAA
+	render_draw_text_at_x = .+1
+	ld		c, #0xAA
+	call	cpct_getScreenPtr_asm
+
+	call cpct_drawStringM1_asm
+
+	ret
+
 ;;DESTROYS: AF, BC, DE, HL, IX
 render_update::
 
@@ -84,8 +110,6 @@ render_update::
 	ld      ix, #entity_main_player
 	call	render_entity_erase
 	call	render_entity_draw
-
-
 
 	ret
 	
