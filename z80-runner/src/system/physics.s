@@ -4,7 +4,7 @@
 .include "macros/cpct_undocumentedOpcodes.h.s"
 
 
-physics_collision_detected:: .db #0x00 ;; flag for collision detection, should be changed to an array
+physics_collision_detected:: .db #physics_collision_no ;; flag for collision detection, should be changed to an array
 physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
 
 ;; call the action specified on the entity, destroys whatever that action destroys
@@ -234,7 +234,7 @@ physics_update_entity:
 ;; BREAKS: AF, BC, IX, IY
 physics_update::
 	;; Resets the collision flag
-	xor	a
+	ld a, #physics_collision_detected
 	ld	(physics_collision_detected), a
 
 	;; move stuff

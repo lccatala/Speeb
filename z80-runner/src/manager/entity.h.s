@@ -43,30 +43,25 @@ entity_size             = entity_next_action+2
 .endm
 
 
-.macro blank_bytes _N
-    .rept _N
-        .db #0xAA
-    .endm
-.endm
-
+;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
 .macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION
-    blank_bytes entity_is_dead-0
+    general_blank_bytes entity_is_dead-0
     .db #0x00           ;; entity_is_dead
-    blank_bytes entity_x_speed-(entity_is_dead+1)
+    general_blank_bytes entity_x_speed-(entity_is_dead+1)
     .db #0x00           ;; entity_x_speed
-    blank_bytes entity_y_speed-(entity_x_speed+1)
+    general_blank_bytes entity_y_speed-(entity_x_speed+1)
     .db _Y_SPEED        ;; entity_y_speed
-    blank_bytes entity_width-(entity_y_speed+1)
+    general_blank_bytes entity_width-(entity_y_speed+1)
     .db _WIDTH          ;; entity_width
-    blank_bytes entity_height-(entity_width+1)
+    general_blank_bytes entity_height-(entity_width+1)
     .db _HEIGHT         ;; entity_height
-    blank_bytes entity_color-(entity_height+1)
+    general_blank_bytes entity_color-(entity_height+1)
     .db _COLOR          ;; entity_color
-    blank_bytes entity_ai_next_action-(entity_color+1)
+    general_blank_bytes entity_ai_next_action-(entity_color+1)
     .dw _AI_FUNCTION          ;; entity_ai_function
-    blank_bytes entity_next_action-(entity_ai_next_action+2)
+    general_blank_bytes entity_next_action-(entity_ai_next_action+2)
     .dw #0x0000 ;; entity_next_action
-    blank_bytes entity_size-(entity_next_action+2)
+    general_blank_bytes entity_size-(entity_next_action+2)
 .endm
 
 

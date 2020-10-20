@@ -9,6 +9,6 @@
 
 _main::
    call     cpct_disableFirmware_asm
-   call     menu_show_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
+   call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
    call     game_init
    jp       game_loop

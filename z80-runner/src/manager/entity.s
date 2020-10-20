@@ -2,6 +2,7 @@
 .include "system/ai_control.h.s"
 .include "system/render.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
+.include "utility/general.h.s"
 .include "../system/physics.h.s"
 
 ;;NOTE: reconsider whether this being public is a good idea
