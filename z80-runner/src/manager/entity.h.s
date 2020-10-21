@@ -42,13 +42,13 @@ entity_size             = entity_next_action+2
     .endm
 .endm
 
-
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
-.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION
+;; TODO: move _X_SPEED parameter to first position
+.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION, _X_SPEED
     general_blank_bytes entity_is_dead-0
     .db #0x00           ;; entity_is_dead
     general_blank_bytes entity_x_speed-(entity_is_dead+1)
-    .db #0x00           ;; entity_x_speed
+    .db _X_SPEED        ;; entity_x_speed
     general_blank_bytes entity_y_speed-(entity_x_speed+1)
     .db _Y_SPEED        ;; entity_y_speed
     general_blank_bytes entity_width-(entity_y_speed+1)

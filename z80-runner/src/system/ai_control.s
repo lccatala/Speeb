@@ -121,3 +121,12 @@ ai_control_drop_bomb::
 ;;    entity_instantiate_prototype #entity_prototype_bomb_enemy, #0x0A, #0x15
 
 ret
+
+ai_control_cross_screen::
+    ld a, entity_x_coord(ix)
+    sub #0x04
+    ret nc
+    ;; Kill enemy if it's at the border of the screen.
+    ;; TODO: generalize this to all entities
+    ld      entity_is_dead(ix), #1
+ret
