@@ -234,7 +234,7 @@ physics_update_entity:
 ;; BREAKS: AF, BC, IX, IY
 physics_update::
 	;; Resets the collision flag
-	ld a, #physics_collision_detected
+	ld a, #physics_collision_no
 	ld	(physics_collision_detected), a
 
 	;; move stuff
