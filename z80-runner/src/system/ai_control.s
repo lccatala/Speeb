@@ -61,10 +61,16 @@ ai_control_game_level_speed_counter::
     ld      b, (hl)
     sub     b
 ret
-ai_control_stand_by::
+ai_control_stand_by_y::
     ld      entity_y_speed(ix), #0
     call    ai_control_game_level_speed_counter
     ld      entity_x_speed(ix), a
+ret
+
+ai_control_stand_by_x::
+    ld      entity_x_speed(ix), #0
+    call    ai_control_game_level_speed_counter
+    ld      entity_y_speed(ix), a
 ret
 
 ai_control_move_to_x::
@@ -88,14 +94,37 @@ ai_control_move_to_x_greater_or_equal:
     ret
 
 ai_control_move_to_x_arrived:
-    call    ai_control_stand_by
+    call    ai_control_stand_by_y
     ld      hl, #ai_control_suicide
     ld      entity_ai_next_action_h(ix), h
     ld      entity_ai_next_action_l(ix), l
 ret
 
 ai_control_move_to_y::
+    call    ai_control_update_aim_coords
+    ld      entity_x_speed(ix), #0
+    ld      a, entity_ai_aim_y(ix)
+    sub     entity_y_coord(ix)
+    jr      nc, ai_control_move_to_y_greater_or_equal
 
+ai_control_move_to_y_lesser:
+    call    ai_control_game_level_speed_counter
+    dec     a
+    ld      entity_y_speed(ix), a
+    ret
+
+ai_control_move_to_y_greater_or_equal:
+    jr      z, ai_control_move_to_y_arrived
+    call    ai_control_game_level_speed_counter
+    inc     a
+    ld      entity_y_speed(ix), a
+    ret
+
+ai_control_move_to_y_arrived:
+    call    ai_control_stand_by_x
+    ld      hl, #ai_control_cross_screen
+    ld      entity_ai_next_action_h(ix), h
+    ld      entity_ai_next_action_l(ix), l
 ret
 ai_control_move_to::
 
@@ -123,10 +152,27 @@ ai_control_drop_bomb::
 ret
 
 ai_control_cross_screen::
+    ld entity_x_speed(ix), #0xFE
     ld a, entity_x_coord(ix)
     sub #0x04
     ret nc
     ;; Kill enemy if it's at the border of the screen.
     ;; TODO: generalize this to all entities
     ld      entity_is_dead(ix), #1
+ret
+
+ai_control_zigzag::
+    ld a, entity_x_coord(ix)
+    sub #0x05
+    jr nc, ai_control_zigzag_check_right
+    ld entity_x_speed(ix), #0x03
+    ai_control_zigzag_check_right:
+        ;ld a, entity_x_coord(ix) ;; TODO: this may not be necessary
+        sub #0x50
+        jr nc, ai_control_zigzag_check_low
+        ld entity_x_speed(ix), #0xFE
+    ai_control_zigzag_check_low:
+    ; ld a, entity_y_coord(ix)
+    ; sub #0x10
+    ;ret nc
 ret
