@@ -11,6 +11,16 @@
 .globl cpct_setPalette_asm
 .globl cpct_setDrawCharM1_asm
 .globl cpct_drawStringM1_asm
+.globl cpct_drawSprite_asm
+
+.globl _PALETTE
+.globl _plant
+.globl _cloud
+.globl _bunny_0
+.globl _bunny_1
+.globl _bunny_2
+.globl _goal
+
 
 render_vid_mem_start = 0xC000
 

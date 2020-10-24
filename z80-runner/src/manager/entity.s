@@ -11,11 +11,11 @@ entity_end:: entity_define
 entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
-entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F, #0x0000
-entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #0x0000
-entity_prototype_flying_enemy: entity_create_prototype #0, #0x02, #0x08, #0xFF, #ai_control_move_to_x
-entity_prototype_end: entity_create_prototype #0, #0x02, #0x50, #0x0F, #0x0000
-entity_prototype_bomb_enemy:: entity_create_prototype #0, #0x01, #0x05, #0xFF, #0x0000
+entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0
+entity_prototype_basic_enemy: entity_create_prototype #0, #4, #32, #0x0000, _plant
+entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal
+entity_prototype_flying_enemy: entity_create_prototype #0, #16, #16, #ai_control_move_to_x, _cloud
+;;entity_prototype_bomb_enemy:: entity_create_prototype #0, #0x01, #0x05, #0xFF, #0x0000, 
 
 
 
@@ -28,14 +28,14 @@ entity_init::
 
     call entity_clean_enemy_array
 
-    ;call entity_create_enemy
-    ;entity_instantiate_prototype #entity_prototype_basic_enemy, #70, #physics_ground_level
-    
     call entity_create_enemy
-    entity_instantiate_prototype #entity_prototype_basic_enemy, #60, #physics_ground_level
+    entity_instantiate_prototype #entity_prototype_basic_enemy, #70, #physics_ground_level
+    
+    ;;call entity_create_enemy
+    ;;entity_instantiate_prototype #entity_prototype_basic_enemy, #60, #physics_ground_level
 
     call entity_create_enemy
-    entity_instantiate_prototype #entity_prototype_flying_enemy, #30, #13
+    entity_instantiate_prototype #entity_prototype_flying_enemy, #40, #30
 
     
     ret

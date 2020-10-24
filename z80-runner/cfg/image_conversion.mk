@@ -29,6 +29,9 @@
 
 ## 16 colours palette
 #PALETTE=0 1 2 3 6 9 11 12 13 15 16 18 20 24 25 26
+PALETTE= 11 0 1 2 7 6 9 12 13 14 16 17 18 22 25 26
+#palette_cloud= 11 0 1 2 7 6 9 12 13 15 16 18 22 24 25 26
+#palette_plant= 11 0 1 2 7 6 9 12 13 15 16 18 22 24 25 26
 
 ## Default values
 #$(eval $(call IMG2SP, SET_MODE        , 0                  ))  { 0, 1, 2 }
@@ -40,6 +43,13 @@
 #$(eval $(call IMG2SP, SET_PALETTE_FW  , $(PALETTE)         ))
 #$(eval $(call IMG2SP, CONVERT_PALETTE , $(PALETTE), g_palette ))
 #$(eval $(call IMG2SP, CONVERT         , img.png , w, h, array, palette, tileset))
+$(eval $(call IMG2SP, SET_PALETTE_FW  , $(PALETTE)         ))
+$(eval $(call IMG2SP, SET_FOLDER      , src/sprites               ))
+$(eval $(call IMG2SP, CONVERT         , img/bunny.png , 16, 16, bunny, PALETTE))
+$(eval $(call IMG2SP, CONVERT         , img/cloud.png , 32, 16, cloud))
+$(eval $(call IMG2SP, CONVERT         , img/plant.png , 8, 32, plant))
+$(eval $(call IMG2SP, CONVERT         , img/goal.png , 2, 64, goal))
+
 
 ##
 ## OLD MACROS (For compatibility)
