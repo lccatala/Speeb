@@ -1,6 +1,7 @@
 .include "physics.h.s"
 .include "manager/entity.h.s"
 .include "manager/game.h.s"
+.include "system/render.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
 
 
@@ -9,13 +10,29 @@ physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
 
 ;;INPUT
 ;;	A:		level speed
+;;DESTROYS:	AF, BC, IX
 physics_load_level::
+	;; sets the level speed
    	ld  (physics_current_speed), a
+	ld	ix, #entity_end
+	
+	;; inverts the speed
+	ld  b, a
+	xor a
+	sub b
+	ld	entity_x_speed(ix), a
+
+	;; sets the coord x to max
+	ld	a, #render_max_x
+	sub	entity_width(ix)
+	ld	entity_x_coord(ix), a
+
+	;; restarts the position counters
 	xor a
 	ld (physics_current_coord), a
 	ld (physics_current_section), a
+	
 	;;TODO: BUCLE DE INSTANCIACIÓN DE ENTIDADES!!!!
-	;;TODO: CUANDO SE ACABA, PON UN END!!!!!!!!
 	ret
 
 
@@ -275,6 +292,7 @@ physics_update::
 	call entity_for_all_enemies
 
 	;;TODO: BUCLE DE GENERACIÓN DE ENTIDADES!!!
+	;;TODO: CUANDO SE ACABA, PON UN END!!!!!!!!
 	ld	hl, #physics_current_speed
 	ld	h, (hl)
 	call physics_move_level
