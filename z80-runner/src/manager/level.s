@@ -6,7 +6,7 @@
 
 level_current: .dw level_first
 level_first::
-    level_create_header #-1, #1
+    level_create_header #-1, #2
     level_add_spawn #entity_prototype_basic_enemy, #0, #60, #physics_ground_level
     level_add_spawn #entity_prototype_flying_enemy, #0, #30, #13
     level_end
@@ -31,7 +31,7 @@ level_load::
 ;;  B:      SECTION
 ;;  C:      X_COORD
 ;;  IX:     FUNCTION TO CALL
-;;DESTROYS: AF, DE, IX
+;;DESTROYS: AF, DE, HL, IX
 level_for_all_spawns_in::
 	ld__d_ixl
 	ld__e_ixh

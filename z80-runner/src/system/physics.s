@@ -1,6 +1,7 @@
 .include "physics.h.s"
 .include "manager/entity.h.s"
 .include "manager/game.h.s"
+.include "manager/level.h.s"
 .include "system/render.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
 
@@ -9,10 +10,16 @@ physics_collision_detected:: .db #physics_collision_no ;; flag for collision det
 physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
 
 ;;INPUT
-;;	A:		level speed
+;;	A:		level length
+;;	B:		level speed
 ;;DESTROYS:	AF, BC, IX
 physics_load_level::
+	;;sets the level length
+	inc a
+	ld (physics_current_length), a
+
 	;; sets the level speed
+	ld  a, b
    	ld  (physics_current_speed), a
 	ld	ix, #entity_end
 	
@@ -32,16 +39,18 @@ physics_load_level::
 	ld (physics_current_coord), a
 	ld (physics_current_section), a
 	
-	;;TODO: BUCLE DE INSTANCIACIÓN DE ENTIDADES!!!!
+	ld	h, #-render_max_x
+	call physics_move_level
 	ret
 
 
 physics_current_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
+physics_current_length:: .db #-1
 
 physics_current_coord: .db #0x00
 physics_current_section: .db #0x00
 
-physics_current_spawning_x: .db #0x00
+physics_current_spawning_x: .db #render_max_x
 
 ;; call the action specified on the entity, destroys whatever that action destroys
 ;; INPUT:
@@ -77,15 +86,50 @@ physics_action_jump::
 
 ;;INPUT
 ;; H:		amount to move (negative)
-;;DESTROYS: A, HL
+;;DESTROYS: AF, BC, DE, HL, IX
 physics_move_level:
-	ld	a, (physics_current_coord)
-	sub	h
-	ld	(physics_current_coord), a
-	ret nc
+	;;moves backwards the map
+	ld	a, (physics_current_spawning_x)
+	add h
+	ld (physics_current_spawning_x), a
 
-		ld	hl, #physics_current_section
-		inc	(hl)
+	;;loads position in map
+	ld	a, (physics_current_coord)
+	ld	c, a
+	ld	a, (physics_current_section)
+	ld  b, a
+
+	physics_move_level_loop:
+		;;increments the spawning x
+		ld	hl, #physics_current_spawning_x
+		inc (hl)
+		;;increments the position in map
+		inc c
+		jp pe, physics_move_level_no_overflow
+			inc b
+			;;detects the end of level
+			ld	a, (physics_current_length)
+			cp	b
+			jr	nz, physics_move_level_no_end
+				ld	ix, #entity_end
+				ld  entity_x_speed(ix), #0
+			physics_move_level_no_end:
+		physics_move_level_no_overflow:
+
+		;;spawns for current position in bc
+		ld	ix, #entity_spawn
+		call level_for_all_spawns_in
+
+		;;stops if you finished the screen
+		ld	a, (physics_current_spawning_x)
+		cp #render_max_x
+	jr	nz, physics_move_level_loop
+
+	;;saves position in map
+	ld  a, c
+	ld  (physics_current_coord), a
+	ld	a, b
+	ld	(physics_current_section), a
 
 	ret
 
@@ -165,9 +209,8 @@ physics_entity_move_x:
 	ld	entity_x_coord(ix),	a
 
 	ret nz
-	;; TODO: HACK, FIX!
-	;; When enemy reaches left border, move it to right border (channge for destroy)
-	ld	entity_x_coord(ix), #79
+	;; When enemy reaches left border, destroy it
+	ld	entity_is_dead(ix), #1
 	ret
 
 ;; INPUT:
@@ -291,8 +334,6 @@ physics_update::
 	ld hl, #physics_update_entity
 	call entity_for_all_enemies
 
-	;;TODO: BUCLE DE GENERACIÓN DE ENTIDADES!!!
-	;;TODO: CUANDO SE ACABA, PON UN END!!!!!!!!
 	ld	hl, #physics_current_speed
 	ld	h, (hl)
 	call physics_move_level

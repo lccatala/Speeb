@@ -15,7 +15,8 @@
 ;; IX:      Level to load
 ;;DESTROYS: AF, BC, IX
 game_load_level:
-   ld  a, level_header_speed(ix)
+   ld  b, level_header_speed(ix)
+   ld  a, level_header_length(ix)
    call physics_load_level
    call level_load
    ret
