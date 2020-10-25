@@ -12,6 +12,8 @@
 .globl cpct_setDrawCharM1_asm
 .globl cpct_drawStringM1_asm
 .globl cpct_drawSprite_asm
+.globl cpct_drawSpriteBlended_asm
+.globl cpct_zx7b_decrunch_s_asm
 
 .globl _PALETTE
 .globl _plant

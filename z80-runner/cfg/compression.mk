@@ -38,6 +38,8 @@
 #$(eval $(call ADD2PACK,mygraphics,gfx/background.bin))
 #$(eval $(call PACKZX7B,mygraphics,src/))
 
+$(eval $(call ADD2PACK,screenbackground_z,src/img/screens/background.bin))
+$(eval $(call PACKZX7B,screenbackground_z,src/img/screens/))
 
 
 

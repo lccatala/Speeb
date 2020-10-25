@@ -36,7 +36,7 @@ game_init::
    call     entity_init
    call     render_init
    call     control_init
-;;   call     ai_control_init
+
    ret
 
 ;; DESTROYS: A

@@ -89,7 +89,7 @@ ai_control_move_to_x_greater_or_equal:
 
 ai_control_move_to_x_arrived:
     call    ai_control_stand_by
-    ld      hl, #ai_control_suicide
+    ld      hl, #ai_control_stand_by
     ld      entity_ai_next_action_h(ix), h
     ld      entity_ai_next_action_l(ix), l
 ret
