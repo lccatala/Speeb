@@ -7,6 +7,12 @@
 physics_collision_detected:: .db #physics_collision_no ;; flag for collision detection, should be changed to an array
 physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
 
+
+physics_current_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
+
+physics_current_coord: .db #0x00
+physics_current_section: .db #0x00
+
 ;; call the action specified on the entity, destroys whatever that action destroys
 ;; INPUT:
 ;;	IX:		entity to act
@@ -111,7 +117,7 @@ physics_entity_move_x:
 	jr	physics_main_player_dash
 
 	physics_entity_move_x_not_player:
-	ld	a,	(game_level_speed)
+	ld	a,	(physics_current_speed)
 
 	add	entity_x_speed(ix)
 	ld	b,	a ;; B = total speed
@@ -246,6 +252,17 @@ physics_update::
 	
 	ld hl, #physics_update_entity
 	call entity_for_all_enemies
+
+	;; move the level
+	ld	a, (physics_current_coord)
+	ld	hl, #physics_current_speed
+	sub	(hl)
+	jr	nc, physics_update_no_section_change
+
+		ld	hl, #physics_current_section
+		inc	(hl)
+
+	physics_update_no_section_change:
 
 	;; detect collisions (end is checked last so collision with end overwrites death)
 	

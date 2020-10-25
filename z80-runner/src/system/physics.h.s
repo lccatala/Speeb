@@ -8,6 +8,8 @@
 .globl physics_action_dodge_left
 .globl physics_action_dodge_right
 
+.globl physics_current_speed
+
 physics_ground_level              = 0x90
 physics_jump_initial_speed        = -10
 physics_dodge_initial_speed_left  = -1

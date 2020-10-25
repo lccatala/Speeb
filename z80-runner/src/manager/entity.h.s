@@ -5,7 +5,10 @@
 .globl entity_for_all_enemies
 .globl entity_create_enemy
 .globl entity_update
+
 .globl entity_prototype_bomb_enemy
+.globl entity_prototype_basic_enemy
+.globl entity_prototype_flying_enemy
 
 entity_max_enemies      = 10
 

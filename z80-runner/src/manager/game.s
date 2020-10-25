@@ -9,20 +9,23 @@
 .include "utility/general.h.s"
 .include "system/control.h.s"
 .include "system/ai_control.h.s"
+.include "manager/level.h.s"
 
-.globl cpct_getScreenPtr_asm
-
-
-game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
-
-
+;;INPUT
+;; IX:      Level to load
+;;DESTROYS: AF, BC, IX
+game_load_level:
+   ld  a, level_header_speed(ix)
+   ld  (physics_current_speed), a
+   call level_load
+   ret
 
 ;;DESTROYS: AF, BC, DE, HL, IX
 game_init::
    call     entity_init
    call     render_init
    call     control_init
-;;   call     ai_control_init
+;; call     ai_control_init
    ret
 
 ;; DESTROYS: A
@@ -56,6 +59,8 @@ game_loop::
    
    
    ;; Screen synchronization, the more repts, the more the game slows down
+   ;; REDO!!! WE CANNOT WASTE CYCLES LIKE THIS!!! HALF THE FPS?
+   ;; UPDATE PHYSICS ONCE FOR EVERY 2 CYCLES
    ld a, #2
    call general_wait_cycles
    
