@@ -5,7 +5,7 @@
 .include "macros/cpct_undocumentedOpcodes.h.s"
 
 level_current: .dw level_first
-level_first:
+level_first::
     level_create_header #-1, #1
     level_add_spawn #entity_prototype_basic_enemy, #0, #60, #physics_ground_level
     level_add_spawn #entity_prototype_flying_enemy, #0, #30, #13
@@ -15,7 +15,7 @@ level_next_spawn_pointer: .dw #0x0000
 
 ;;INPUT
 ;;  IX:     level to charge
-;;DESTROYS: BC, IX
+;;DESTROYS: AF, BC, IX
 level_load::
     ld  (level_current), ix
     ld  bc, #level_spawn_start

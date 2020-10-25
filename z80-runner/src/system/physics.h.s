@@ -3,12 +3,13 @@
 .globl physics_main_player_dashing
 .globl physics_collision_detected
 .globl physics_update
-.globl physics_action_jump 
-.globl physics_action_shoot
+.globl physics_action_jump
 .globl physics_action_dodge_left
 .globl physics_action_dodge_right
 
 .globl physics_current_speed
+.globl physics_current_spawning_x
+.globl physics_load_level
 
 physics_ground_level              = 0x90
 physics_jump_initial_speed        = -10

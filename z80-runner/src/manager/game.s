@@ -16,7 +16,7 @@
 ;;DESTROYS: AF, BC, IX
 game_load_level:
    ld  a, level_header_speed(ix)
-   ld  (physics_current_speed), a
+   call physics_load_level
    call level_load
    ret
 
@@ -26,6 +26,8 @@ game_init::
    call     render_init
    call     control_init
 ;; call     ai_control_init
+   ld  ix, #level_first
+   call game_load_level
    ret
 
 ;; DESTROYS: A

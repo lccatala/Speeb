@@ -1,6 +1,7 @@
 .module level
 
 .globl level_load
+.globl level_first
 
 level_header_speed      = 0
 level_header_length     = level_header_speed+1

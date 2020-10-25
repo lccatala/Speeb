@@ -15,6 +15,8 @@
 
 render_vid_mem_start = 0xC000
 
+render_max_x = 0x50
+
 ;;INPUT:
 ;;  _X:                 X coordinate (c for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
 ;;  _Y:                 Y coordinate (b for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)

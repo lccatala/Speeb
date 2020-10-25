@@ -5,12 +5,14 @@
 .globl entity_for_all_enemies
 .globl entity_create_enemy
 .globl entity_update
+.globl entity_spawn
 
 .globl entity_prototype_bomb_enemy
 .globl entity_prototype_basic_enemy
 .globl entity_prototype_flying_enemy
 
 entity_max_enemies      = 10
+entity_max_width        = 8
 
 entity_is_dead          = 0
 entity_x_speed          = entity_is_dead+1

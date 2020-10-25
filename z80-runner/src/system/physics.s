@@ -7,11 +7,24 @@
 physics_collision_detected:: .db #physics_collision_no ;; flag for collision detection, should be changed to an array
 physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
 
+;;INPUT
+;;	A:		level speed
+physics_load_level::
+   	ld  (physics_current_speed), a
+	xor a
+	ld (physics_current_coord), a
+	ld (physics_current_section), a
+	;;TODO: BUCLE DE INSTANCIACIÓN DE ENTIDADES!!!!
+	;;TODO: CUANDO SE ACABA, PON UN END!!!!!!!!
+	ret
+
 
 physics_current_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
 
 physics_current_coord: .db #0x00
 physics_current_section: .db #0x00
+
+physics_current_spawning_x: .db #0x00
 
 ;; call the action specified on the entity, destroys whatever that action destroys
 ;; INPUT:
@@ -26,6 +39,7 @@ physics_act:
 	physics_act_not_empty:
 	ld	l,	entity_next_action_l(ix)
 	ld	h,	entity_next_action_h(ix)
+	ld	a, (physics_current_coord)
 	ld (physics_act_call+1), hl
 	physics_act_call: call #0xABAC
 	ret
@@ -44,11 +58,18 @@ physics_action_jump::
 	ld		entity_y_speed(ix), #physics_jump_initial_speed ;; jumps
 	ret
 
-;; Action: shoot!
-;; INPUT:
-;; DESTROYS: A
-physics_action_shoot::
-	
+;;INPUT
+;; H:		amount to move (negative)
+;;DESTROYS: A, HL
+physics_move_level:
+	ld	a, (physics_current_coord)
+	sub	h
+	ld	(physics_current_coord), a
+	ret nc
+
+		ld	hl, #physics_current_section
+		inc	(hl)
+
 	ret
 
 ;; Action: dodge left!
@@ -128,7 +149,7 @@ physics_entity_move_x:
 
 	ret nz
 	;; TODO: HACK, FIX!
-	;; When enemy reaches left border, move it to right border
+	;; When enemy reaches left border, move it to right border (channge for destroy)
 	ld	entity_x_coord(ix), #79
 	ret
 
@@ -253,16 +274,10 @@ physics_update::
 	ld hl, #physics_update_entity
 	call entity_for_all_enemies
 
-	;; move the level
-	ld	a, (physics_current_coord)
+	;;TODO: BUCLE DE GENERACIÓN DE ENTIDADES!!!
 	ld	hl, #physics_current_speed
-	sub	(hl)
-	jr	nc, physics_update_no_section_change
-
-		ld	hl, #physics_current_section
-		inc	(hl)
-
-	physics_update_no_section_change:
+	ld	h, (hl)
+	call physics_move_level
 
 	;; detect collisions (end is checked last so collision with end overwrites death)
 	
