@@ -2,6 +2,7 @@
 .include "cpctelera.h.s"
 .include "manager/entity.h.s"
 .include "manager/game.h.s"
+.include "system/physics.h.s"
 
 
 
@@ -169,36 +170,39 @@ ret
 
 ;; BREAKS: A
 ai_control_zigzag::
-    ld      entity_y_speed(ix), #0x01
+    ld entity_y_speed(ix), #0x01
+    
+    ;; If enemy has positive speed, check position with regards to right border
+    ld a, entity_x_speed(ix)
+    sub #0x03
+    jr z, ai_control_zigzag_check_position_right
 
-    ld      a, entity_y_coord(ix)
-    sub     #0x88
-    jr      c, ai_control_zigzag_check_position
-    call ai_control_suicide_killyourself
-    ;ld      entity_y_speed(ix), #0xFF
-    ret
-
-    ai_control_zigzag_check_position:
-        ld a, entity_x_speed(ix)
-        sub #0xFE
-        jr z, ai_control_zigzag_check_position_left
-
-        ld a, entity_x_speed(ix)
-        sub #0x03
-        jr z, ai_control_zigzag_check_position_right
-        ret
-
+    ;; Otherwise, we check it with left border
+    ;; Enemy turns around if it gets close to end of screen
     ai_control_zigzag_check_position_left:
         ld a, entity_x_coord(ix)
         sub #0x05
         ret nc
+
+        ;; Leave
+        ld a, entity_y_coord(ix)
+        sub #0x78
+        jr nc, ai_control_zigzag_leave
+
         ld  entity_x_speed(ix), #0x03
-        ret
+    ret
+    
     ai_control_zigzag_check_position_right:
         ld a, #0x35
         sub entity_x_coord(ix)
         ret nc
         ld  entity_x_speed(ix), #0xFE
-        ret
 
+    ;; Enemy disappears when approaching lower left corner
+    ai_control_zigzag_leave:
+        ld a, entity_x_coord(ix)
+        sub #0x04
+        ret nc
+        ld  entity_is_dead(ix), #1
+    ret
 ret
