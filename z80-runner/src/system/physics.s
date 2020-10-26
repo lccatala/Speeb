@@ -87,7 +87,7 @@ physics_entity_move_y:
 	ret
 
 	physics_update_on_the_ground:
-	;; if y >= 88 (on the ground or lower)
+	;; if y >= physics_ground_level (on the ground or lower)
 	ld		a, #physics_ground_level
 	sub		entity_height(ix)
 	ld 		entity_y_coord(ix), a		;; puts entity on the ground

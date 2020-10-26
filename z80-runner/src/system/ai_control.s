@@ -107,7 +107,7 @@ ai_control_suicide::
     ld      entity_x_speed(ix), a
     ld      a, #physics_ground_level
     sub     entity_height(ix)
-    cp      entity_y_coord(ix)
+    cp     entity_y_coord(ix)
     jr      z, ai_control_suicide_killyourself
     ret
 
@@ -115,11 +115,25 @@ ai_control_suicide_killyourself:
     ld      entity_is_dead(ix), #1   
     ret
 
-
 ai_control_drop_ice::
-    call    ai_control_suicide_killyourself
+    ld      hl, #ai_control_cross_screen
+    ld      entity_ai_next_action_h(ix), h
+    ld      entity_ai_next_action_l(ix), l
     call    entity_create_enemy
+;    ld      a, entity_x_coord(ix)
+;    entity_instantiate_prototype #entity_prototype_ice_enemy, a, #38
     entity_instantiate_prototype #entity_prototype_ice_enemy, #15, #38
     
 
+ret
+ai_control_cross_screen::
+    ld entity_x_speed(ix), #0xFE
+    ld entity_y_speed(ix), #0x00
+
+    ;; Kill enemy if it's at the border of the screen.
+    ;; TODO: generalize this to all entities
+    ld a, entity_x_coord(ix)
+    sub #0x04
+    ret nc
+    ld      entity_is_dead(ix), #1
 ret
