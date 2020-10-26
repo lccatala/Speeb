@@ -3,6 +3,7 @@
 .globl level_load
 .globl level_first
 .globl level_for_all_spawns_in
+.globl level_current
 
 level_header_speed      = 0
 level_header_length     = level_header_speed+1

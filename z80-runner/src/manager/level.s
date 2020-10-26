@@ -4,11 +4,11 @@
 .include "entity.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
 
-level_current: .dw level_first
+level_current:: .dw level_first
 level_first::
-    level_create_header #-1, #2
-    level_add_spawn #entity_prototype_basic_enemy, #0, #60, #physics_ground_level
+    level_create_header #-1, #0
     level_add_spawn #entity_prototype_flying_enemy, #0, #30, #13
+    level_add_spawn #entity_prototype_basic_enemy, #0, #60, #physics_ground_level
     level_end
 
 level_next_spawn_pointer: .dw #0x0000
@@ -33,8 +33,8 @@ level_load::
 ;;  IX:     FUNCTION TO CALL
 ;;DESTROYS: AF, DE, HL, IX
 level_for_all_spawns_in::
-	ld__d_ixl
-	ld__e_ixh
+	ld__d_ixh
+	ld__e_ixl
     ex  de, hl
 	ld (level_for_all_spawns_in_call), hl
     ex  de, hl ;; leave hl as it was
@@ -46,7 +46,7 @@ level_for_all_spawns_in::
 	cp	level_spawn_prototype_h(ix)
 	jr	nz, level_for_all_spawns_in_valid
 	cp	level_spawn_prototype_l(ix)
-    ret
+    ret z
 
     level_for_all_spawns_in_valid:
     ld a, b

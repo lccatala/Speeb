@@ -105,7 +105,7 @@ physics_move_level:
 		inc (hl)
 		;;increments the position in map
 		inc c
-		jp pe, physics_move_level_no_overflow
+		jp po, physics_move_level_no_overflow
 			inc b
 			;;detects the end of level
 			ld	a, (physics_current_length)
