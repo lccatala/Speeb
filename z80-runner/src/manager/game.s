@@ -3,55 +3,52 @@
 
 .include "manager/entity.h.s"
 .include "system/render.h.s"
+.include "manager/menu.h.s"
 .include "system/physics.h.s"
 .include "utility/keyboard.h.s"
+.include "utility/general.h.s"
 .include "system/control.h.s"
 .include "system/ai_control.h.s"
+.include "manager/level.h.s"
 
-.globl cpct_waitVSYNC_asm
-.globl cpct_getScreenPtr_asm
-
-;;INPUT:
-;; A: number of times to wait
-;;DESTROYS: AF, BC
-game_wait_cycles:
-   halt
-   halt
-   push af
-   call     cpct_waitVSYNC_asm
-   pop af
-   dec a
-   jr nz, game_wait_cycles
+;;INPUT
+;; IX:      Level to load
+;;DESTROYS: AF, BC, IX
+game_load_level:
+   call level_load
+   ld  ix, (level_current)
+   ld  b, level_header_speed(ix)
+   ld  a, level_header_length(ix)
+   call physics_load_level
    ret
-
-game_death_message: .asciz "You died! Press SPACE to restart";
-game_win_message:   .asciz "You won! Press SPACE to restart";
-
-game_level_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
-
-
 
 ;;DESTROYS: AF, BC, DE, HL, IX
 game_init::
    call     entity_init
    call     render_init
    call     control_init
-
+;; call     ai_control_init
+   ld  ix, #level_first
+   call game_load_level
    ret
 
 ;; DESTROYS: A
 game_check_end_conditions:
-   ;; If collision was not detected, game continues as usual
-	ld a, (physics_collision_detected)
-
    ;; Collision with level end
-   cp #0x10
-   call z, game_win
+	ld a, (physics_collision_detected)
+   cp #physics_collision_with_end
+   call z, menu_win_screen
 
    ;; Collision with enemy
-   cp #0x01
-   call z, game_death
+	ld a, (physics_collision_detected)
+   cp #physics_collision_with_enemy
+   call z, menu_death_screen
 
+	ld a, (physics_collision_detected)
+   cp #physics_collision_no
+   ret z
+
+   call game_restart
    ret
 
 ;;DESTROYS: AF, BC, DE, HL, IX, IY
@@ -66,32 +63,15 @@ game_loop::
    
    
    ;; Screen synchronization, the more repts, the more the game slows down
+   ;; REDO!!! WE CANNOT WASTE CYCLES LIKE THIS!!! HALF THE FPS?
+   ;; UPDATE PHYSICS ONCE FOR EVERY 2 CYCLES
    ld a, #2
-   call game_wait_cycles
+   call general_wait_cycles
    
    call game_check_end_conditions
    jr game_loop
 
-   ;; Game waits until you press space
-   game_death:
-      ;; Waits a bit so you see hwo you died!
-      ld a, #25
-      call game_wait_cycles
-      render_clean_and_draw_message game_death_message
-      call game_restart
-      ret
-
-   game_win:
-      render_clean_and_draw_message game_win_message
-      call game_restart
-      ret
-
 game_restart:
-   ;; Wait for player to press space
-   call  keyboard_update
-   call	keyboard_check_space_just_pressed
-   jr    nz,   game_restart
-
    ;; After you press space screen gets cleaned and game is restarted
    call  render_clean
    call  game_init

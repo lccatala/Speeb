@@ -55,6 +55,32 @@ render_entity_erase::
 	call	cpct_drawSpriteBlended_asm
 	ret
 
+;; Not use direcly, render_message makes it more readable
+;;INPUT:
+;;	A:	Y
+;;	B:	X
+;;	H:	BACKGROUND COLOR
+;;	L:	FONT COLOR
+;;	IY:	STRING
+;; DESTROYS: AF, BC, DE, HL, IY
+render_draw_text_at::
+    ld (render_draw_text_at_y), a
+	ld a, b
+    ld (render_draw_text_at_x), a
+
+	call cpct_setDrawCharM0_asm
+
+	ld		de, #render_vid_mem_start
+	render_draw_text_at_y = .+1
+	ld		b, #0xAA
+	render_draw_text_at_x = .+1
+	ld		c, #0xAA
+	call	cpct_getScreenPtr_asm
+
+	call cpct_drawStringM0_asm
+
+	ret
+
 ;;DESTROYS: AF, BC, DE, HL, IX
 render_update::
 
@@ -77,8 +103,6 @@ render_update::
 	
 	call	render_entity_erase
 	call	render_entity_draw
-
-
 
 	ret
 	

@@ -4,6 +4,7 @@
 .globl render_update
 .globl render_clean
 .globl render_entity_erase
+.globl render_draw_text_at
 
 .globl cpct_drawSolidBox_asm
 .globl cpct_getScreenPtr_asm
@@ -25,6 +26,8 @@
 
 render_vid_mem_start = 0xC000
 
+render_max_x = 0x50
+
 ;;INPUT:
 ;;  _X:                 X coordinate (c for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
 ;;  _Y:                 Y coordinate (b for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
@@ -32,22 +35,13 @@ render_vid_mem_start = 0xC000
 ;;  _FONT_COLOR:        Font color (e for setDrawCharM1) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
 ;;  _STRING:            String to write (iy for drawStringM1) can be **, (**)
 ;;DESTROYS: AF, BC, DE, HL, IY
-.macro  render_draw_text_at _X, _Y, _BACKGROUND_COLOR, _FONT_COLOR, _STRING
-   ;; Waits a bit so you see hwo you died!
-   ld    h, _BACKGROUND_COLOR ;; background dark blue
-   ld    l, _FONT_COLOR ;; letters yellow
-   call cpct_setDrawCharM0_asm
-
-   render_get_screen_pointer _X, _Y
-   ld   iy, _STRING
-   call cpct_drawStringM0_asm
-.endm
-
-.macro render_clean_and_draw_message _MESSAGE
-	call  render_clean
-
-    ;; Final message is written
-    render_draw_text_at #0x08, #0x85, #0, #1, #_MESSAGE
+.macro  render_draw_message _X, _Y, _BACKGROUND_COLOR, _FONT_COLOR, _STRING
+    ld   h, _BACKGROUND_COLOR ;; background dark blue
+    ld   l, _FONT_COLOR ;; letters yellow
+    ld   a, _Y
+    ld	 b, _X
+    ld	iy, _STRING
+    call render_draw_text_at
 .endm
 
 ;;INPUT:
@@ -62,6 +56,7 @@ render_vid_mem_start = 0xC000
 	ld		c, _X
 	call	cpct_getScreenPtr_asm
 .endm
+
 
 ;;INPUT:
 ;;	_COLOR:     color (a for drawSolidBox) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)

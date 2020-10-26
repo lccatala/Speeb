@@ -2,7 +2,9 @@
 .include "system/ai_control.h.s"
 .include "system/render.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
-.include "../system/physics.h.s"
+.include "utility/general.h.s"
+.include "system/physics.h.s"
+.include "manager/level.h.s"
 
 ;;NOTE: reconsider whether this being public is a good idea
 entity_main_player:: entity_define
@@ -24,20 +26,45 @@ entity_init::
     entity_instantiate_prototype #entity_prototype_main_player, #12, #physics_ground_level
 
     ld de, #entity_end
-    entity_instantiate_prototype #entity_prototype_end, #75, #physics_ground_level
+    entity_instantiate_prototype #entity_prototype_end, #78, #physics_ground_level
 
     call entity_clean_enemy_array
 
-;    call entity_create_enemy
-;    entity_instantiate_prototype #entity_prototype_plant_enemy, #70, #physics_ground_level
-    
- ;   call entity_create_enemy
- ;   entity_instantiate_prototype #entity_prototype_plant_enemy, #60, #physics_ground_level
+    ret
+
+;;INPUT
+;;  IX:     SPAWN POINTER
+;;DESTROYS: AF, BC, DE, HL, IX
+entity_spawn::
 
     call entity_create_enemy
-    entity_instantiate_prototype #entity_prototype_cloud_enemy, #40, #30
 
+    ;;if no space left, the entity is not created
+    xor a
+    cp d
+    ret z
+    cp e
+    ret z
+
+    ld  (entity_spawn_pointer), de
+
+    ld  h, level_spawn_prototype_h(ix)
+    ld  l, level_spawn_prototype_l(ix)
+    ld  bc, #entity_size
+    ldir
+
+    ld a, level_spawn_y(ix)
+
+    entity_spawn_pointer = .+2
+    ld ix, #0xABAC
     
+    sub entity_height(ix)
+    ld  entity_y_coord(ix), a
+    
+    ld a, (physics_current_spawning_x)
+    sub entity_width(ix)
+    ld  entity_x_coord(ix), a
+
     ret
 
 ;; Applies a function to all enemies

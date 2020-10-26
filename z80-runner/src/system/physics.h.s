@@ -3,10 +3,13 @@
 .globl physics_main_player_dashing
 .globl physics_collision_detected
 .globl physics_update
-.globl physics_action_jump 
-.globl physics_action_shoot
+.globl physics_action_jump
 .globl physics_action_dodge_left
 .globl physics_action_dodge_right
+
+.globl physics_current_speed
+.globl physics_current_spawning_x
+.globl physics_load_level
 
 physics_ground_level              = 0xA0
 physics_jump_initial_speed        = -10
@@ -15,6 +18,10 @@ physics_dodge_initial_speed_right = 3
 physics_dodge_initial_x_coord     = 12
 physics_dodge_limit_x_coord_left  = 4
 physics_dodge_limit_x_coord_right = 20
+
+physics_collision_no                = 0x00
+physics_collision_with_enemy        = 0x01
+physics_collision_with_end          = 0x10
 
 ;;INPUT:
 ;;  _COORD_OFFSET:  offset of entity coordinate, can be **

@@ -19,6 +19,6 @@ _main::
 	ld		hl, #_PALETTE
 	ld		de, #16
 	call	cpct_setPalette_asm
-   call     menu_init
+   call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
    call     game_init
    jp       game_loop

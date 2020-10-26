@@ -56,15 +56,15 @@ ai_control_update_aim_coords::
     ld       entity_ai_aim_y(ix), a 
 ret
 
-ai_control_game_level_speed_counter::
+ai_control_physics_current_speed_counter::
     ld      a, #0
-    ld      hl, #game_level_speed
+    ld      hl, #physics_current_speed
     ld      b, (hl)
     sub     b
 ret
 ai_control_stand_by::
     ld      entity_y_speed(ix), #0
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     ld      entity_x_speed(ix), a
 ret
 
@@ -76,14 +76,14 @@ ai_control_move_to_x::
     jr      nc, ai_control_move_to_x_greater_or_equal
 
 ai_control_move_to_x_lesser:
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     dec     a
     ld      entity_x_speed(ix), a
     ret
 
 ai_control_move_to_x_greater_or_equal:
     jr      z, ai_control_move_to_x_arrived
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     inc     a
     ld      entity_x_speed(ix), a
     ret
@@ -103,7 +103,7 @@ ai_control_move_to::
 ret
 
 ai_control_suicide::
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     ld      entity_x_speed(ix), a
     ld      a, #physics_ground_level
     sub     entity_height(ix)
@@ -119,7 +119,7 @@ ai_control_drop_ice::
     ld      hl, #ai_control_cross_screen
     ld      entity_ai_next_action_h(ix), h
     ld      entity_ai_next_action_l(ix), l
-    
+
     ld      hl, #entity_prototype_ice_enemy
     call entity_ice_spawn
     
