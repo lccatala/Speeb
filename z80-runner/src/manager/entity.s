@@ -13,13 +13,13 @@ entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
 ;; Parameters for entity_create_prototype: _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION, _X_SPEED
-entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F, #0x0000, #0x00
-entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #0x0000, #0x00
-entity_prototype_flying_enemy: entity_create_prototype #0, #0x02, #0x08, #0xFF, #ai_control_move_to_x, #0x00
-entity_prototype_end: entity_create_prototype #0, #0x02, #0x50, #0x0F, #0x0000, #0x01
-entity_prototype_bomb_enemy:: entity_create_prototype #0, #0x01, #0x05, #0xFF, #0x0000, #0x00
-entity_prototype_running_enemy: entity_create_prototype #0, #0x08, #0x0F, #0xFF, #ai_control_cross_screen, #0xFF
-entity_prototype_boss_enemy: entity_create_prototype #0x01, #0x05, #0x0F, #0xFF, #ai_control_zigzag, #0xFE
+entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F, #0x0000
+entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #0x0000
+entity_prototype_flying_enemy: entity_create_prototype #0, #0x02, #0x08, #0xFF, #ai_control_move_to_x
+entity_prototype_end: entity_create_prototype_with_x_speed #0, #0x02, #0x50, #0x0F, #0x0000, #0x01
+entity_prototype_bomb_enemy:: entity_create_prototype #0, #0x01, #0x05, #0xFF, #0x0000
+entity_prototype_running_enemy: entity_create_prototype_with_x_speed #0, #0x08, #0x0F, #0xFF, #ai_control_cross_screen, #0xFF
+entity_prototype_boss_enemy: entity_create_prototype_with_x_speed #0x01, #0x05, #0x0F, #0xFF, #ai_control_zigzag, #0xFE
 
 
 entity_init::

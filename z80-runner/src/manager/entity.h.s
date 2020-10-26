@@ -44,7 +44,27 @@ entity_size             = entity_next_action+2
 
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
 ;; TODO: move _X_SPEED parameter to first position
-.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION, _X_SPEED
+.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION
+    general_blank_bytes entity_is_dead-0
+    .db #0x00           ;; entity_is_dead
+    general_blank_bytes entity_x_speed-(entity_is_dead+1)
+    .db #0x00           ;; entity_x_speed
+    general_blank_bytes entity_y_speed-(entity_x_speed+1)
+    .db _Y_SPEED        ;; entity_y_speed
+    general_blank_bytes entity_width-(entity_y_speed+1)
+    .db _WIDTH          ;; entity_width
+    general_blank_bytes entity_height-(entity_width+1)
+    .db _HEIGHT         ;; entity_height
+    general_blank_bytes entity_color-(entity_height+1)
+    .db _COLOR          ;; entity_color
+    general_blank_bytes entity_ai_next_action-(entity_color+1)
+    .dw _AI_FUNCTION          ;; entity_ai_function
+    general_blank_bytes entity_next_action-(entity_ai_next_action+2)
+    .dw #0x0000 ;; entity_next_action
+    general_blank_bytes entity_size-(entity_next_action+2)
+.endm
+
+.macro entity_create_prototype_with_x_speed _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION, _X_SPEED
     general_blank_bytes entity_is_dead-0
     .db #0x00           ;; entity_is_dead
     general_blank_bytes entity_x_speed-(entity_is_dead+1)
@@ -63,7 +83,6 @@ entity_size             = entity_next_action+2
     .dw #0x0000 ;; entity_next_action
     general_blank_bytes entity_size-(entity_next_action+2)
 .endm
-
 
 ;;INPUT:
 ;;  _ORIGIN:    pointer to the prototype you want to copy, can be **
