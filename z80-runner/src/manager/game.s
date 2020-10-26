@@ -27,7 +27,7 @@ game_init::
    call     entity_init
    call     render_init
    call     control_init
-;; call     ai_control_init
+
    ld  ix, #level_first
    call game_load_level
    ret
@@ -48,24 +48,32 @@ game_check_end_conditions:
    cp #physics_collision_no
    ret z
 
+   ld    a, #1
+   ld    (game_loop_physics), a
    call game_restart
    ret
+game_loop_physics:
+   .db      #0
 
 ;;DESTROYS: AF, BC, DE, HL, IX, IY
 game_loop::
-   
-   call     keyboard_update
+   ld       a, (game_loop_physics)
+   cp       #0
+   call     z, keyboard_update
    call     ai_control_update
    call     entity_update
    call     control_update
-   call     physics_update
+   ld       a, (game_loop_physics)
+   xor      #1
+   ld       (game_loop_physics), a
+   call     z, physics_update
    call     render_update
    
    
    ;; Screen synchronization, the more repts, the more the game slows down
    ;; REDO!!! WE CANNOT WASTE CYCLES LIKE THIS!!! HALF THE FPS?
    ;; UPDATE PHYSICS ONCE FOR EVERY 2 CYCLES
-   ld a, #2
+   ld a, #1
    call general_wait_cycles
    
    call game_check_end_conditions

@@ -16,6 +16,10 @@ menu_win_message::   .asciz "You won! Press SPACE to restart";
 
 menu_title_message_2: .asciz "Press SPACE to PLAY";
 
+menu_learn_message_0: .asciz "Press SPACE to jump";
+menu_learn_message_1: .asciz "Press A to dash left";
+menu_learn_message_2: .asciz "Press D to dash right";
+menu_learn_message_3: .asciz "Watch out for the cloud!";
 ;; GIVING THEM A NAME WITHOUT REUSING THEM IS NOT ENOUGH
 
 
@@ -29,6 +33,12 @@ menu_title_screen::
 	ld		de, #0xFFFF
    call cpct_zx7b_decrunch_s_asm
    render_draw_message #menu_title_message_2_x, #menu_title_message_2_y, #0, #menu_title_message_2_text_color, #menu_title_message_2
+   call menu_wait_space
+   call  render_clean
+   render_draw_message #0, #0x10, #0, #menu_title_message_2_text_color, #menu_learn_message_0
+   render_draw_message #0, #0x30, #0, #menu_title_message_2_text_color, #menu_learn_message_1
+   render_draw_message #0, #0x50, #0, #menu_title_message_2_text_color, #menu_learn_message_2
+   render_draw_message #0, #0x70, #0, #menu_title_message_2_text_color, #menu_learn_message_3
    call menu_wait_space
    call render_clean
    ret
