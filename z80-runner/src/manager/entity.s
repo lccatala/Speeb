@@ -15,7 +15,7 @@ entity_next_enemy: .dw #entity_enemy_array
 
 entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0
 entity_prototype_plant_enemy: entity_create_prototype #0, #4, #32, #0x0000, _plant
-entity_prototype_end: entity_create_prototype #0, #1, #64, #ai_control_stand_by, _goal
+entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal
 entity_prototype_cloud_enemy: entity_create_prototype #0, #16, #16, #ai_control_move_to_x, _cloud
 entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice
 
@@ -149,7 +149,7 @@ entity_ice_spawn::
     cp e
     ret z
 
-    ld  (entity_spawn_pointer), de
+    ld  (entity_ice_spawn_pointer), de
     ld  bc, #entity_size
     ldir
 
@@ -162,7 +162,7 @@ entity_ice_spawn::
     add entity_height(ix)
     ld c, a
 
-    entity_spawn_pointer = .+2
+    entity_ice_spawn_pointer = .+2
     ld ix, #0xABAC
     
     ld  entity_y_coord(ix), c
