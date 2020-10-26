@@ -2,8 +2,8 @@
 ;; Compresor used:   zx7b
 ;; Files compressed: [ 'src/img/screens/gameover.bin' ]
 ;; Uncompressed:     16384 bytes
-;; Compressed:       1385 bytes
-;; Space saved:      14999 bytes
+;; Compressed:       1213 bytes
+;; Space saved:      15171 bytes
 ;;
 
 ;; Declaration of the compressed array and
@@ -12,7 +12,7 @@
 .globl _screengameover_z_end
 
 ;; Compressed and uncompressed sizes
-_screengameover_z_size_z == 1385
+_screengameover_z_size_z == 1213
 _screengameover_z_size   == 16384
 
 
