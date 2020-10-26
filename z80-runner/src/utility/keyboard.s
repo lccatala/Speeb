@@ -12,10 +12,10 @@ keyboard_d_state: .db #keyboard_not_pressed_state
 keyboard_update::
 
     ;; is key pressed?
-    keyboard_update_state #keyboard_space_state, #keyboard_space
-    keyboard_update_state #keyboard_enter_state, #keyboard_enter
-    keyboard_update_state #keyboard_a_state, #keyboard_a
-    keyboard_update_state #keyboard_d_state, #keyboard_d
+    keyboard_update_state #keyboard_space_state, #keyboard_space, #keyboard_shoot1
+    
+    keyboard_update_state #keyboard_a_state, #keyboard_a, #keyboard_left
+    keyboard_update_state #keyboard_d_state, #keyboard_d, #keyboard_right
     ret
 
 ;; This function may be called more than once (to assign different keys to the same state)
