@@ -15,7 +15,6 @@ physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
 ;;DESTROYS:	AF, BC, IX
 physics_load_level::
 	;;sets the level length
-	inc a
 	ld (physics_current_length), a
 
 	;; sets the level speed
@@ -104,8 +103,11 @@ physics_move_level:
 		ld	hl, #physics_current_spawning_x
 		inc (hl)
 		;;increments the position in map
+		ld	a, c
 		inc c
-		jp po, physics_move_level_no_overflow
+		cp	c
+		;; c <= a, section ends
+		jp c, physics_move_level_no_overflow
 			inc b
 			;;detects the end of level
 			ld	a, (physics_current_length)
