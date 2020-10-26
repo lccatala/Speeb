@@ -106,6 +106,7 @@ ai_control_suicide::
     call    ai_control_game_level_speed_counter
     ld      entity_x_speed(ix), a
     ld      a, #physics_ground_level
+    sub     entity_height(ix)
     cp      entity_y_coord(ix)
     jr      z, ai_control_suicide_killyourself
     ret
