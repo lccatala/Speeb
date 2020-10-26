@@ -13,9 +13,9 @@ entity_next_enemy: .dw #entity_enemy_array
 
 entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0
 entity_prototype_plant_enemy: entity_create_prototype #0, #4, #32, #0x0000, _plant
-entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal
+entity_prototype_end: entity_create_prototype #0, #1, #64, #ai_control_stand_by, _goal
 entity_prototype_cloud_enemy: entity_create_prototype #0, #16, #16, #ai_control_move_to_x, _cloud
-;;entity_prototype_ice_enemy:: entity_create_prototype #0, #0x01, #0x05, #0x0000, _ice
+entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice
 
 
 
@@ -28,8 +28,8 @@ entity_init::
 
     call entity_clean_enemy_array
 
-    call entity_create_enemy
-    entity_instantiate_prototype #entity_prototype_plant_enemy, #70, #physics_ground_level
+;    call entity_create_enemy
+;    entity_instantiate_prototype #entity_prototype_plant_enemy, #70, #physics_ground_level
     
  ;   call entity_create_enemy
  ;   entity_instantiate_prototype #entity_prototype_plant_enemy, #60, #physics_ground_level

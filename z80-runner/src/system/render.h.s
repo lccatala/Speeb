@@ -22,6 +22,7 @@
 .globl _bunny_1
 .globl _bunny_2
 .globl _goal
+.globl _ice
 
 
 render_vid_mem_start = 0xC000
