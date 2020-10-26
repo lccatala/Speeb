@@ -2,8 +2,8 @@
 ;; Compresor used:   zx7b
 ;; Files compressed: [ 'src/img/screens/menu.bin' ]
 ;; Uncompressed:     16384 bytes
-;; Compressed:       1388 bytes
-;; Space saved:      14996 bytes
+;; Compressed:       1207 bytes
+;; Space saved:      15177 bytes
 ;;
 
 ;; Declaration of the compressed array and
@@ -12,7 +12,7 @@
 .globl _screenmenu_z_end
 
 ;; Compressed and uncompressed sizes
-_screenmenu_z_size_z == 1388
+_screenmenu_z_size_z == 1207
 _screenmenu_z_size   == 16384
 
 
