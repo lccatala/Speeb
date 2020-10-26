@@ -119,10 +119,9 @@ ai_control_drop_ice::
     ld      hl, #ai_control_cross_screen
     ld      entity_ai_next_action_h(ix), h
     ld      entity_ai_next_action_l(ix), l
-    call    entity_create_enemy
-;    ld      a, entity_x_coord(ix)
-;    entity_instantiate_prototype #entity_prototype_ice_enemy, a, #38
-    entity_instantiate_prototype #entity_prototype_ice_enemy, #15, #38
+    
+    ld      hl, #entity_prototype_ice_enemy
+    call entity_ice_spawn
     
 
 ret

@@ -56,6 +56,8 @@ $(eval $(call IMG2SP, SET_FOLDER      , src/img/screens               ))
 $(eval $(call IMG2SP, SET_IMG_FORMAT  , screen            ))
 $(eval $(call IMG2SP, SET_OUTPUT      , bin                  ))  
 $(eval $(call IMG2SP, CONVERT         , img/background.png , 0, 0, background))
+$(eval $(call IMG2SP, CONVERT         , img/menu.png , 0, 0, menu))
+$(eval $(call IMG2SP, CONVERT         , img/gameover.png , 0, 0, gameover))
 ##
 ## OLD MACROS (For compatibility)
 ##

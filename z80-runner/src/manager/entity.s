@@ -111,6 +111,37 @@ entity_create_enemy::
     ld (entity_next_enemy), hl
     ret
 
+entity_ice_spawn::
+    push hl
+    call entity_create_enemy
+    pop hl
+
+    xor a
+    cp d
+    ret z
+    cp e
+    ret z
+
+    ld  (entity_spawn_pointer), de
+    ld  bc, #entity_size
+    ldir
+
+    ;; ice x coord in b
+    ld a, entity_x_coord(ix)
+    add #5
+    ld b, a
+    ;; ice y coord in c
+    ld a, entity_y_coord(ix)
+    add entity_height(ix)
+    ld c, a
+
+    entity_spawn_pointer = .+2
+    ld ix, #0xABAC
+    
+    ld  entity_y_coord(ix), c
+    ld  entity_x_coord(ix), b
+
+    ret
 ;;BREAKS: AF, BC, DE, HL, IX
 entity_update::
     ld hl, #entity_destroy_enemy_if_dead

@@ -40,6 +40,10 @@
 
 $(eval $(call ADD2PACK,screenbackground_z,src/img/screens/background.bin))
 $(eval $(call PACKZX7B,screenbackground_z,src/img/screens/))
+$(eval $(call ADD2PACK,screenmenu_z,src/img/screens/menu.bin))
+$(eval $(call PACKZX7B,screenmenu_z,src/img/screens/))
+$(eval $(call ADD2PACK,screengameover_z,src/img/screens/gameover.bin))
+$(eval $(call PACKZX7B,screengameover_z,src/img/screens/))
 
 
 

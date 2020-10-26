@@ -7,10 +7,8 @@
 
 .globl cpct_drawSolidBox_asm
 .globl cpct_getScreenPtr_asm
-.globl cpct_setVideoMode_asm
-.globl cpct_setPalette_asm
-.globl cpct_setDrawCharM1_asm
-.globl cpct_drawStringM1_asm
+.globl cpct_setDrawCharM0_asm
+.globl cpct_drawStringM0_asm
 .globl cpct_drawSprite_asm
 .globl cpct_drawSpriteBlended_asm
 .globl cpct_zx7b_decrunch_s_asm
@@ -35,14 +33,14 @@ render_vid_mem_start = 0xC000
 ;;  _STRING:            String to write (iy for drawStringM1) can be **, (**)
 ;;DESTROYS: AF, BC, DE, HL, IY
 .macro  render_draw_text_at _X, _Y, _BACKGROUND_COLOR, _FONT_COLOR, _STRING
-   ld    d, _BACKGROUND_COLOR ;; background dark blue
-   ld    e, _FONT_COLOR ;; letters yellow
-   call cpct_setDrawCharM1_asm
+   ;; Waits a bit so you see hwo you died!
+   ld    h, _BACKGROUND_COLOR ;; background dark blue
+   ld    l, _FONT_COLOR ;; letters yellow
+   call cpct_setDrawCharM0_asm
 
    render_get_screen_pointer _X, _Y
-
    ld   iy, _STRING
-   call cpct_drawStringM1_asm
+   call cpct_drawStringM0_asm
 .endm
 
 .macro render_clean_and_draw_message _MESSAGE

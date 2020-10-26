@@ -6,6 +6,7 @@
 .globl entity_create_enemy
 .globl entity_update
 .globl entity_prototype_ice_enemy
+.globl entity_ice_spawn
 
 entity_max_enemies      = 10
 

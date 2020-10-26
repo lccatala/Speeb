@@ -11,12 +11,7 @@ render_clean:
 
 ;;DESTROY: AF, BC, DE, HL
 render_init::
-	ld		c, #0 
-	call	cpct_setVideoMode_asm
-	cpctm_setBorder_asm	0x14
-	ld		hl, #_PALETTE
-	ld		de, #16
-	call	cpct_setPalette_asm
+	
 
 	;(2B DE) dest_end	Ending (latest) byte of the destination (decompressed) array
 	;(2B HL) source_end	Ending (latest) byte of the source (compressed) array
