@@ -31,8 +31,8 @@
 
 render_type_xor_high		= #0x00
 render_type_xor_low			= #0x01
-render_type_self_erase_high = #0x02
-render_type_self_erase_low 	= #0x03
+render_type_sprite_high 	= #0x02
+render_type_sprite_low 		= #0x03
 
 render_vid_mem_start = 0xC000
 

@@ -38,9 +38,27 @@ render_entity_draw_xor::
 	ex		de, hl
 	ld		l, entity_sprite_l(ix)
 	ld		h, entity_sprite_h(ix)
-	ld		b, entity_width(ix)
-	ld		c, entity_height(ix)
+	ld		b, entity_sprite_width(ix)
+	ld		c, entity_sprite_height(ix)
 	call	cpct_drawSpriteBlended_asm
+	ret
+
+render_entity_draw_sprite_low::
+	call_render_for_type render_entity_draw_sprite, #render_type_sprite_low
+
+render_entity_draw_sprite_high::
+	call_render_for_type render_entity_draw_sprite, #render_type_sprite_high
+
+render_entity_draw_sprite::
+	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
+	ld 		entity_last_screen_l(ix), l
+	ld		entity_last_screen_h(ix), h
+	ex		de, hl
+	ld		l, entity_sprite_l(ix)
+	ld		h, entity_sprite_h(ix)
+	ld		c, entity_sprite_width(ix)
+	ld		b, entity_sprite_height(ix)
+	call	cpct_drawSprite_asm
 	ret
 
 render_entity_erase_xor_low::
@@ -55,16 +73,32 @@ render_entity_erase_xor_high::
 render_entity_erase_xor::
 	;ld 		e, entity_last_screen_l(ix)
 	;ld 		d, entity_last_screen_h(ix)
-	;render_draw_solid_box #0x00, entity_width(ix), entity_height(ix)
+	;render_draw_solid_box #0x00, entity_sprite_width(ix), entity_sprite_height(ix)
 ;	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
 	ld 		e, entity_last_screen_l(ix)
 	ld 		d, entity_last_screen_h(ix)
 ;;	ex		de, hl
 	ld		l, entity_sprite_l(ix)
 	ld		h, entity_sprite_h(ix)
-	ld		b, entity_width(ix)
-	ld		c, entity_height(ix)
+	ld		b, entity_sprite_width(ix)
+	ld		c, entity_sprite_height(ix)
 	call	cpct_drawSpriteBlended_asm
+	ret
+
+
+render_entity_erase_sprite_low::
+	call_render_for_type render_entity_erase_sprite, #render_type_sprite_low
+
+render_entity_erase_sprite_high::
+	call_render_for_type render_entity_erase_sprite, #render_type_sprite_high
+
+;;Erase the last entity.
+;;INPUT:   IX (entity)
+;;DESTROY: AF, BC, DE, HL
+render_entity_erase_sprite::
+	ld 		e, entity_last_screen_l(ix)
+	ld 		d, entity_last_screen_h(ix)
+	render_draw_solid_box #0x00, entity_sprite_width(ix), entity_sprite_height(ix)
 	ret
 
 ;; Not use direcly, render_message makes it more readable
@@ -100,16 +134,27 @@ render_update::
 
     call     cpct_waitVSYNC_asm
 	
+	;ld hl, #render_entity_erase_sprite_high
+	;call entity_for_all_enemies
+	;ld hl, #render_entity_draw_sprite_high 
+	;call entity_for_all_alive_enemies
+
+
 	ld hl, #render_entity_erase_xor_high
 	call entity_for_all_enemies
 	ld hl, #render_entity_draw_xor_high 
 	call entity_for_all_alive_enemies
 
 
-	ld hl, #render_entity_erase_xor_low
-	call entity_for_all_enemies
-	ld hl, #render_entity_draw_xor_low 
+	;ld hl, #render_entity_erase_sprite_low
+	;call entity_for_all_enemies
+	ld hl, #render_entity_draw_sprite_low 
 	call entity_for_all_alive_enemies
+	
+	;ld hl, #render_entity_erase_xor_low
+	;call entity_for_all_enemies
+	;ld hl, #render_entity_draw_xor_low 
+	;call entity_for_all_alive_enemies
 
 
 

@@ -37,7 +37,9 @@ entity_ai_next_action_h = entity_ai_next_action+1
 entity_next_action      = entity_ai_next_action+2  ;; control system! 2 bytes
 entity_next_action_l    = entity_next_action
 entity_next_action_h    = entity_next_action+1
-entity_size             = entity_next_action+2
+entity_sprite_width     = entity_next_action+2
+entity_sprite_height    = entity_sprite_width+1
+entity_size             = entity_sprite_height+1
 
 .macro entity_define
     .rept #entity_size
@@ -53,7 +55,7 @@ entity_size             = entity_next_action+2
 
 
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
-.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE, _RENDER_TYPE
+.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE, _RENDER_TYPE, _SPRITE_WIDTH, _SPRITE_HEIGHT
     general_blank_bytes entity_render_type-0
     .db _RENDER_TYPE    ;; entity_render_type
     general_blank_bytes entity_is_dead-(entity_render_type+1)
@@ -72,7 +74,11 @@ entity_size             = entity_next_action+2
     .dw _AI_FUNCTION          ;; entity_ai_function
     general_blank_bytes entity_next_action-(entity_ai_next_action+2)
     .dw #0x0000 ;; entity_next_action
-    general_blank_bytes entity_size-(entity_next_action+2)
+    general_blank_bytes entity_sprite_width-(entity_next_action+2)
+    .db _SPRITE_WIDTH
+    general_blank_bytes entity_sprite_height-(entity_sprite_width+1)
+    .db _SPRITE_HEIGHT
+    general_blank_bytes entity_size-(entity_sprite_height+1)
 .endm
 
 
