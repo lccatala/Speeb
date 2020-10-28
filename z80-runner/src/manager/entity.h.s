@@ -14,7 +14,8 @@
 entity_max_enemies      = 10
 entity_max_width        = 8
 
-entity_is_dead          = 0
+entity_render_type      = 0
+entity_is_dead          = entity_render_type+1
 entity_x_speed          = entity_is_dead+1
 entity_y_speed          = entity_x_speed+1
 entity_x_coord          = entity_y_speed+1
@@ -51,8 +52,10 @@ entity_size             = entity_next_action+2
 
 
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
-.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE
-    general_blank_bytes entity_is_dead-0
+.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE, _RENDER_TYPE
+    general_blank_bytes entity_render_type-0
+    .db _RENDER_TYPE    ;; entity_render_type
+    general_blank_bytes entity_is_dead-(entity_render_type+1)
     .db #0x00           ;; entity_is_dead
     general_blank_bytes entity_x_speed-(entity_is_dead+1)
     .db #0x00           ;; entity_x_speed

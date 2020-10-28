@@ -23,6 +23,10 @@
 .globl _goal
 .globl _ice
 
+render_type_high_xor		= #0x01
+render_type_low_xor			= #0x02
+render_type_high_self_erase = #0x03
+render_type_low_self_erase 	= #0x04
 
 render_vid_mem_start = 0xC000
 

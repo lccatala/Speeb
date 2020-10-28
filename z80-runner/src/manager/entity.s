@@ -13,11 +13,11 @@ entity_end:: entity_define
 entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
-entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0
-entity_prototype_plant_enemy: entity_create_prototype #0, #2, #16, #0x0000, _plant
-entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal
-entity_prototype_cloud_enemy: entity_create_prototype #0, #16, #16, #ai_control_move_to_x, _cloud
-entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice
+entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0, #render_type_high_xor
+entity_prototype_plant_enemy: entity_create_prototype #0, #2, #16, #0x0000, _plant, #render_type_high_xor
+entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal, #render_type_high_xor
+entity_prototype_cloud_enemy: entity_create_prototype #0, #16, #16, #ai_control_move_to_x, _cloud, #render_type_high_xor
+entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice, #render_type_high_xor
 
 
 
@@ -92,8 +92,8 @@ entity_for_all_enemies::
         jr entity_for_all_enemies_loop
 
 entity_clean_enemy_array:
-    ld hl, #entity_next_enemy
-    ld (hl), #entity_enemy_array
+    ld hl, #entity_enemy_array
+    ld (entity_next_enemy), hl
     ret
 
 ;;INPUT:
