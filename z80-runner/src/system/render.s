@@ -22,17 +22,54 @@ render_init::
 
 	ret
 
-render_entity_draw_xor_low::
-	call_render_for_type render_entity_draw_xor, #render_type_xor_low
+render_entity_redraw_xor_low::
+	call_render_for_type render_entity_redraw_xor, #render_type_xor_low
 
-render_entity_draw_xor_high::
-	call_render_for_type render_entity_draw_xor, #render_type_xor_high
+render_entity_redraw_xor_high::
+	call_render_for_type render_entity_redraw_xor, #render_type_xor_high
 
 ;;Render the entity.
 ;;INPUT:   IX (entity) 
 ;;DESTROY: AF, BC, DE, HL 
-render_entity_draw_xor::
+render_entity_redraw_xor::
+    ;; doesn't draw non moved entities
 	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
+	ld  a, l
+	cp  entity_last_screen_l(ix)
+	jr  nz, render_entity_redraw_xor_moved
+	ld  a, h
+	cp entity_last_screen_h(ix)
+	ret z
+
+	render_entity_redraw_xor_moved:
+	xor a
+	cp  entity_last_screen_l(ix)
+	jr  nz, render_entity_redraw_xor_not_new
+	cp entity_last_screen_h(ix)
+	jr  z, render_entity_redraw_xor_no_erase
+	;;NO REDIBUJAR LA MISMA NI BORRAR NUEVAS
+
+	render_entity_redraw_xor_not_new:
+	push	hl
+	;;erase
+	ld 		e, entity_last_screen_l(ix)
+	ld 		d, entity_last_screen_h(ix)
+
+	ld		l, entity_sprite_l(ix)
+	ld		h, entity_sprite_h(ix)
+
+	ld		b, entity_sprite_width(ix)
+	ld		c, entity_sprite_height(ix)
+	call	cpct_drawSpriteBlended_asm
+	pop		hl
+    
+	render_entity_redraw_xor_no_erase:
+
+	xor a
+	cp  entity_is_dead(ix)
+	ret nz ;;doesn't draw dead entities
+
+	;; draw
 	ld 		entity_last_screen_l(ix), l
 	ld		entity_last_screen_h(ix), h
 	ex		de, hl
@@ -140,27 +177,25 @@ render_update::
 	;call entity_for_all_alive_enemies
 
 
-	ld hl, #render_entity_erase_xor_high
+	ld hl, #render_entity_redraw_xor_high
 	call entity_for_all_enemies
-	ld hl, #render_entity_draw_xor_high 
-	call entity_for_all_alive_enemies
 
 
 	;ld hl, #render_entity_erase_sprite_low
 	;call entity_for_all_enemies
-	ld hl, #render_entity_draw_sprite_low 
-	call entity_for_all_alive_enemies
+	;ld hl, #render_entity_draw_sprite_low 
+	;call entity_for_all_alive_enemies
 	
 	;ld hl, #render_entity_erase_xor_low
 	;call entity_for_all_enemies
-	;ld hl, #render_entity_draw_xor_low 
-	;call entity_for_all_alive_enemies
+	ld hl, #render_entity_redraw_xor_low 
+	call entity_for_all_enemies
 
 
 
 	ld      ix, #entity_end
-	call	render_entity_erase_xor
-	call	render_entity_draw_xor
+	;call	render_entity_erase_xor
+	call	render_entity_redraw_xor
 
 
 	render_draw_solid_box_at #0x00, #0x00, #0xC0, #4, #0xC8
@@ -168,8 +203,8 @@ render_update::
 
 
 	ld      ix, #entity_main_player
-	call	render_entity_erase_xor
-	call	render_entity_draw_xor
+	;call	render_entity_erase_xor
+	call	render_entity_redraw_xor
 
 	ret
 	

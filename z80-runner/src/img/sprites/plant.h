@@ -3,8 +3,8 @@
 #define _IMG_PLANT_H_
 
 #include <types.h>
-#define PLANT_W 4
+#define PLANT_W 2
 #define PLANT_H 16
-extern const u8 plant[4 * 16];
+extern const u8 plant[2 * 16];
 
 #endif

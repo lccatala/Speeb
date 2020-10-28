@@ -64,7 +64,9 @@ entity_size             = entity_sprite_height+1
     .db #0x00           ;; entity_x_speed
     general_blank_bytes entity_y_speed-(entity_x_speed+1)
     .db _Y_SPEED        ;; entity_y_speed
-    general_blank_bytes entity_width-(entity_y_speed+1)
+    general_blank_bytes entity_last_screen-(entity_y_speed+1)
+    .dw #0x0000
+    general_blank_bytes entity_width-(entity_last_screen+2)
     .db _WIDTH          ;; entity_width
     general_blank_bytes entity_height-(entity_width+1)
     .db _HEIGHT         ;; entity_height
