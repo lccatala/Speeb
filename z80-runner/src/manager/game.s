@@ -73,8 +73,6 @@ game_loop::
    ;; Screen synchronization, the more repts, the more the game slows down
    ;; REDO!!! WE CANNOT WASTE CYCLES LIKE THIS!!! HALF THE FPS?
    ;; UPDATE PHYSICS ONCE FOR EVERY 2 CYCLES
-   ld a, #1
-   call general_wait_cycles
    
    call game_check_end_conditions
    jr game_loop

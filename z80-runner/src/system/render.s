@@ -81,8 +81,12 @@ render_draw_text_at::
 
 	ret
 
+.globl	cpct_waitVSYNC_asm
+
 ;;DESTROYS: AF, BC, DE, HL, IX
 render_update::
+
+    call     cpct_waitVSYNC_asm
 
 	ld      ix, #entity_end
 	call	render_entity_erase
