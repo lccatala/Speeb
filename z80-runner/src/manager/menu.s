@@ -30,7 +30,47 @@ menu_title_message_2_x = 0x02
 menu_title_message_2_y = 0xA0
 menu_title_message_2_text_color = 1
 
+int_counter: .db 06
+int_handler::
+   push af
+   push bc
+   push de
+   push hl
+   
+   ld a, (int_counter)
+   dec a
+   jr  nz, int_handler_continue
+
+   int_handler_counter_zero:
+      call  cpct_akp_musicPlay_asm
+      ld    a, #6
+
+   int_handler_continue:
+      ld (int_counter), a
+
+   pop hl
+   pop de
+   pop bc
+   pop af
+
+   ei
+reti
+
+;; Add a call to int_handler in the interruptions vector
+;; BREAKS: HL
+set_int_handler:
+   ld hl, #0x38
+   ld (hl), #0xc3
+   inc hl
+   ld (hl), #<int_handler
+   inc hl
+   ld (hl), #>int_handler
+   inc hl
+   ld (hl), #0xc9
+ret
+
 menu_title_screen::
+   call  set_int_handler
    ld    de, #_song_menu
    call  cpct_akp_musicInit_asm
 
@@ -67,11 +107,8 @@ menu_win_screen::
    call menu_wait_space
    ret
 
-
 ;; Wait for player to press space
 menu_wait_space:
-   call  cpct_waitVSYNC_asm
-   call  cpct_akp_musicPlay_asm
    call  keyboard_update
    call	keyboard_check_space_just_pressed
    jr    nz,   menu_wait_space
