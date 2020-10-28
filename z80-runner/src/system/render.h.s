@@ -3,7 +3,6 @@
 .globl render_init
 .globl render_update
 .globl render_clean
-.globl render_entity_erase
 .globl render_draw_text_at
 
 .globl cpct_drawSolidBox_asm
@@ -23,10 +22,17 @@
 .globl _goal
 .globl _ice
 
-render_type_high_xor		= #0x01
-render_type_low_xor			= #0x02
-render_type_high_self_erase = #0x03
-render_type_low_self_erase 	= #0x04
+.macro call_render_for_type _FUNCTION, _TYPE
+	ld a, entity_render_type(ix)
+	cp _TYPE
+	ret nz
+	jp _FUNCTION
+.endm
+
+render_type_xor_high		= #0x00
+render_type_xor_low			= #0x01
+render_type_self_erase_high = #0x02
+render_type_self_erase_low 	= #0x03
 
 render_vid_mem_start = 0xC000
 

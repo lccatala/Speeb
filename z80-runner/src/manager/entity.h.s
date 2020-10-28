@@ -10,6 +10,7 @@
 .globl entity_spawn
 .globl entity_prototype_plant_enemy
 .globl entity_prototype_cloud_enemy
+.globl entity_for_all_alive_enemies
 
 entity_max_enemies      = 10
 entity_max_width        = 8

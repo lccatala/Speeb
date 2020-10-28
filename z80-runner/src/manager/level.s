@@ -6,7 +6,7 @@
 
 level_current:: .dw level_first
 level_first::
-    level_create_header #-2, #3
+    level_create_header #-1, #3
     level_add_spawn #entity_prototype_plant_enemy, #0, #70, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #0, #130, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #0, #170, #physics_ground_level
