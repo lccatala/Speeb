@@ -1,7 +1,7 @@
 .include "cpctelera.h.s"
 .include "manager/game.h.s"
 .include "manager/menu.h.s"
-
+.include "system/sound.h.s"
 
 .area _DATA
 .area _CODE
@@ -13,6 +13,7 @@
 
 _main::
    call     cpct_disableFirmware_asm
+   call     sound_init ;; This needs to be called here or we won't have sound in the title screen
    ld		c, #0 
 	call	cpct_setVideoMode_asm
 	cpctm_setBorder_asm	0x14

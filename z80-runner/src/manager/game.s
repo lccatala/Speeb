@@ -11,8 +11,6 @@
 .include "system/ai_control.h.s"
 .include "manager/level.h.s"
 
-.globl cpct_akp_musicPlay_asm
-
 ;;INPUT
 ;; IX:      Level to load
 ;;DESTROYS: AF, BC, IX

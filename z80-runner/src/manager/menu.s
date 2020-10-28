@@ -8,10 +8,6 @@
 .include "img/screens/screengameover_z.h.s"
 
 .globl cpct_zx7b_decrunch_s_asm
-.globl _song_menu
-.globl cpct_akp_musicInit_asm
-.globl cpct_akp_musicPlay_asm
-.globl cpct_waitVSYNC_asm
 
 menu_death_message:: .asciz "You died!          Press SPACE to        restart";
 
@@ -30,50 +26,7 @@ menu_title_message_2_x = 0x02
 menu_title_message_2_y = 0xA0
 menu_title_message_2_text_color = 1
 
-int_counter: .db 06
-int_handler::
-   push af
-   push bc
-   push de
-   push hl
-   
-   ld a, (int_counter)
-   dec a
-   jr  nz, int_handler_continue
-
-   int_handler_counter_zero:
-      call  cpct_akp_musicPlay_asm
-      ld    a, #6
-
-   int_handler_continue:
-      ld (int_counter), a
-
-   pop hl
-   pop de
-   pop bc
-   pop af
-
-   ei
-reti
-
-;; Add a call to int_handler in the interruptions vector
-;; BREAKS: HL
-set_int_handler:
-   ld hl, #0x38
-   ld (hl), #0xc3
-   inc hl
-   ld (hl), #<int_handler
-   inc hl
-   ld (hl), #>int_handler
-   inc hl
-   ld (hl), #0xc9
-ret
-
 menu_title_screen::
-   call  set_int_handler
-   ld    de, #_song_menu
-   call  cpct_akp_musicInit_asm
-
    ld 	hl, #_screenmenu_z_end
 	ld		de, #0xFFFF
    call cpct_zx7b_decrunch_s_asm
