@@ -8,7 +8,10 @@
 .include "img/screens/screengameover_z.h.s"
 
 .globl cpct_zx7b_decrunch_s_asm
-
+.globl _song_menu
+.globl cpct_akp_musicInit_asm
+.globl cpct_akp_musicPlay_asm
+.globl cpct_waitVSYNC_asm
 
 menu_death_message:: .asciz "You died!          Press SPACE to        restart";
 
@@ -28,6 +31,8 @@ menu_title_message_2_y = 0xA0
 menu_title_message_2_text_color = 1
 
 menu_title_screen::
+   ld    de, #_song_menu
+   call  cpct_akp_musicInit_asm
 
    ld 	hl, #_screenmenu_z_end
 	ld		de, #0xFFFF
@@ -65,6 +70,8 @@ menu_win_screen::
 
 ;; Wait for player to press space
 menu_wait_space:
+   call  cpct_waitVSYNC_asm
+   call  cpct_akp_musicPlay_asm
    call  keyboard_update
    call	keyboard_check_space_just_pressed
    jr    nz,   menu_wait_space
