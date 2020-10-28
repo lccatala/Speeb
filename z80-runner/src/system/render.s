@@ -1,32 +1,7 @@
 .include "render.h.s"
 .include "cpctelera.h.s"
 .include "manager/entity.h.s"
-
-
-	;;[======================================================]
-	;;| Identifier		  | Value| Identifier		  | Value|
-	;;|------------------------------------------------------|
-	;;| HW_BLACK			| 0x14 | HW_BLUE		  | 0x04 |
-	;;| HW_BRIGHT_BLUE		| 0x15 | HW_RED			  | 0x1C |
-	;;| HW_MAGENTA		  	| 0x18 | HW_MAUVE		  | 0x1D |
-	;;| HW_BRIGHT_RED	 	| 0x0C | HW_PURPLE		  | 0x05 |
-	;;| HW_BRIGHT_MAGENTA 	| 0x0D | HW_GREEN		  | 0x16 |
-	;;| HW_CYAN			 	| 0x06 | HW_SKY_BLUE	  | 0x17 |
-	;;| HW_YELLOW		   	| 0x1E | HW_WHITE		  | 0x00 |
-	;;| HW_PASTEL_BLUE		| 0x1F | HW_ORANGE		  | 0x0E |
-	;;| HW_PINK			 	| 0x07 | HW_PASTEL_MAGENTA| 0x0F |
-	;;| HW_BRIGHT_GREEN   	| 0x12 | HW_SEA_GREEN	  | 0x02 |
-	;;| HW_BRIGHT_CYAN		| 0x13 | HW_LIME		  | 0x1A |
-	;;| HW_PASTEL_GREEN   	| 0x19 | HW_PASTEL_CYAN	  | 0x1B |
-	;;| HW_BRIGHT_YELLOW  	| 0x0A | HW_PASTEL_YELLOW | 0x03 |
-	;;| HW_BRIGHT_WHITE   	| 0x0B |						 |		
-	
-	;;ld		c, #0
-	;;call	cpct_setVideoMode_asm
-
-	;;ld		hl, #palette
-	;;ld		de, #16
-	;;call	cpct_setPalette_asm 
+.include "img/screens/screenbackground_z.h.s"
 
 ;;DESTROYS: AF, BC, DE, HL
 render_clean:
@@ -34,18 +9,17 @@ render_clean:
 	render_draw_solid_box_at #0x40, #0x00, #0x00, #0x10, #0xC8
 	ret
 
-;;DESTROYS: AF, BC, DE, HL
-render_ground:
-	render_draw_solid_box_at #0x00, #0x90, #0xF0, #0x40, #0x38
-	render_draw_solid_box_at #0x40, #0x90, #0xF0, #0x10, #0x38
-	ret
-
 ;;DESTROY: AF, BC, DE, HL
 render_init::
-;;	ld		c, #0 
-;;	call	cpct_setVideoMode_asm
-	cpctm_setBorder_asm	0x14
-	call	render_ground
+	
+
+	;(2B DE) dest_end	Ending (latest) byte of the destination (decompressed) array
+	;(2B HL) source_end	Ending (latest) byte of the source (compressed) array
+	;Assembly call (Input parameters on registers)
+	ld 		hl, #_screenbackground_z_end
+	ld		de, #0xFFFF
+    call cpct_zx7b_decrunch_s_asm
+
 	ret
 
 ;;Render the entity.
@@ -56,24 +30,37 @@ render_entity_draw::
 	ld 		entity_last_screen_l(ix), l
 	ld		entity_last_screen_h(ix), h
 	ex		de, hl
-	render_draw_solid_box entity_color(ix), entity_width(ix), entity_height(ix)
+	ld		l, entity_sprite_l(ix)
+	ld		h, entity_sprite_h(ix)
+	ld		b, entity_width(ix)
+	ld		c, entity_height(ix)
+	call	cpct_drawSpriteBlended_asm
 	ret
 
 ;;Erase the last entity.
 ;;INPUT:   IX (entity)
 ;;DESTROY: AF, BC, DE, HL
 render_entity_erase::
+	;ld 		e, entity_last_screen_l(ix)
+	;ld 		d, entity_last_screen_h(ix)
+	;render_draw_solid_box #0x00, entity_width(ix), entity_height(ix)
+;	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
 	ld 		e, entity_last_screen_l(ix)
 	ld 		d, entity_last_screen_h(ix)
-	render_draw_solid_box #0x00, entity_width(ix), entity_height(ix)
+;;	ex		de, hl
+	ld		l, entity_sprite_l(ix)
+	ld		h, entity_sprite_h(ix)
+	ld		b, entity_width(ix)
+	ld		c, entity_height(ix)
+	call	cpct_drawSpriteBlended_asm
 	ret
 
 ;; Not use direcly, render_message makes it more readable
 ;;INPUT:
 ;;	A:	Y
 ;;	B:	X
-;;	D:	BACKGROUND COLOR
-;;	E:	FONT COLOR
+;;	H:	BACKGROUND COLOR
+;;	L:	FONT COLOR
 ;;	IY:	STRING
 ;; DESTROYS: AF, BC, DE, HL, IY
 render_draw_text_at::
@@ -81,7 +68,7 @@ render_draw_text_at::
 	ld a, b
     ld (render_draw_text_at_x), a
 
-	call cpct_setDrawCharM1_asm
+	call cpct_setDrawCharM0_asm
 
 	ld		de, #render_vid_mem_start
 	render_draw_text_at_y = .+1
@@ -90,26 +77,39 @@ render_draw_text_at::
 	ld		c, #0xAA
 	call	cpct_getScreenPtr_asm
 
-	call cpct_drawStringM1_asm
+	call cpct_drawStringM0_asm
 
 	ret
 
+.globl	cpct_waitVSYNC_asm
+
 ;;DESTROYS: AF, BC, DE, HL, IX
 render_update::
+
+    call     cpct_waitVSYNC_asm
 
 	ld      ix, #entity_end
 	call	render_entity_erase
 	call	render_entity_draw
 	
+
+	
 	ld hl, #render_entity_erase
 	call entity_for_all_enemies
+	
+	
 	ld hl, #render_entity_draw
 	call entity_for_all_enemies
 
 
 	ld      ix, #entity_main_player
+	
+	
 	call	render_entity_erase
 	call	render_entity_draw
+
+	render_draw_solid_box_at #0x00, #0x00, #0xC0, #4, #0xC8
+	render_draw_solid_box_at #76, #0x00, #0xC0, #4, #0xC8
 
 	ret
 	

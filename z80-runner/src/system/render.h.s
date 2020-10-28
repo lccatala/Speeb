@@ -8,12 +8,25 @@
 
 .globl cpct_drawSolidBox_asm
 .globl cpct_getScreenPtr_asm
-.globl cpct_setVideoMode_asm
-.globl cpct_setPalette_asm
-.globl cpct_setDrawCharM1_asm
-.globl cpct_drawStringM1_asm
+.globl cpct_setDrawCharM0_asm
+.globl cpct_drawStringM0_asm
+.globl cpct_drawSprite_asm
+.globl cpct_drawSpriteBlended_asm
+.globl cpct_zx7b_decrunch_s_asm
+
+.globl _PALETTE
+.globl _plant
+.globl _cloud
+.globl _bunny_0
+.globl _bunny_1
+.globl _bunny_2
+.globl _goal
+.globl _ice
+
 
 render_vid_mem_start = 0xC000
+
+render_max_x = 0x50
 
 ;;INPUT:
 ;;  _X:                 X coordinate (c for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
@@ -23,8 +36,8 @@ render_vid_mem_start = 0xC000
 ;;  _STRING:            String to write (iy for drawStringM1) can be **, (**)
 ;;DESTROYS: AF, BC, DE, HL, IY
 .macro  render_draw_message _X, _Y, _BACKGROUND_COLOR, _FONT_COLOR, _STRING
-    ld   d, _BACKGROUND_COLOR ;; background dark blue
-    ld   e, _FONT_COLOR ;; letters yellow
+    ld   h, _BACKGROUND_COLOR ;; background dark blue
+    ld   l, _FONT_COLOR ;; letters yellow
     ld   a, _Y
     ld	 b, _X
     ld	iy, _STRING

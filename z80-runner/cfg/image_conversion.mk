@@ -29,6 +29,10 @@
 
 ## 16 colours palette
 #PALETTE=0 1 2 3 6 9 11 12 13 15 16 18 20 24 25 26
+PALETTE= 17 0 5 7 8 9 11 12 14 16 19 20 21 22 23 26
+#palette_sky= 23 0 5 7 8 9 11 12 14 16 17 19 20 21 22 26
+#palette_cloud= 11 0 1 2 7 6 9 12 13 15 16 18 22 24 25 26
+#palette_plant= 11 0 1 2 7 6 9 12 13 15 16 18 22 24 25 26
 
 ## Default values
 #$(eval $(call IMG2SP, SET_MODE        , 0                  ))  { 0, 1, 2 }
@@ -40,7 +44,20 @@
 #$(eval $(call IMG2SP, SET_PALETTE_FW  , $(PALETTE)         ))
 #$(eval $(call IMG2SP, CONVERT_PALETTE , $(PALETTE), g_palette ))
 #$(eval $(call IMG2SP, CONVERT         , img.png , w, h, array, palette, tileset))
+$(eval $(call IMG2SP, SET_PALETTE_FW  , $(PALETTE)         ))
+$(eval $(call IMG2SP, SET_FOLDER      , src/img/sprites               ))
+$(eval $(call IMG2SP, CONVERT         , img/bunny.png , 16, 16, bunny, PALETTE))
+$(eval $(call IMG2SP, CONVERT         , img/cloud.png , 32, 16, cloud))
+$(eval $(call IMG2SP, CONVERT         , img/plant.png , 4, 16, plant))
+$(eval $(call IMG2SP, CONVERT         , img/goal.png , 2, 64, goal))
+$(eval $(call IMG2SP, CONVERT         , img/ice.png , 4, 8, ice))
 
+$(eval $(call IMG2SP, SET_FOLDER      , src/img/screens               ))
+$(eval $(call IMG2SP, SET_IMG_FORMAT  , screen            ))
+$(eval $(call IMG2SP, SET_OUTPUT      , bin                  ))  
+$(eval $(call IMG2SP, CONVERT         , img/background.png , 0, 0, background))
+$(eval $(call IMG2SP, CONVERT         , img/menu.png , 0, 0, menu))
+$(eval $(call IMG2SP, CONVERT         , img/gameover.png , 0, 0, gameover))
 ##
 ## OLD MACROS (For compatibility)
 ##

@@ -5,9 +5,14 @@
 .globl entity_for_all_enemies
 .globl entity_create_enemy
 .globl entity_update
-.globl entity_prototype_bomb_enemy
+.globl entity_prototype_ice_enemy
+.globl entity_ice_spawn
+.globl entity_spawn
+.globl entity_prototype_plant_enemy
+.globl entity_prototype_cloud_enemy
 
 entity_max_enemies      = 10
+entity_max_width        = 8
 
 entity_is_dead          = 0
 entity_x_speed          = entity_is_dead+1
@@ -19,8 +24,10 @@ entity_last_screen_l    = entity_last_screen
 entity_last_screen_h    = entity_last_screen+1
 entity_width            = entity_last_screen+2
 entity_height           = entity_width+1
-entity_color            = entity_height+1
-entity_ai_aim_x         = entity_color+1
+entity_sprite           = entity_height+1
+entity_sprite_l         = entity_sprite
+entity_sprite_h         = entity_sprite+1
+entity_ai_aim_x         = entity_sprite+2
 entity_ai_aim_y         = entity_ai_aim_x+1
 entity_ai_next_action   = entity_ai_aim_y+1
 entity_ai_next_action_l = entity_ai_next_action
@@ -43,8 +50,7 @@ entity_size             = entity_next_action+2
 .endm
 
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
-;; TODO: move _X_SPEED parameter to first position
-.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION
+.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE
     general_blank_bytes entity_is_dead-0
     .db #0x00           ;; entity_is_dead
     general_blank_bytes entity_x_speed-(entity_is_dead+1)
@@ -55,9 +61,9 @@ entity_size             = entity_next_action+2
     .db _WIDTH          ;; entity_width
     general_blank_bytes entity_height-(entity_width+1)
     .db _HEIGHT         ;; entity_height
-    general_blank_bytes entity_color-(entity_height+1)
-    .db _COLOR          ;; entity_color
-    general_blank_bytes entity_ai_next_action-(entity_color+1)
+    general_blank_bytes entity_sprite-(entity_height+1)
+    .dw _SPRITE         ;; entity_ai_function
+    general_blank_bytes entity_ai_next_action-(entity_sprite+2)
     .dw _AI_FUNCTION          ;; entity_ai_function
     general_blank_bytes entity_next_action-(entity_ai_next_action+2)
     .dw #0x0000 ;; entity_next_action

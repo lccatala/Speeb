@@ -3,7 +3,8 @@
 .include "system/render.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
 .include "utility/general.h.s"
-.include "../system/physics.h.s"
+.include "system/physics.h.s"
+.include "manager/level.h.s"
 
 ;;NOTE: reconsider whether this being public is a good idea
 entity_main_player:: entity_define
@@ -12,14 +13,12 @@ entity_end:: entity_define
 entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
-;; Parameters for entity_create_prototype: _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION, _X_SPEED
-entity_prototype_main_player: entity_create_prototype #0, #0x02, #0x08, #0x0F, #0x0000
-entity_prototype_basic_enemy: entity_create_prototype #0, #0x01, #0x20, #0xFF, #0x0000
-entity_prototype_flying_enemy: entity_create_prototype #0, #0x02, #0x08, #0xFF, #ai_control_move_to_x
-entity_prototype_end: entity_create_prototype_with_x_speed #0, #0x02, #0x50, #0x0F, #0x0000, #0x01
-entity_prototype_bomb_enemy:: entity_create_prototype #0, #0x01, #0x05, #0xFF, #0x0000
-entity_prototype_running_enemy: entity_create_prototype_with_x_speed #0, #0x08, #0x0F, #0xFF, #ai_control_cross_screen, #0xFF
-entity_prototype_boss_enemy: entity_create_prototype_with_x_speed #0x01, #0x05, #0x0F, #0xFF, #ai_control_zigzag, #0xFE
+entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0
+entity_prototype_plant_enemy: entity_create_prototype #0, #2, #16, #0x0000, _plant
+entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal
+entity_prototype_cloud_enemy: entity_create_prototype #0, #16, #16, #ai_control_move_to_x, _cloud
+entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice
+
 
 
 entity_init::
@@ -27,24 +26,44 @@ entity_init::
     entity_instantiate_prototype #entity_prototype_main_player, #12, #physics_ground_level
 
     ld de, #entity_end
-    entity_instantiate_prototype #entity_prototype_end, #75, #physics_ground_level
+    entity_instantiate_prototype #entity_prototype_end, #78, #physics_ground_level
 
     call entity_clean_enemy_array
 
-    ;call entity_create_enemy
-    ;entity_instantiate_prototype #entity_prototype_basic_enemy, #70, #physics_ground_level
-    
-    ; call entity_create_enemy
-    ; entity_instantiate_prototype #entity_prototype_basic_enemy, #60, #physics_ground_level
+    ret
 
-    ; call entity_create_enemy
-    ; entity_instantiate_prototype #entity_prototype_flying_enemy, #30, #13
+;;INPUT
+;;  IX:     SPAWN POINTER
+;;DESTROYS: AF, BC, DE, HL, IX
+entity_spawn::
 
-    ; call entity_create_enemy
-    ; entity_instantiate_prototype #entity_prototype_running_enemy, #70, #physics_ground_level
-    
     call entity_create_enemy
-    entity_instantiate_prototype #entity_prototype_boss_enemy, #50, #16
+
+    ;;if no space left, the entity is not created
+    xor a
+    cp d
+    ret z
+    cp e
+    ret z
+
+    ld  (entity_spawn_pointer), de
+
+    ld  h, level_spawn_prototype_h(ix)
+    ld  l, level_spawn_prototype_l(ix)
+    ld  bc, #entity_size
+    ldir
+
+    ld a, level_spawn_y(ix)
+
+    entity_spawn_pointer = .+2
+    ld ix, #0xABAC
+    
+    sub entity_height(ix)
+    ld  entity_y_coord(ix), a
+    
+    ld a, (physics_current_spawning_x)
+    sub entity_width(ix)
+    ld  entity_x_coord(ix), a
 
     ret
 
@@ -119,6 +138,37 @@ entity_create_enemy::
     ld (entity_next_enemy), hl
     ret
 
+entity_ice_spawn::
+    push hl
+    call entity_create_enemy
+    pop hl
+
+    xor a
+    cp d
+    ret z
+    cp e
+    ret z
+
+    ld  (entity_ice_spawn_pointer), de
+    ld  bc, #entity_size
+    ldir
+
+    ;; ice x coord in b
+    ld a, entity_x_coord(ix)
+    add #5
+    ld b, a
+    ;; ice y coord in c
+    ld a, entity_y_coord(ix)
+    add entity_height(ix)
+    ld c, a
+
+    entity_ice_spawn_pointer = .+2
+    ld ix, #0xABAC
+    
+    ld  entity_y_coord(ix), c
+    ld  entity_x_coord(ix), b
+
+    ret
 ;;BREAKS: AF, BC, DE, HL, IX
 entity_update::
     ld hl, #entity_destroy_enemy_if_dead

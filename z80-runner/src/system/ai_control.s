@@ -56,21 +56,21 @@ ai_control_update_aim_coords::
     ld       entity_ai_aim_y(ix), a 
 ret
 
-ai_control_game_level_speed_counter::
+ai_control_physics_current_speed_counter::
     ld      a, #0
-    ld      hl, #game_level_speed
+    ld      hl, #physics_current_speed
     ld      b, (hl)
     sub     b
 ret
 ai_control_stand_by_y::
     ld      entity_y_speed(ix), #0
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     ld      entity_x_speed(ix), a
 ret
 
 ai_control_stand_by_x::
     ld      entity_x_speed(ix), #0
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     ld      entity_y_speed(ix), a
 ret
 
@@ -82,21 +82,21 @@ ai_control_move_to_x::
     jr      nc, ai_control_move_to_x_greater_or_equal
 
 ai_control_move_to_x_lesser:
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     dec     a
     ld      entity_x_speed(ix), a
     ret
 
 ai_control_move_to_x_greater_or_equal:
     jr      z, ai_control_move_to_x_arrived
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     inc     a
     ld      entity_x_speed(ix), a
     ret
 
 ai_control_move_to_x_arrived:
     call    ai_control_stand_by_y
-    ld      hl, #ai_control_suicide
+    ld      hl, #ai_control_drop_ice
     ld      entity_ai_next_action_h(ix), h
     ld      entity_ai_next_action_l(ix), l
 ret
@@ -111,14 +111,14 @@ ai_control_move_to_y::
     jr      nc, ai_control_move_to_y_greater_or_equal
 
 ai_control_move_to_y_lesser:
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     dec     a
     ld      entity_y_speed(ix), a
     ret
 
 ai_control_move_to_y_greater_or_equal:
     jr      z, ai_control_move_to_y_arrived
-    call    ai_control_game_level_speed_counter
+    call    ai_control_physics_current_speed_counter
     inc     a
     ld      entity_y_speed(ix), a
     ret
@@ -136,23 +136,26 @@ ai_control_move_to::
 ret
 
 ai_control_suicide::
-
-    ld      a, entity_y_coord(ix)
-    cp      #0x88
+    call    ai_control_physics_current_speed_counter
+    ld      entity_x_speed(ix), a
+    ld      a, #physics_ground_level
+    sub     entity_height(ix)
+    cp     entity_y_coord(ix)
     jr      z, ai_control_suicide_killyourself
     ret
+
 ai_control_suicide_killyourself:
     ld      entity_is_dead(ix), #1   
+    ret
+
+ai_control_drop_ice::
+    ld      hl, #ai_control_cross_screen
+    ld      entity_ai_next_action_h(ix), h
+    ld      entity_ai_next_action_l(ix), l
+
+    ld      hl, #entity_prototype_ice_enemy
+    call entity_ice_spawn
     
-ret
-
-
-ai_control_drop_bomb::
-    ld      entity_y_speed(ix), #0
-;;    call    entity_create_enemy
-;;    ld      b, entity_x_coord(ix)
-;;    ld      a, entity_y_coord(ix)
-;;    entity_instantiate_prototype #entity_prototype_bomb_enemy, #0x0A, #0x15
 
 ret
 
