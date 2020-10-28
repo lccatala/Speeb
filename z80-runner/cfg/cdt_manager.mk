@@ -25,6 +25,7 @@
 
 ## Set the name of your main game file in the CDT here
 $(eval $(call CDTMAN, SET_FILENAME, Speeb))
+$(eval $(call CDTMAN, GEN_MINILOADER, img/menu.png))
 
 ###############################################################################
 ##                    CASSETE FILE MANAGER HELP INDEX                        ##
