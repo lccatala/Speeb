@@ -27,6 +27,8 @@ physics_load_level::
 	xor a
 	sub b
 	ld	entity_x_speed(ix), a
+	;;kils the end
+	ld  entity_is_dead(ix), #1
 
 	;; sets the coord x to max
 	ld	a, #render_max_x
@@ -115,6 +117,7 @@ physics_move_level:
 			jr	nz, physics_move_level_no_end
 				ld	ix, #entity_end
 				ld  entity_x_speed(ix), #0
+				ld  entity_is_dead(ix), #0
 			physics_move_level_no_end:
 		physics_move_level_no_overflow:
 

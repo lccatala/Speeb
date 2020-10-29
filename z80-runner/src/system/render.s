@@ -170,26 +170,19 @@ render_draw_text_at::
 render_update::
 
     call     cpct_waitVSYNC_asm
+	halt
 	
-	;ld hl, #render_entity_erase_sprite_high
-	;call entity_for_all_enemies
-	;ld hl, #render_entity_draw_sprite_high 
-	;call entity_for_all_alive_enemies
+	ld hl, #render_entity_redraw_xor_high
+	call entity_for_all_enemies
 
+	halt
 
 	ld hl, #render_entity_redraw_xor_high
 	call entity_for_all_enemies
 
-
-	;ld hl, #render_entity_erase_sprite_low
-	;call entity_for_all_enemies
-	;ld hl, #render_entity_draw_sprite_low 
-	;call entity_for_all_alive_enemies
-	
-	;ld hl, #render_entity_erase_xor_low
-	;call entity_for_all_enemies
 	ld hl, #render_entity_redraw_xor_low 
 	call entity_for_all_enemies
+
 
 
 
@@ -198,8 +191,8 @@ render_update::
 	call	render_entity_redraw_xor
 
 
-	render_draw_solid_box_at #0x00, #0x00, #0xC0, #4, #0xC8
-	render_draw_solid_box_at #76, #0x00, #0xC0, #4, #0xC8
+	;render_draw_solid_box_at #0x00, #0x00, #0xC0, #4, #0xC8
+	;render_draw_solid_box_at #76, #0x00, #0xC0, #4, #0xC8
 
 
 	ld      ix, #entity_main_player
