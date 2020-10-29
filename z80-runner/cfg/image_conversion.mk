@@ -47,7 +47,7 @@ PALETTE= 17 0 5 7 8 9 11 12 14 16 19 20 21 22 23 26
 $(eval $(call IMG2SP, SET_PALETTE_FW  , $(PALETTE)         ))
 $(eval $(call IMG2SP, SET_FOLDER      , src/img/sprites               ))
 $(eval $(call IMG2SP, CONVERT         , img/bunny.png , 16, 16, bunny, PALETTE))
-$(eval $(call IMG2SP, CONVERT         , img/cloud.png , 32, 16, cloud))
+$(eval $(call IMG2SP, CONVERT         , img/cloud.png , 16, 16, cloud))
 $(eval $(call IMG2SP, CONVERT         , img/plant.png , 8, 16, plant))
 $(eval $(call IMG2SP, CONVERT         , img/goal.png , 2, 64, goal))
 $(eval $(call IMG2SP, CONVERT         , img/ice.png , 4, 8, ice))
