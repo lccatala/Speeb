@@ -10,11 +10,13 @@
 .globl entity_spawn
 .globl entity_prototype_plant_enemy
 .globl entity_prototype_cloud_enemy
+.globl entity_for_all_alive_enemies
 
 entity_max_enemies      = 10
 entity_max_width        = 8
 
-entity_is_dead          = 0
+entity_render_type      = 0
+entity_is_dead          = entity_render_type+1
 entity_x_speed          = entity_is_dead+1
 entity_y_speed          = entity_x_speed+1
 entity_x_coord          = entity_y_speed+1
@@ -35,7 +37,9 @@ entity_ai_next_action_h = entity_ai_next_action+1
 entity_next_action      = entity_ai_next_action+2  ;; control system! 2 bytes
 entity_next_action_l    = entity_next_action
 entity_next_action_h    = entity_next_action+1
-entity_size             = entity_next_action+2
+entity_sprite_width     = entity_next_action+2
+entity_sprite_height    = entity_sprite_width+1
+entity_size             = entity_sprite_height+1
 
 .macro entity_define
     .rept #entity_size
@@ -50,14 +54,18 @@ entity_size             = entity_next_action+2
 .endm
 
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
-.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE
-    general_blank_bytes entity_is_dead-0
+.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE, _RENDER_TYPE, _SPRITE_WIDTH, _SPRITE_HEIGHT
+    general_blank_bytes entity_render_type-0
+    .db _RENDER_TYPE    ;; entity_render_type
+    general_blank_bytes entity_is_dead-(entity_render_type+1)
     .db #0x00           ;; entity_is_dead
     general_blank_bytes entity_x_speed-(entity_is_dead+1)
     .db #0x00           ;; entity_x_speed
     general_blank_bytes entity_y_speed-(entity_x_speed+1)
     .db _Y_SPEED        ;; entity_y_speed
-    general_blank_bytes entity_width-(entity_y_speed+1)
+    general_blank_bytes entity_last_screen-(entity_y_speed+1)
+    .dw #0x0000
+    general_blank_bytes entity_width-(entity_last_screen+2)
     .db _WIDTH          ;; entity_width
     general_blank_bytes entity_height-(entity_width+1)
     .db _HEIGHT         ;; entity_height
@@ -67,7 +75,11 @@ entity_size             = entity_next_action+2
     .dw _AI_FUNCTION          ;; entity_ai_function
     general_blank_bytes entity_next_action-(entity_ai_next_action+2)
     .dw #0x0000 ;; entity_next_action
-    general_blank_bytes entity_size-(entity_next_action+2)
+    general_blank_bytes entity_sprite_width-(entity_next_action+2)
+    .db _SPRITE_WIDTH
+    general_blank_bytes entity_sprite_height-(entity_sprite_width+1)
+    .db _SPRITE_HEIGHT
+    general_blank_bytes entity_size-(entity_sprite_height+1)
 .endm
 
 .macro entity_create_prototype_with_x_speed _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION, _X_SPEED

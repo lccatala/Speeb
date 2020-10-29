@@ -6,18 +6,18 @@
 
 level_current:: .dw level_first
 level_first::
-    level_create_header #-1, #3
-    level_add_spawn #entity_prototype_plant_enemy, #0, #70, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #130, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #170, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #230, #physics_ground_level
+    level_create_header #-1, #1
+    level_add_spawn #entity_prototype_cloud_enemy, #0, #70, #30
+    level_add_spawn #entity_prototype_plant_enemy, #0, #80, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #140, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #180, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #240, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #1, #70, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #1, #100, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #1, #130, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #1, #160, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #1, #190, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #1, #230, #physics_ground_level
-    level_add_spawn #entity_prototype_cloud_enemy, #2, #70, #30
     level_add_spawn #entity_prototype_plant_enemy, #2, #130, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #2, #160, #physics_ground_level
     level_add_spawn #entity_prototype_cloud_enemy, #2, #190, #30

@@ -3,8 +3,8 @@
 #define _IMG_CLOUD_H_
 
 #include <types.h>
-#define CLOUD_W 16
+#define CLOUD_W 8
 #define CLOUD_H 16
-extern const u8 cloud[16 * 16];
+extern const u8 cloud[8 * 16];
 
 #endif

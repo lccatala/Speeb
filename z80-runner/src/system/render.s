@@ -22,36 +22,65 @@ render_init::
 
 	ret
 
+render_entity_redraw_xor_low::
+	call_render_for_type render_entity_redraw_xor, #render_type_xor_low
+
+render_entity_redraw_xor_high::
+	call_render_for_type render_entity_redraw_xor, #render_type_xor_high
+
 ;;Render the entity.
 ;;INPUT:   IX (entity) 
 ;;DESTROY: AF, BC, DE, HL 
-render_entity_draw::
+render_entity_redraw_xor::
+    ;; doesn't draw non moved entities
 	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
+	ld  a, l
+	cp  entity_last_screen_l(ix)
+	jr  nz, render_entity_redraw_xor_moved
+	ld  a, h
+	cp entity_last_screen_h(ix)
+	jr  nz, render_entity_redraw_xor_moved
+	;;but needs to erase them if they dead!
+	xor a
+	cp  entity_is_dead(ix)
+	ret z
+
+	render_entity_redraw_xor_moved:
+	xor a
+	cp  entity_last_screen_l(ix)
+	jr  nz, render_entity_redraw_xor_not_new
+	cp entity_last_screen_h(ix)
+	jr  z, render_entity_redraw_xor_no_erase
+	;;NO REDIBUJAR LA MISMA NI BORRAR NUEVAS
+
+	render_entity_redraw_xor_not_new:
+	push	hl
+	;;erase
+	ld 		e, entity_last_screen_l(ix)
+	ld 		d, entity_last_screen_h(ix)
+
+	ld		l, entity_sprite_l(ix)
+	ld		h, entity_sprite_h(ix)
+
+	ld		b, entity_sprite_width(ix)
+	ld		c, entity_sprite_height(ix)
+	call	cpct_drawSpriteBlended_asm
+	pop		hl
+    
+	render_entity_redraw_xor_no_erase:
+
+	xor a
+	cp  entity_is_dead(ix)
+	ret nz ;;doesn't draw dead entities
+
+	;; draw
 	ld 		entity_last_screen_l(ix), l
 	ld		entity_last_screen_h(ix), h
 	ex		de, hl
 	ld		l, entity_sprite_l(ix)
 	ld		h, entity_sprite_h(ix)
-	ld		b, entity_width(ix)
-	ld		c, entity_height(ix)
-	call	cpct_drawSpriteBlended_asm
-	ret
-
-;;Erase the last entity.
-;;INPUT:   IX (entity)
-;;DESTROY: AF, BC, DE, HL
-render_entity_erase::
-	;ld 		e, entity_last_screen_l(ix)
-	;ld 		d, entity_last_screen_h(ix)
-	;render_draw_solid_box #0x00, entity_width(ix), entity_height(ix)
-;	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
-	ld 		e, entity_last_screen_l(ix)
-	ld 		d, entity_last_screen_h(ix)
-;;	ex		de, hl
-	ld		l, entity_sprite_l(ix)
-	ld		h, entity_sprite_h(ix)
-	ld		b, entity_width(ix)
-	ld		c, entity_height(ix)
+	ld		b, entity_sprite_width(ix)
+	ld		c, entity_sprite_height(ix)
 	call	cpct_drawSpriteBlended_asm
 	ret
 
@@ -73,7 +102,7 @@ render_draw_text_at::
 	ld		de, #render_vid_mem_start
 	render_draw_text_at_y = .+1
 	ld		b, #0xAA
-	render_draw_text_at_x = .+1
+	render_draw_text_at_x = .+1 
 	ld		c, #0xAA
 	call	cpct_getScreenPtr_asm
 
@@ -88,28 +117,30 @@ render_update::
 
     call     cpct_waitVSYNC_asm
 
-	ld      ix, #entity_end
-	call	render_entity_erase
-	call	render_entity_draw
-	
+	ld hl, #render_entity_redraw_xor_high
+	call entity_for_all_enemies
 
-	
-	ld hl, #render_entity_erase
+	ld hl, #render_entity_redraw_xor_low 
 	call entity_for_all_enemies
-	
-	
-	ld hl, #render_entity_draw
-	call entity_for_all_enemies
+
+
+
+
+	ld      ix, #entity_end
+	call	render_entity_redraw_xor
+
+
+	;render_draw_solid_box_at #0x00, #0x00, #0xC0, #4, #0xC8
+	;render_draw_solid_box_at #76, #0x00, #0xC0, #4, #0xC8
 
 
 	ld      ix, #entity_main_player
-	
-	
-	call	render_entity_erase
-	call	render_entity_draw
+	call	render_entity_redraw_xor
 
-	render_draw_solid_box_at #0x00, #0x00, #0xC0, #4, #0xC8
-	render_draw_solid_box_at #76, #0x00, #0xC0, #4, #0xC8
+	;;STOP, it goes way too fast
+	call cpct_waitVSYNC_asm
+	halt
+	halt
 
 	ret
 	

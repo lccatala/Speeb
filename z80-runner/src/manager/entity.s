@@ -13,11 +13,11 @@ entity_end:: entity_define
 entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
-entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0
-entity_prototype_plant_enemy: entity_create_prototype #0, #2, #16, #0x0000, _plant
-entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal
-entity_prototype_cloud_enemy: entity_create_prototype #0, #16, #16, #ai_control_move_to_x, _cloud
-entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice
+entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0, #render_type_xor_low, #8, #16
+entity_prototype_plant_enemy: entity_create_prototype #0, #2, #16, #0x0000, _plant, #render_type_xor_low, #2, #16
+entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal, #render_type_xor_low, #1, #64
+entity_prototype_cloud_enemy: entity_create_prototype #0, #8, #16, #ai_control_move_to_x, _cloud, #render_type_xor_high, #8, #16
+entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice, #render_type_xor_high, #2, #8
 
 
 
@@ -67,6 +67,38 @@ entity_spawn::
 
     ret
 
+
+;; Applies a function to all enemies
+;;INPUT:
+;;  HL:     Pointer a function that recieves an entity on IX
+;;DESTROYS: AF, BC, IX, whatever the called function destroys
+entity_for_all_alive_enemies::
+    ld (entity_for_all_alive_enemies_call), hl ; cambia la llamada a funcion
+    ld ix, (entity_next_enemy)
+
+    entity_for_all_alive_enemies_loop:
+        ;;ends if last byte of next free position is the same as last byte of entity array direction
+        ;;size of enemy array!!!!!!!!!!! cannot be higher than 254
+        ld a, #entity_enemy_array
+        cp__ixl
+        ret z
+
+        ld bc, #-entity_size
+        add ix, bc
+        push ix
+
+        xor a
+        cp entity_is_dead(ix)
+        jr nz, entity_for_all_alive_enemies_not_alive
+        
+        entity_for_all_alive_enemies_call = .+1
+        call #0xABAC
+
+        entity_for_all_alive_enemies_not_alive:
+        pop ix
+
+        jr entity_for_all_alive_enemies_loop
+
 ;; Applies a function to all enemies
 ;;INPUT:
 ;;  HL:     Pointer a function that recieves an entity on IX
@@ -92,9 +124,11 @@ entity_for_all_enemies::
         jr entity_for_all_enemies_loop
 
 entity_clean_enemy_array:
-    ld hl, #entity_next_enemy
-    ld (hl), #entity_enemy_array
+    ld hl, #entity_enemy_array
+    ld (entity_next_enemy), hl
     ret
+
+.globl cpct_waitVSYNC_asm
 
 ;;INPUT:
 ;;  IX:     pointer to entity that might be dead
@@ -104,7 +138,6 @@ entity_destroy_enemy_if_dead:
     cp entity_is_dead(ix)
     ret z
 entity_destroy_enemy:
-    call render_entity_erase
     ld__d_ixh
     ld__e_ixl
     ld hl, (entity_next_enemy)
