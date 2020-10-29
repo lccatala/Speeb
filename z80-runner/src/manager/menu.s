@@ -6,6 +6,7 @@
 .include "utility/general.h.s"
 .include "img/screens/screenmenu_z.h.s"
 .include "img/screens/screengameover_z.h.s"
+.include "system/sound.h.s"
 
 .globl cpct_zx7b_decrunch_s_asm
 
@@ -27,6 +28,7 @@ menu_title_message_2_y = 0xA0
 menu_title_message_2_text_color = 1
 
 menu_title_screen::
+   call     sound_init ;; This needs to be called here or we won't have sound in the title screen
    ld 	hl, #_screenmenu_z_end
 	ld		de, #0xFFFF
    call cpct_zx7b_decrunch_s_asm
