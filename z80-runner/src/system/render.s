@@ -39,6 +39,10 @@ render_entity_redraw_xor::
 	jr  nz, render_entity_redraw_xor_moved
 	ld  a, h
 	cp entity_last_screen_h(ix)
+	jr  nz, render_entity_redraw_xor_moved
+	;;but needs to erase them if they dead!
+	xor a
+	cp  entity_is_dead(ix)
 	ret z
 
 	render_entity_redraw_xor_moved:
