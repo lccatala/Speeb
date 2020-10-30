@@ -9,6 +9,7 @@
 .include "utility/general.h.s"
 .include "system/control.h.s"
 .include "system/ai_control.h.s"
+.include "system/sound.h.s"
 .include "manager/level.h.s"
 
 ;;INPUT
@@ -37,11 +38,13 @@ game_check_end_conditions:
    ;; Collision with level end
 	ld a, (physics_collision_detected)
    cp #physics_collision_with_end
+   call z, sound_play_victory_theme
    call z, menu_win_screen
 
    ;; Collision with enemy
 	ld a, (physics_collision_detected)
    cp #physics_collision_with_enemy
+   call z, sound_play_death_theme
    call z, menu_death_screen
 
 	ld a, (physics_collision_detected)
@@ -70,6 +73,7 @@ game_loop::
 
 game_restart:
    ;; After you press space screen gets cleaned and game is restarted
+   call  sound_play_menu_theme
    call  render_clean
    call  game_init
    ret

@@ -49,7 +49,7 @@
 # Name of the project (without spaces, as it will be used as filename)
 #   and Z80 memory location where code will start in the generated binary
 PROJNAME   := z80-runner
-Z80CODELOC := 0x4202
+Z80CODELOC := 0x4269
 
 ##
 ## Folders 

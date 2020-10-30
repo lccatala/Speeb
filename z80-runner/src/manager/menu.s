@@ -6,7 +6,7 @@
 .include "utility/general.h.s"
 .include "img/screens/screenmenu_z.h.s"
 .include "img/screens/screengameover_z.h.s"
-.include "system/sound.h.s"
+;.include "system/sound.h.s"
 
 .globl cpct_zx7b_decrunch_s_asm
 
@@ -28,7 +28,6 @@ menu_title_message_2_y = 0xA0
 menu_title_message_2_text_color = 1
 
 menu_title_screen::
-   call sound_play_menu_theme
    ld 	hl, #_screenmenu_z_end
 	ld		de, #0xFFFF
    call cpct_zx7b_decrunch_s_asm
@@ -57,11 +56,9 @@ menu_death_screen::
    ret
 
 menu_win_screen::
-   call sound_play_victory_theme
 	call  render_clean
    render_draw_message #0x08, #0x85, #0, #1, #menu_win_message
    call menu_wait_space
-   call sound_play_menu_theme
    ret
 
 ;; Wait for player to press space

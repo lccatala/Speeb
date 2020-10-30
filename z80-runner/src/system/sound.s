@@ -2,6 +2,8 @@
 
 .globl _song_menu
 .globl _song_victory
+.globl _song_death
+
 .globl cpct_akp_musicInit_asm
 .globl cpct_akp_musicPlay_asm
 .globl cpct_waitVSYNC_asm
@@ -54,6 +56,11 @@ sound_play_menu_theme::
    ld    de, #_song_menu
    call  cpct_akp_musicInit_asm
 ret 
+
+sound_play_death_theme::
+   ld    de, #_song_death
+   call  cpct_akp_musicInit_asm
+ret
 ;; Set up interruption handler for playing SFX and load title song
 ;; BREAKS: HL
 sound_init::

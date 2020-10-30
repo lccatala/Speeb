@@ -19,7 +19,10 @@ _main::
 	ld		hl, #_PALETTE
 	ld		de, #16
 	call	cpct_setPalette_asm
-   call     sound_init ;; This needs to be called here or we won't have sound in the title screen
+   ;; This needs to be called here or we won't have sound in the title screen
+   call     sound_init
+   call     sound_play_menu_theme
+   
    call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
    call     game_init
    jp       game_loop
