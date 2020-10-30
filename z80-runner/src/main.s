@@ -1,6 +1,7 @@
 .include "cpctelera.h.s"
 .include "manager/game.h.s"
 .include "manager/menu.h.s"
+.include "system/sound.h.s"
 
 .area _DATA
 .area _CODE
@@ -18,6 +19,7 @@ _main::
 	ld		hl, #_PALETTE
 	ld		de, #16
 	call	cpct_setPalette_asm
+   call     sound_init ;; This needs to be called here or we won't have sound in the title screen
    call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
    call     game_init
    jp       game_loop

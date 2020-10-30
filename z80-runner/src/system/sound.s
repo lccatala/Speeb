@@ -1,6 +1,7 @@
 .include "sound.h.s"
 
 .globl _song_menu
+.globl _song_victory
 .globl cpct_akp_musicInit_asm
 .globl cpct_akp_musicPlay_asm
 .globl cpct_waitVSYNC_asm
@@ -44,9 +45,17 @@ sound_set_int_handler:
    ld (hl), #0xc9
 ret
 
+sound_play_victory_theme::
+   ld    de, #_song_victory
+   call  cpct_akp_musicInit_asm
+ret
+
+sound_play_menu_theme::
+   ld    de, #_song_menu
+   call  cpct_akp_musicInit_asm
+ret 
 ;; Set up interruption handler for playing SFX and load title song
 ;; BREAKS: HL
 sound_init::
     call  sound_set_int_handler
-    ld    de, #_song_menu
-    call  cpct_akp_musicInit_asm
+ret

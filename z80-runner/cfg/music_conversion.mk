@@ -36,6 +36,7 @@
 #$(eval $(call AKS2DATA, CONVERT      , music.aks , array , mem_address ))
 $(eval $(call AKS2DATA, SET_FOLDER   , src/sound ))
 $(eval $(call AKS2DATA, CONVERT      , music/title.aks , song_menu , 0x4000 ))
+$(eval $(call AKS2DATA, CONVERT      , music/victory.aks , song_victory , 0x4103 ))
 
 
 ##
