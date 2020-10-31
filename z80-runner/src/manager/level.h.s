@@ -7,7 +7,8 @@
 
 level_header_speed      = 0
 level_header_length     = level_header_speed+1
-level_header_size       = level_header_length+1
+level_header_next       = level_header_length+1
+level_header_size       = level_header_next+2
 
 level_spawn_start       = level_header_size
 
@@ -25,12 +26,14 @@ level_spawn_size        = level_spawn_y+1
 ;;INPUT
 ;;  _SPEED:     level speed, must be *
 ;;  _LENGTH:    level length in number of 256X coordinate sections, must be *
-.macro level_create_header _SPEED _LENGTH
+.macro level_create_header _SPEED, _LENGTH, _NEXT
     general_blank_bytes level_header_speed-0
     .db _SPEED          ;; level_header_speed
     general_blank_bytes level_header_length-(level_header_speed+1)
     .db _LENGTH         ;; level_header_length
-    general_blank_bytes level_header_size-(level_header_length+1)
+    general_blank_bytes level_header_next-(level_header_length+1)
+    .dw _NEXT
+    general_blank_bytes level_header_size-(level_header_next+2)
 .endm
 
 ;;Adds an entity to be spawned. SPWANS MUST BE ORDERED BY _SECTION AND _X_COORD
