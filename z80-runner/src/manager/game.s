@@ -11,6 +11,7 @@
 .include "system/ai_control.h.s"
 .include "system/sound.h.s"
 .include "manager/level.h.s"
+.include "macros/cpct_undocumentedOpcodes.h.s"
 
 ;;INPUT
 ;; IX:      Level to load
@@ -33,13 +34,37 @@ game_init::
    call game_load_level
    ret
 
+game_win:
+   call sound_play_victory_theme
+   call menu_win_screen
+   ret
+
+game_level_end:
+   ld ix, (level_current)
+   ld h, level_header_next(ix)
+   ld l, level_header_next(ix)
+   xor a
+   cp  h
+   jr  nz, game_level_end_next
+   cp  l
+   jr  nz, game_level_end_next
+   call game_win
+   ret
+
+   game_level_end_next:
+   ex de, hl
+   ld__ixh_d
+   ld__ixl_e
+   call game_load_level
+   ret
+
+
 ;; DESTROYS: A
 game_check_end_conditions:
    ;; Collision with level end
 	ld a, (physics_collision_detected)
    cp #physics_collision_with_end
-   call z, sound_play_victory_theme
-   call z, menu_win_screen
+   call z, game_level_end
 
    ;; Collision with enemy
 	ld a, (physics_collision_detected)
@@ -47,10 +72,12 @@ game_check_end_conditions:
    call z, sound_play_death_theme
    call z, menu_death_screen
 
+   ;; No Collision
 	ld a, (physics_collision_detected)
    cp #physics_collision_no
    ret z
 
+   ;; Some collision
    call game_restart
    ret
 
