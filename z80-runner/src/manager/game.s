@@ -17,6 +17,12 @@
 ;; IX:      Level to load
 ;;DESTROYS: AF, BC, IX
 game_load_level:
+   push ix
+   ;;if you load a level you restart the entities and the render
+   call     entity_init
+   call     render_init
+   pop ix
+
    call level_load
    ld  ix, (level_current)
    ld  b, level_header_speed(ix)
@@ -26,8 +32,6 @@ game_load_level:
 
 ;;DESTROYS: AF, BC, DE, HL, IX
 game_init::
-   call     entity_init
-   call     render_init
    call     control_init
 
    ld  ix, #level_first
@@ -37,12 +41,13 @@ game_init::
 game_win:
    call sound_play_victory_theme
    call menu_win_screen
+   call game_restart
    ret
 
 game_level_end:
    ld ix, (level_current)
-   ld h, level_header_next(ix)
-   ld l, level_header_next(ix)
+   ld h, level_header_next_h(ix)
+   ld l, level_header_next_l(ix)
    xor a
    cp  h
    jr  nz, game_level_end_next
@@ -59,6 +64,12 @@ game_level_end:
    ret
 
 
+game_die:
+   call sound_play_death_theme
+   call menu_death_screen
+   call game_restart
+   ret
+
 ;; DESTROYS: A
 game_check_end_conditions:
    ;; Collision with level end
@@ -69,16 +80,8 @@ game_check_end_conditions:
    ;; Collision with enemy
 	ld a, (physics_collision_detected)
    cp #physics_collision_with_enemy
-   call z, sound_play_death_theme
-   call z, menu_death_screen
+   call z, game_die
 
-   ;; No Collision
-	ld a, (physics_collision_detected)
-   cp #physics_collision_no
-   ret z
-
-   ;; Some collision
-   call game_restart
    ret
 
 ;;DESTROYS: AF, BC, DE, HL, IX, IY

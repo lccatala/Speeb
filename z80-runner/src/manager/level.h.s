@@ -8,6 +8,8 @@
 level_header_speed      = 0
 level_header_length     = level_header_speed+1
 level_header_next       = level_header_length+1
+level_header_next_l     = level_header_next
+level_header_next_h     = level_header_next+1
 level_header_size       = level_header_next+2
 
 level_spawn_start       = level_header_size
@@ -20,6 +22,8 @@ level_spawn_x           = level_spawn_section+1
 level_spawn_y           = level_spawn_x+1
 level_spawn_size        = level_spawn_y+1
 
+
+level_no_next_level = 0x0000
 
 ;;Starts the level data
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
