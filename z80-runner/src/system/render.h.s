@@ -22,6 +22,11 @@
 .globl _goal
 .globl _ice
 
+;;ONLY CAN BE 0 OR 1
+;;Allows you to see the bounding box of things
+;;At the cost of weird trails of unfathomable madness
+render_see_bounding_box = 0
+
 .macro call_render_for_type _FUNCTION, _TYPE
 	ld a, entity_render_type(ix)
 	cp _TYPE

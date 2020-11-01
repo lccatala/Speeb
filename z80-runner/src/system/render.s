@@ -65,6 +65,7 @@ render_entity_redraw_xor::
 	ld		b, entity_sprite_width(ix)
 	ld		c, entity_sprite_height(ix)
 	call	cpct_drawSpriteBlended_asm
+
 	pop		hl
     
 	render_entity_redraw_xor_no_erase:
@@ -82,6 +83,15 @@ render_entity_redraw_xor::
 	ld		b, entity_sprite_width(ix)
 	ld		c, entity_sprite_height(ix)
 	call	cpct_drawSpriteBlended_asm
+
+	;;Allows you to see the bounding box of things
+	;;At the cost of weird trails of unfathomable madness
+    .if render_see_bounding_box
+		;;if bounding box
+		render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
+		ex de, hl
+		render_draw_solid_box #0xC0, entity_width(ix), entity_height(ix)
+	.endif
 	ret
 
 ;; Not use direcly, render_message makes it more readable
