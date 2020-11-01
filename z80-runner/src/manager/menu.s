@@ -61,7 +61,7 @@ menu_level_screen::
 
    menu_level_screen_print_name:
    push ix
-   render_draw_message_from_level #0, #0x20, #0, #1
+   render_draw_message_from_level #1, #0x20, #0, #1
    pop ix
 
    menu_level_screen_no_name:
@@ -75,7 +75,7 @@ menu_level_screen::
    jr z, menu_level_screen_no_advice
 
    menu_level_screen_print_advice:
-   render_draw_message_from_level #0, #0x50, #0, #1
+   render_draw_message_from_level #1, #0x50, #0, #1
 
    menu_level_screen_no_advice:
    ld a, #70
