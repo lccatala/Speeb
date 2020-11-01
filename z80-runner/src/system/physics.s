@@ -9,6 +9,7 @@
 physics_collision_detected:: .db #physics_collision_no ;; flag for collision detection, should be changed to an array
 ;;permanent state, must clean when loading
 physics_main_player_dashing:: .db #physics_dashing_no
+physics_main_player_dashing_double:: .db #physics_dashing_no
 
 
 ;;INPUT
@@ -197,7 +198,7 @@ physics_entity_move_y:
 ;; move x
 ;; INPUT:
 ;;	IX:		entity to move
-;; DESTROYS: AF, BC
+;; DESTROYS: AF, BC, HL
 physics_entity_move_x:
 	ld	bc,	#entity_main_player
 	ld	a,	c
@@ -277,6 +278,15 @@ physics_main_player_dash:
 		ld		a, #physics_dodge_initial_x_coord
 		ld 		entity_x_coord(ix), a		;; puts entity on the limit
 		ld		entity_x_speed(ix), #0
+		;; check double dash
+		ld		a, (physics_main_player_dashing_double)
+		cp		#physics_dashing_no
+		ret		z
+		ld		a, #physics_dashing_no
+		ld		(physics_main_player_dashing_double), a
+    	ld      hl, #physics_action_dodge_right
+		ld		entity_next_action_h(ix), h
+		ld		entity_next_action_l(ix), l
 		ret
 
 		physics_main_player_return_left:
@@ -286,6 +296,15 @@ physics_main_player_dash:
 		ld		a, #physics_dodge_initial_x_coord
 		ld 		entity_x_coord(ix), a		;; puts entity on the limit
 		ld		entity_x_speed(ix), #0
+		;; check double dash
+		ld		a, (physics_main_player_dashing_double)
+		cp		#physics_dashing_no
+		ret		z
+		ld		a, #physics_dashing_no
+		ld		(physics_main_player_dashing_double), a
+    	ld      hl, #physics_action_dodge_left
+		ld		entity_next_action_h(ix), h
+		ld		entity_next_action_l(ix), l
 		ret
 	
 
@@ -329,7 +348,7 @@ physics_update_entity:
 ;; Update speed and position of all entities in the level
 ;; INPUT: none
 ;; OUTPUT: none
-;; BREAKS: AF, BC, IX, IY
+;; BREAKS: AF, BC, HL, IX, IY
 physics_update::
 	;; Resets the collision flag
 	ld a, #physics_collision_no

@@ -1,6 +1,7 @@
 .module	physics
 
 .globl physics_main_player_dashing
+.globl physics_main_player_dashing_double
 .globl physics_collision_detected
 .globl physics_update
 .globl physics_action_jump
@@ -20,6 +21,7 @@ physics_dodge_limit_x_coord_left  = 4
 physics_dodge_limit_x_coord_right = 20
 
 physics_dashing_no  = 0x00
+physics_dashing     = 0x01
 
 physics_collision_no                = 0x00
 physics_collision_with_enemy        = 0x01
