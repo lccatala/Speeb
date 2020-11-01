@@ -39,7 +39,9 @@ entity_next_action_l    = entity_next_action
 entity_next_action_h    = entity_next_action+1
 entity_sprite_width     = entity_next_action+2
 entity_sprite_height    = entity_sprite_width+1
-entity_size             = entity_sprite_height+1
+entity_x_offset         = entity_sprite_height+1
+entity_y_offset         = entity_x_offset+1
+entity_size             = entity_y_offset+1
 
 .macro entity_define
     .rept #entity_size
@@ -54,7 +56,7 @@ entity_size             = entity_sprite_height+1
 .endm
 
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
-.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE, _RENDER_TYPE, _SPRITE_WIDTH, _SPRITE_HEIGHT
+.macro entity_create_prototype _Y_SPEED, _WIDTH, _HEIGHT, _AI_FUNCTION, _SPRITE, _RENDER_TYPE, _SPRITE_WIDTH, _SPRITE_HEIGHT, _X_OFFSET, _Y_OFFSET
     general_blank_bytes entity_render_type-0
     .db _RENDER_TYPE    ;; entity_render_type
     general_blank_bytes entity_is_dead-(entity_render_type+1)
@@ -79,7 +81,11 @@ entity_size             = entity_sprite_height+1
     .db _SPRITE_WIDTH
     general_blank_bytes entity_sprite_height-(entity_sprite_width+1)
     .db _SPRITE_HEIGHT
-    general_blank_bytes entity_size-(entity_sprite_height+1)
+    general_blank_bytes entity_x_offset-(entity_sprite_height+1)
+    .db _X_OFFSET
+    general_blank_bytes entity_y_offset-(entity_x_offset+1)
+    .db _Y_OFFSET
+    general_blank_bytes entity_size-(entity_y_offset+1)
 .endm
 
 .macro entity_create_prototype_with_x_speed _Y_SPEED, _WIDTH, _HEIGHT, _COLOR, _AI_FUNCTION, _X_SPEED

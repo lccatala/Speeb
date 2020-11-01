@@ -80,6 +80,19 @@ render_max_x = 0x50
 	call	cpct_getScreenPtr_asm
 .endm
 
+;;INPUT
+;; IX: ENTITY
+.macro render_get_screen_pointer_from_entity
+	ld		de, #render_vid_mem_start
+	ld		a, entity_x_coord(ix)
+	add		entity_x_offset(ix)
+	ld		c, a
+	ld		a, entity_y_coord(ix)
+	add		entity_y_offset(ix)
+	ld		b, a
+	call	cpct_getScreenPtr_asm
+.endm
+
 
 ;;INPUT:
 ;;	_COLOR:     color (a for drawSolidBox) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)

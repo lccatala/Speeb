@@ -33,7 +33,7 @@ render_entity_redraw_xor_high::
 ;;DESTROY: AF, BC, DE, HL 
 render_entity_redraw_xor::
     ;; doesn't draw non moved entities
-	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
+	render_get_screen_pointer_from_entity
 	ld  a, l
 	cp  entity_last_screen_l(ix)
 	jr  nz, render_entity_redraw_xor_moved
