@@ -19,6 +19,8 @@ physics_dodge_initial_x_coord     = 12
 physics_dodge_limit_x_coord_left  = 4
 physics_dodge_limit_x_coord_right = 20
 
+physics_dashing_no  = 0x00
+
 physics_collision_no                = 0x00
 physics_collision_with_enemy        = 0x01
 physics_collision_with_end          = 0x10

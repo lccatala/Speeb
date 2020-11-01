@@ -7,7 +7,9 @@
 
 
 physics_collision_detected:: .db #physics_collision_no ;; flag for collision detection, should be changed to an array
-physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
+;;permanent state, must clean when loading
+physics_main_player_dashing:: .db #physics_dashing_no
+
 
 ;;INPUT
 ;;	A:		level length
@@ -29,6 +31,9 @@ physics_load_level::
 	ld	entity_x_speed(ix), a
 	;;kils the end
 	ld  entity_is_dead(ix), #1
+
+	ld a, #physics_dashing_no
+	ld (physics_main_player_dashing), a
 
 	;; sets the coord x to max
 	ld	a, #render_max_x
@@ -146,6 +151,7 @@ physics_action_dodge_left::
 	ld		a, (physics_main_player_dashing)
 	xor		#1
 	ld		(physics_main_player_dashing), a
+
 	ld		entity_x_speed(ix), #physics_dodge_initial_speed_left
 	ret
 ;; Action: dodge right!
@@ -234,53 +240,53 @@ physics_main_player_dash:
 	cp 		#0
 	jr		z, physics_main_player_return
 
-	;;direction of dash?
-	ld		a, entity_x_coord(ix)
-	sub		#physics_dodge_initial_x_coord
-	jp		p, physics_main_player_dash_right ;;positive
-	
-	;;left//negative
-	ld		a, entity_x_coord(ix)
-	sub 	#physics_dodge_limit_x_coord_left
-	ret 	p
-	ld		a, #physics_dodge_limit_x_coord_left
-	ld 		entity_x_coord(ix), a		;; puts entity on the limit
-	ld		entity_x_speed(ix), #0
-	ret
+		;;direction of dash?
+		ld		a, entity_x_coord(ix)
+		sub		#physics_dodge_initial_x_coord
+		jp		p, physics_main_player_dash_right ;;positive
+		
+		;;left//negative
+		ld		a, entity_x_coord(ix)
+		sub 	#physics_dodge_limit_x_coord_left
+		ret 	p
+		ld		a, #physics_dodge_limit_x_coord_left
+		ld 		entity_x_coord(ix), a		;; puts entity on the limit
+		ld		entity_x_speed(ix), #0
+		ret
 
-	physics_main_player_dash_right:
-	ld		a, entity_x_coord(ix)
-	sub 	#physics_dodge_limit_x_coord_right
-	ret		m
-	ld		a, #physics_dodge_limit_x_coord_right
-	ld 		entity_x_coord(ix), a		;; puts entity on the limit
-	ld		entity_x_speed(ix), #0
-	ret
+		physics_main_player_dash_right:
+		ld		a, entity_x_coord(ix)
+		sub 	#physics_dodge_limit_x_coord_right
+		ret		m
+		ld		a, #physics_dodge_limit_x_coord_right
+		ld 		entity_x_coord(ix), a		;; puts entity on the limit
+		ld		entity_x_speed(ix), #0
+		ret
 
 
 	physics_main_player_return:
-	;;direction of dash?
-	ld		a, entity_x_speed(ix)
-	cp		#0
-	jp		m, physics_main_player_return_left ;;positive
-	
-	;;return to inital moving with right dash
-	ld		a, entity_x_coord(ix)
-	sub 	#physics_dodge_initial_x_coord
-	ret		m
-	ld		a, #physics_dodge_initial_x_coord
-	ld 		entity_x_coord(ix), a		;; puts entity on the limit
-	ld		entity_x_speed(ix), #0
-	ret
+		;;direction of dash?
+		ld		a, entity_x_speed(ix)
+		cp		#0
+		jp		m, physics_main_player_return_left ;;positive
+		
+		;;return to inital moving with right dash
+		ld		a, entity_x_coord(ix)
+		sub 	#physics_dodge_initial_x_coord
+		ret		m
+		ld		a, #physics_dodge_initial_x_coord
+		ld 		entity_x_coord(ix), a		;; puts entity on the limit
+		ld		entity_x_speed(ix), #0
+		ret
 
-	physics_main_player_return_left:
-	ld		a, entity_x_coord(ix)
-	sub 	#physics_dodge_initial_x_coord
-	ret		p
-	ld		a, #physics_dodge_initial_x_coord
-	ld 		entity_x_coord(ix), a		;; puts entity on the limit
-	ld		entity_x_speed(ix), #0
-	ret
+		physics_main_player_return_left:
+		ld		a, entity_x_coord(ix)
+		sub 	#physics_dodge_initial_x_coord
+		ret		p
+		ld		a, #physics_dodge_initial_x_coord
+		ld 		entity_x_coord(ix), a		;; puts entity on the limit
+		ld		entity_x_speed(ix), #0
+		ret
 	
 
 ;; Collision considers entities as squares, having starting and ending points for both their x and y.
