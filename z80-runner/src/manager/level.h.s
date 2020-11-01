@@ -10,7 +10,13 @@ level_header_length     = level_header_speed+1
 level_header_next       = level_header_length+1
 level_header_next_l     = level_header_next
 level_header_next_h     = level_header_next+1
-level_header_size       = level_header_next+2
+level_header_name       = level_header_next+2
+level_header_name_l     = level_header_name
+level_geader_name_h     = level_header_name+1
+level_header_advice     = level_header_name+2
+level_header_advice_l   = level_header_advice
+level_header_advice_h   = level_header_advice+1
+level_header_size       = level_header_advice+2
 
 level_spawn_start       = level_header_size
 

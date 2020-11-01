@@ -32,6 +32,12 @@ game_load_level:
 
 ;;DESTROYS: AF, BC, DE, HL, IX
 game_init::
+   ;; This needs to be called here or we won't have sound in the title screen
+   call     sound_init
+   call     sound_play_menu_theme
+   
+   call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
+
    call     control_init
 
    ld  ix, #level_first
@@ -103,7 +109,6 @@ game_loop::
 
 game_restart:
    ;; After you press space screen gets cleaned and game is restarted
-   call  sound_play_menu_theme
    call  render_clean
    call  game_init
    ret
