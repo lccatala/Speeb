@@ -12,7 +12,7 @@ level_header_next_l     = level_header_next
 level_header_next_h     = level_header_next+1
 level_header_name       = level_header_next+2
 level_header_name_l     = level_header_name
-level_geader_name_h     = level_header_name+1
+level_header_name_h     = level_header_name+1
 level_header_advice     = level_header_name+2
 level_header_advice_l   = level_header_advice
 level_header_advice_h   = level_header_advice+1
@@ -30,20 +30,26 @@ level_spawn_size        = level_spawn_y+1
 
 
 level_no_next_level = 0x0000
+level_no_name = 0x0000
+level_no_advice = 0x0000
 
 ;;Starts the level data
 ;;NEEDS THE INCLUSION OF UTILITY/GENERAL.H.S!!!
 ;;INPUT
 ;;  _SPEED:     level speed, must be *
 ;;  _LENGTH:    level length in number of 256X coordinate sections, must be *
-.macro level_create_header _SPEED, _LENGTH, _NEXT
+.macro level_create_header _SPEED, _LENGTH, _NEXT, _NAME, _ADVICE
     general_blank_bytes level_header_speed-0
     .db _SPEED          ;; level_header_speed
     general_blank_bytes level_header_length-(level_header_speed+1)
     .db _LENGTH         ;; level_header_length
     general_blank_bytes level_header_next-(level_header_length+1)
     .dw _NEXT
-    general_blank_bytes level_header_size-(level_header_next+2)
+    general_blank_bytes level_header_name-(level_header_next+2)
+    .dw _NAME
+    general_blank_bytes level_header_advice-(level_header_name+2)
+    .dw _ADVICE
+    general_blank_bytes level_header_size-(level_header_advice+2)
 .endm
 
 ;;Adds an entity to be spawned. SPWANS MUST BE ORDERED BY _SECTION AND _X_COORD

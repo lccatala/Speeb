@@ -55,6 +55,19 @@ render_max_x = 0x50
 .endm
 
 ;;INPUT:
+;; STRING DIRECTION IS AT DE!
+;;USER MUST INCLUDE UNDOCUMENTED OPCODES
+.macro  render_draw_message_from_level _X, _Y, _BACKGROUND_COLOR, _FONT_COLOR
+    ld__iyh_d
+	ld__iyl_e
+    ld   h, _BACKGROUND_COLOR ;; background dark blue
+    ld   l, _FONT_COLOR ;; letters yellow
+    ld   a, _Y
+    ld	 b, _X
+    call render_draw_text_at
+.endm
+
+;;INPUT:
 ;;	_X:		X coordinate (c for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
 ;;	_Y:		Y coordinate (b for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
 ;;DESTROYS: AF, BC, DE, HL

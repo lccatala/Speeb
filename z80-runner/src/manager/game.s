@@ -18,6 +18,7 @@
 ;;DESTROYS: AF, BC, IX
 game_load_level:
    push ix
+   call     menu_level_screen
    ;;if you load a level you restart the entities and the render
    call     entity_init
    call     render_init
