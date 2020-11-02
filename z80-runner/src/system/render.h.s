@@ -24,6 +24,7 @@
 .globl _bird
 .globl _largeplant
 .globl _bat
+.globl _grass
 
 ;;ONLY CAN BE 0 OR 1
 ;;Allows you to see the bounding box of things

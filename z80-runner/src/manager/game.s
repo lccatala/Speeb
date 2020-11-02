@@ -1,6 +1,7 @@
 .module game
 .include "game.h.s"
 
+.include "manager/grassfield.h.s"
 .include "manager/entity.h.s"
 .include "system/render.h.s"
 .include "manager/menu.h.s"
@@ -20,8 +21,10 @@ game_load_level:
    push ix
    call     menu_level_screen
    ;;if you load a level you restart the entities and the render
+   call     grassfield_init
    call     entity_init
    call     render_init
+
    pop ix
 
    call level_load
@@ -99,6 +102,7 @@ game_loop::
    call     physics_update
    call     render_update
    call     entity_update
+   call     grassfield_update
    
    
    ;; Screen synchronization, the more repts, the more the game slows down

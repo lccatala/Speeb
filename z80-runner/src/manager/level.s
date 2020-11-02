@@ -34,8 +34,7 @@ level_second::
     level_end
 level_third_name: .asciz "There Is Only       Madness In This     Damned Hell"
 level_third::
-    level_create_header #-1, #1, #level_no_next_level, #level_third_name, #level_no_advice
-    level_add_spawn #entity_prototype_cloud_enemy, #2, #190, #30
+    level_create_header #-2, #3, #level_no_next_level, #level_third_name, #level_no_advice
     level_end
 
 level_next_spawn_pointer: .dw #0x0000
