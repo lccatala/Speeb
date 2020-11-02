@@ -1,6 +1,7 @@
 .module game
 .include "game.h.s"
 
+.include "manager/grassfield.h.s"
 .include "manager/entity.h.s"
 .include "system/render.h.s"
 .include "manager/menu.h.s"
@@ -36,6 +37,8 @@ game_init::
    ;; This needs to be called here or we won't have sound in the title screen
    call     sound_init
    call     sound_play_menu_theme
+
+   call     grassfield_init
    
    call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
 

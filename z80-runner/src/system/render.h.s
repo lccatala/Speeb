@@ -21,6 +21,7 @@
 .globl _bunny_2
 .globl _goal
 .globl _ice
+.globl _grass
 
 ;;ONLY CAN BE 0 OR 1
 ;;Allows you to see the bounding box of things

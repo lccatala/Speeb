@@ -2,6 +2,7 @@
 .include "cpctelera.h.s"
 .include "manager/entity.h.s"
 .include "img/screens/screenbackground_z.h.s"
+.include "manager/grassfield.h.s"
 
 ;;DESTROYS: AF, BC, DE, HL
 render_clean:
@@ -19,6 +20,22 @@ render_init::
 	ld 		hl, #_screenbackground_z_end
 	ld		de, #0xFFFF
     call cpct_zx7b_decrunch_s_asm
+	ret
+
+;;INPUT
+;; IX:	Grass
+render_redraw_grass:
+	;;test
+	render_get_screen_pointer grass_x_coord(ix), grass_y_coord(ix)
+	ex de, hl
+	ld hl, #_grass
+	ld b, #2
+	ld c, #2
+	call cpct_drawSprite_asm
+;;F3 light green
+;;0F dark green
+;; X 0x50 -> 0x00
+;; Y 0xA2 -> 0xC8
 
 	ret
 
@@ -151,6 +168,9 @@ render_update::
 	call cpct_waitVSYNC_asm
 	halt
 	halt
+
+	ld ix, #grassfield_grass
+	call render_redraw_grass
 
 	ret
 	
