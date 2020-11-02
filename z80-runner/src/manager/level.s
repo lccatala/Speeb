@@ -26,6 +26,17 @@ level_first_name: .asciz "LEVEL 1"
 level_first_advice: .asciz "Jump!"
 level_first::
     level_create_header #-1, #1, #level_second, #level_first_name, #level_first_advice
+
+    
+    ;level_add_spawn #entity_prototype_plant_enemy, #2, #80, #physics_ground_level
+    ;level_add_spawn #entity_prototype_plant_enemy, #1, #90, #physics_ground_level
+    ;level_add_spawn #entity_prototype_plant_enemy, #1, #100, #physics_ground_level
+    ;level_add_spawn #entity_prototype_plant_enemy, #1, #105, #physics_ground_level
+
+
+
+    
+
     level_add_spawn #entity_prototype_plant_enemy, #0, #100, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #0, #180, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #0, #240, #physics_ground_level
@@ -196,7 +207,7 @@ level_twelfth::
 level_thirteenth_name: .asciz "LEVEL 13"
 level_thirteenth_advice: .asciz "Is it a bat?"
 level_thirteenth::
-    level_create_header #-1, #2, #level_fourteenth, #level_twelfth_name, #level_twelfth_advice
+    level_create_header #-1, #2, #level_fourteenth, #level_thirteenth_name, #level_twelfth_advice
     level_add_spawn #entity_prototype_bat_enemy, #0, #100, #30
     level_add_spawn #entity_prototype_plant_enemy, #1, #20, #physics_ground_level
     level_add_spawn #entity_prototype_bat_enemy, #1, #50, #30
@@ -207,7 +218,7 @@ level_thirteenth::
 level_fourteenth_name: .asciz "LEVEL 14"
 level_fourteenth_advice: .asciz "Yes"
 level_fourteenth::
-    level_create_header #-1, #2, #level_no_next_level, #level_twelfth_name, #level_fourteenth_advice
+    level_create_header #-1, #2, #level_no_next_level, #level_fourteenth_name, #level_fourteenth_advice
     level_add_spawn #entity_prototype_bat_enemy, #0, #80, #30
     level_add_spawn #entity_prototype_bird_enemy, #0, #120, #physics_ground_level-40
     level_add_spawn #entity_prototype_bird_enemy, #0, #250, #physics_ground_level
@@ -216,6 +227,21 @@ level_fourteenth::
     level_add_spawn #entity_prototype_bat_enemy, #1, #170, #30
     level_add_spawn #entity_prototype_bird_enemy, #1, #200, #physics_ground_level-40
     level_add_spawn #entity_prototype_bat_enemy, #1, #200, #30
+    level_end
+
+level_fifteenth_name: .asciz "LEVEL 15"
+level_fifteenth_advice: .asciz "Is this speeding up??"
+level_fifteenth::
+    level_create_header #-2, #3, #level_no_next_level, #level_fifteenth_name, #level_fifteenth_advice
+    level_add_spawn #entity_prototype_plant_enemy, #0, #110, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #170, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #0, #250, #physics_ground_level
+    level_add_spawn #entity_prototype_bird_enemy, #1, #30, #physics_ground_level-20
+    level_add_spawn #entity_prototype_bird_enemy, #1, #40, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #80, #physics_ground_level
+    level_add_spawn #entity_prototype_cloud_enemy, #1, #100, #30
+    level_add_spawn #entity_prototype_bat_enemy, #1, #250, #30
+    level_add_spawn #entity_prototype_bird_enemy, #2, #0, #physics_ground_level
     level_end
 
 level_next_spawn_pointer: .dw #0x0000
