@@ -1,4 +1,5 @@
 .include "physics.h.s"
+.include "manager/grassfield.h.s"
 .include "manager/entity.h.s"
 .include "manager/game.h.s"
 .include "manager/level.h.s"
@@ -51,13 +52,32 @@ physics_load_level::
 	ret
 
 
-physics_current_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
+physics_current_speed:: .db #-1
 physics_current_length:: .db #-1
 
 physics_current_coord: .db #0x00
 physics_current_section: .db #0x00
 
 physics_current_spawning_x: .db #render_max_x
+
+;;INPUT:
+;; IX:	GRASS
+physics_move_grass:
+	ld  a, grass_x_coord(ix)
+	ld hl, #physics_current_speed
+	ld c, a
+	add a, (hl)
+	;;compares new value(a) with original value (c)
+	cp c
+	;; c<=a means it got out of the level
+	jp nc, physics_move_grass_died
+
+	ld  grass_x_coord(ix), a
+	ret
+
+	physics_move_grass_died:
+	ld grass_is_dead(ix), #0x01
+	ret
 
 ;; call the action specified on the entity, destroys whatever that action destroys
 ;; INPUT:
@@ -379,5 +399,7 @@ physics_update::
 	ld  d,  #physics_collision_with_end
 	call	physics_check_collision
 
+	ld ix, #grassfield_grass
+	call physics_move_grass
 
 	ret

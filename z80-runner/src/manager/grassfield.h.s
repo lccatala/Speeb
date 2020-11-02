@@ -3,7 +3,8 @@
 .globl grassfield_init
 .globl grassfield_grass
 
-grass_x_coord       = 0
+grass_is_dead       = 0
+grass_x_coord       = grass_is_dead+1
 grass_y_coord       = grass_x_coord+1
 grass_last_screen   = grass_y_coord+1
 grass_last_screen_l = grass_last_screen

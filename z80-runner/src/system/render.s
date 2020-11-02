@@ -25,8 +25,30 @@ render_init::
 ;;INPUT
 ;; IX:	Grass
 render_redraw_grass:
+	;;doesnt erase new grass
+	xor a
+	ld d, grass_last_screen_h(ix)
+	ld e, grass_last_screen_l(ix)
+	cp d
+	jr nz, render_redraw_grass_not_new
+	cp e
+	jr nz, render_redraw_grass_not_new
+	jr render_redraw_grass_new
+	;;erase
+	render_redraw_grass_not_new:
+	render_draw_solid_box #0xF3, #2, #2 
 	;;test
+	
+	render_redraw_grass_new:
+
+	;;only draw if not dead
+	xor a
+	cp grass_is_dead(ix)
+	ret nz
+	
 	render_get_screen_pointer grass_x_coord(ix), grass_y_coord(ix)
+	ld grass_last_screen_h(ix), h
+	ld grass_last_screen_l(ix), l
 	ex de, hl
 	ld hl, #_grass
 	ld b, #2
@@ -164,13 +186,15 @@ render_update::
 	ld      ix, #entity_main_player
 	call	render_entity_redraw_xor
 
+
+	ld ix, #grassfield_grass
+	call render_redraw_grass
+
 	;;STOP, it goes way too fast
 	call cpct_waitVSYNC_asm
 	halt
 	halt
 
-	ld ix, #grassfield_grass
-	call render_redraw_grass
 
 	ret
 	

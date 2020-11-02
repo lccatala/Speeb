@@ -21,8 +21,10 @@ game_load_level:
    push ix
    call     menu_level_screen
    ;;if you load a level you restart the entities and the render
+   call     grassfield_init
    call     entity_init
    call     render_init
+
    pop ix
 
    call level_load
@@ -37,8 +39,6 @@ game_init::
    ;; This needs to be called here or we won't have sound in the title screen
    call     sound_init
    call     sound_play_menu_theme
-
-   call     grassfield_init
    
    call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
 
