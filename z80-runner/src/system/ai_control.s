@@ -189,7 +189,7 @@ ai_control_zigzag::
 
         ;; Leave
         ld a, entity_y_coord(ix)
-        sub #0x78
+        sub #0x80
         jr nc, ai_control_zigzag_leave
 
         ld  entity_x_speed(ix), #0x03
