@@ -25,17 +25,31 @@ level_current:: .dw #level_no_next_level
 level_first_name: .asciz "LEVEL 1"
 level_first_advice: .asciz "Jump!"
 level_first::
-    level_create_header #-1, #1, #level_second, #level_first_name, #level_first_advice
-
+    level_create_header #-1, #3, #level_second, #level_first_name, #level_first_advice
     
     level_add_spawn #entity_prototype_plant_enemy, #0, #80, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #0, #110, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #0, #160, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #0, #200, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #250, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #15, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #50, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #80, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #110, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #140, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #190, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #210, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #240, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #10, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #15, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #60, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #2, #150, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #2, #190, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #220, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #225, #physics_ground_level
 
-    
 
-    level_add_spawn #entity_prototype_plant_enemy, #0, #100, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #180, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #240, #physics_ground_level
+
     level_end
 
 level_second_name: .asciz "LEVEL 2"
