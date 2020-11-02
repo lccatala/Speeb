@@ -19,6 +19,10 @@
 ;;DESTROYS: AF, BC, IX
 game_load_level:
    push ix
+   ld__d_ixh
+   ld__e_ixl
+   ex de, hl
+   ld (game_init_level_reset), hl
    call     menu_level_screen
    ;;if you load a level you restart the entities and the render
    call     grassfield_init
@@ -44,6 +48,7 @@ game_init::
 
    call     control_init
 
+   game_init_level_reset = .+2
    ld  ix, #level_first
    call game_load_level
    ret
@@ -51,6 +56,8 @@ game_init::
 game_win:
    call sound_play_victory_theme
    call menu_win_screen
+   ld hl, #level_first
+   ld (game_init_level_reset), hl
    call game_restart
    ret
 
