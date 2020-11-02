@@ -1,20 +1,38 @@
 .include "grassfield.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
 
-grassfield_grass:: grass_define
-
 grassfield_grass_array:: grass_define_array #grass_max
 grassfield_next_grass: .dw #grassfield_grass_array
 
+grassfield_advance_count:: .db #grassfield_space_between_grass
+grassfield_advance_offset:: .db #0x00
+
 grassfield_init::
-    ld  ix, #grassfield_grass
-    ld grass_is_dead(ix), #0x00
-    ld grass_x_coord(ix), #0x4D
-    ld grass_y_coord(ix), #0xA4
-    ld grass_last_screen_h(ix), #0x00
-    ld grass_last_screen_l(ix), #0x00
+    ld hl, #grassfield_advance_count
+    ld (hl), #grassfield_space_between_grass
+
+    ld hl, #grassfield_advance_offset
+    ld (hl), #0x00
 
     call grassfield_clean_grass_array
+
+    grassfield_init_loop:
+    call grassfield_create_grass
+
+    ld hl, #grassfield_advance_offset
+    ld a, #grassfield_space_between_grass
+    add a, (hl)
+    cp #0x50
+	;; 0x50<=a means it got out of the level
+    jr nc, grassfield_init_end
+
+    ld (grassfield_advance_offset), a
+    jr grassfield_init_loop
+    
+    grassfield_init_end:
+
+    ld hl, #grassfield_advance_offset
+    ld (hl), #0x00
 
     ret
 
@@ -70,10 +88,36 @@ grassfield_create_grass:
     ld de, #grass_size
     add hl, de
     ld de, (grassfield_next_grass)
+
+    push hl
+    ld__ixh_d
+    ld__ixl_e
+    ld a, #0x4D
+    ld hl, #grassfield_advance_offset
+    sub (hl)
+    ld grass_is_dead(ix), #0x00
+    ld grass_x_coord(ix), a
+    ld grass_y_coord(ix), #0xA4
+    ld grass_last_screen_h(ix), #0x00
+    ld grass_last_screen_l(ix), #0x00
+    pop hl
+    
     ld (grassfield_next_grass), hl
     ret
 
 grassfield_update::
     ld hl, #grassfield_destroy_grass_if_dead
     call grassfield_for_all_grass
+
+    ;;if count is 0, reset and spawn a new one
+    xor a
+    ld hl, #grassfield_advance_count
+    cp (hl)
+    ret nz
+
+    call grassfield_create_grass
+
+    ld hl, #grassfield_advance_count
+    ld (hl), #grassfield_space_between_grass
+
     ret

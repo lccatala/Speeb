@@ -1,12 +1,14 @@
 .module grassfield
 
 
-.globl grassfield_grass
-
 .globl grassfield_init
 .globl grassfield_grass_array
 .globl grassfield_update
 .globl grassfield_for_all_grass
+.globl grassfield_advance_count
+.globl grassfield_advance_offset
+
+grassfield_space_between_grass = 16
 
 grass_is_dead       = 0
 grass_x_coord       = grass_is_dead+1

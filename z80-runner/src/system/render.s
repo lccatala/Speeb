@@ -187,8 +187,11 @@ render_update::
 	call	render_entity_redraw_xor
 
 
-	ld ix, #grassfield_grass
-	call render_redraw_grass
+	;ld ix, #grassfield_grass
+	;call render_redraw_grass
+
+	ld hl, #render_redraw_grass
+	call grassfield_for_all_grass
 
 	;;STOP, it goes way too fast
 	call cpct_waitVSYNC_asm

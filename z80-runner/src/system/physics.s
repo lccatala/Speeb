@@ -399,7 +399,34 @@ physics_update::
 	ld  d,  #physics_collision_with_end
 	call	physics_check_collision
 
-	ld ix, #grassfield_grass
-	call physics_move_grass
+	;ld ix, #grassfield_grass
+	;call physics_move_grass
+	ld hl, #physics_move_grass
+	call grassfield_for_all_grass
+
+	ld  a, (grassfield_advance_count)
+	ld hl, #physics_current_speed
+	ld c, a
+	add a, (hl)
+	;;compares new value(a) with original value (c)
+	cp c
+	;; c<=a means it got out of the level
+	jp nc, physics_update_counter_ended
+
+	ld (grassfield_advance_count), a
+	ret
+
+	physics_update_counter_ended:
+	ld b, a
+	xor a
+	ld (grassfield_advance_offset), a ;; reset the offset jic
+	sub b
+	ret z ;;nothing to be done if counter ended on 0
+
+	;;save the offset
+	ld (grassfield_advance_offset), a
+	;;save a 0 instead of the count
+	xor a
+	ld (grassfield_advance_count), a
 
 	ret
