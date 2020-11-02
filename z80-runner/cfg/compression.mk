@@ -44,6 +44,8 @@ $(eval $(call ADD2PACK,screenmenu_z,src/img/screens/menu.bin))
 $(eval $(call PACKZX7B,screenmenu_z,src/img/screens/))
 $(eval $(call ADD2PACK,screengameover_z,src/img/screens/gameover.bin))
 $(eval $(call PACKZX7B,screengameover_z,src/img/screens/))
+$(eval $(call ADD2PACK,screenwin_z,src/img/screens/win.bin))
+$(eval $(call PACKZX7B,screenwin_z,src/img/screens/))
 
 
 
