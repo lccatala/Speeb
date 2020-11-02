@@ -52,6 +52,9 @@ $(eval $(call IMG2SP, CONVERT         , img/plant.png , 8, 16, plant))
 $(eval $(call IMG2SP, CONVERT         , img/goal.png , 2, 64, goal))
 $(eval $(call IMG2SP, CONVERT         , img/ice.png , 4, 8, ice))
 $(eval $(call IMG2SP, CONVERT         , img/grass.png , 4, 2, grass))
+$(eval $(call IMG2SP, CONVERT         , img/bat.png , 20, 12, bat))
+$(eval $(call IMG2SP, CONVERT         , img/bird.png , 20, 12, bird))
+$(eval $(call IMG2SP, CONVERT         , img/largeplant.png , 8, 32, largeplant))
 
 $(eval $(call IMG2SP, SET_FOLDER      , src/img/screens               ))
 $(eval $(call IMG2SP, SET_IMG_FORMAT  , screen            ))
@@ -59,6 +62,7 @@ $(eval $(call IMG2SP, SET_OUTPUT      , bin                  ))
 $(eval $(call IMG2SP, CONVERT         , img/background.png , 0, 0, background))
 $(eval $(call IMG2SP, CONVERT         , img/menu.png , 0, 0, menu))
 $(eval $(call IMG2SP, CONVERT         , img/gameover.png , 0, 0, gameover))
+$(eval $(call IMG2SP, CONVERT         , img/win.png , 0, 0, win))
 ##
 ## OLD MACROS (For compatibility)
 ##

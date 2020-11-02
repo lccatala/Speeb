@@ -22,6 +22,9 @@
 .globl _goal
 .globl _ice
 .globl _grass
+.globl _bird
+.globl _largeplant
+.globl _bat
 
 ;;ONLY CAN BE 0 OR 1
 ;;Allows you to see the bounding box of things

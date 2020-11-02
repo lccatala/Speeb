@@ -7,6 +7,7 @@
 .include "utility/general.h.s"
 .include "img/screens/screenmenu_z.h.s"
 .include "img/screens/screengameover_z.h.s"
+.include "img/screens/screenwin_z.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
 ;.include "system/sound.h.s"
 
@@ -14,7 +15,7 @@
 
 menu_death_message:: .asciz "You died!          Press SPACE to        restart";
 
-menu_win_message::   .asciz "You won! Press SPACE to restart";
+menu_win_message::   .asciz "Press SPACE to        restart";
 
 menu_title_message_2: .asciz "Press SPACE to PLAY";
 
@@ -98,7 +99,10 @@ menu_death_screen::
 
 menu_win_screen::
 	call  render_clean
-   render_draw_message #0x08, #0x85, #0, #1, #menu_win_message
+   ld 	hl, #_screenwin_z_end
+	ld		de, #0xFFFF
+   call cpct_zx7b_decrunch_s_asm
+;;   render_draw_message #0x12, #0xA2, #8, #1, #menu_win_message
    call menu_wait_space
    ret
 
