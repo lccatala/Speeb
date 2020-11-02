@@ -1,11 +1,76 @@
 .include "grassfield.h.s"
 .include "macros/cpct_undocumentedOpcodes.h.s"
 
+.globl cpct_getRandom_mxor_u8_asm
+
 grassfield_grass_array:: grass_define_array #grass_max
 grassfield_next_grass: .dw #grassfield_grass_array
 
 grassfield_advance_count:: .db #grassfield_space_between_grass
 grassfield_advance_offset:: .db #0x00
+
+grassfield_next_y_coord:: .db #0xA4
+
+;;A4 A8 AC B0 B4 B8 BC C0
+;;4 y C
+grassfield_change_next_y:
+
+    call cpct_getRandom_mxor_u8_asm
+    ld a, l
+    and #0x07
+
+    cp #0x00
+    jr nz, grassfield_change_next_y_1
+        ld a, #0xA4
+        ld (grassfield_next_y_coord), a
+        ret
+    grassfield_change_next_y_1:
+
+    cp #0x01
+    jr nz, grassfield_change_next_y_2
+        ld a, #0xA8
+        ld (grassfield_next_y_coord), a
+        ret
+    grassfield_change_next_y_2:
+
+    cp #0x02
+    jr nz, grassfield_change_next_y_3
+        ld a, #0xAC
+        ld (grassfield_next_y_coord), a
+        ret
+    grassfield_change_next_y_3:
+
+    cp #0x03
+    jr nz, grassfield_change_next_y_4
+        ld a, #0xB0
+        ld (grassfield_next_y_coord), a
+        ret
+    grassfield_change_next_y_4:
+
+    cp #0x04
+    jr nz, grassfield_change_next_y_5
+        ld a, #0xB4
+        ld (grassfield_next_y_coord), a
+        ret
+    grassfield_change_next_y_5:
+
+    cp #0x05
+    jr nz, grassfield_change_next_y_6
+        ld a, #0xB8
+        ld (grassfield_next_y_coord), a
+        ret
+    grassfield_change_next_y_6:
+    
+    cp #0x06
+    jr nz, grassfield_change_next_y_7
+        ld a, #0xBC
+        ld (grassfield_next_y_coord), a
+        ret
+
+    grassfield_change_next_y_7:
+        ld a, #0xC0
+        ld (grassfield_next_y_coord), a
+        ret
 
 grassfield_init::
     ld hl, #grassfield_advance_count
@@ -97,9 +162,12 @@ grassfield_create_grass:
     sub (hl)
     ld grass_is_dead(ix), #0x00
     ld grass_x_coord(ix), a
-    ld grass_y_coord(ix), #0xA4
+    ld a, (grassfield_next_y_coord)
+    ld grass_y_coord(ix), a
     ld grass_last_screen_h(ix), #0x00
     ld grass_last_screen_l(ix), #0x00
+
+    call grassfield_change_next_y
     pop hl
     
     ld (grassfield_next_grass), hl
@@ -114,7 +182,7 @@ grassfield_update::
     ld hl, #grassfield_advance_count
     cp (hl)
     ret nz
-
+    
     call grassfield_create_grass
 
     ld hl, #grassfield_advance_count
