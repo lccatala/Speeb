@@ -1,3 +1,19 @@
+;; Speeb
+;; Copyright (C) 2020  University of Alicante
+;;
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 .include "ai_control.h.s"
 .include "cpctelera.h.s"
 .include "manager/entity.h.s"
@@ -189,7 +205,7 @@ ai_control_zigzag::
 
         ;; Leave
         ld a, entity_y_coord(ix)
-        sub #0x78
+        sub #0x80
         jr nc, ai_control_zigzag_leave
 
         ld  entity_x_speed(ix), #0x03
