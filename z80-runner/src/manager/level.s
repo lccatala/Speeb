@@ -28,12 +28,8 @@ level_first::
     level_create_header #-1, #1, #level_second, #level_first_name, #level_first_advice
 
     
-    ;level_add_spawn #entity_prototype_plant_enemy, #2, #80, #physics_ground_level
-    ;level_add_spawn #entity_prototype_plant_enemy, #1, #90, #physics_ground_level
-    ;level_add_spawn #entity_prototype_plant_enemy, #1, #100, #physics_ground_level
-    ;level_add_spawn #entity_prototype_plant_enemy, #1, #105, #physics_ground_level
-
-
+    level_add_spawn #entity_prototype_plant_enemy, #0, #80, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #110, #physics_ground_level
 
     
 
