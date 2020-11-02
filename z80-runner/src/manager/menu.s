@@ -1,11 +1,13 @@
 .module menu
 
 .include "menu.h.s"
+.include "manager/level.h.s"
 .include "system/render.h.s"
 .include "utility/keyboard.h.s"
 .include "utility/general.h.s"
 .include "img/screens/screenmenu_z.h.s"
 .include "img/screens/screengameover_z.h.s"
+.include "macros/cpct_undocumentedOpcodes.h.s"
 ;.include "system/sound.h.s"
 
 .globl cpct_zx7b_decrunch_s_asm
@@ -40,6 +42,45 @@ menu_title_screen::
    render_draw_message #0, #0x70, #0, #menu_title_message_2_text_color, #menu_learn_message_3
    call menu_wait_space
    call render_clean
+   ret
+
+;;INPUT:
+;; IX:  level
+menu_level_screen::
+   call render_clean
+   
+   xor a
+   ld d, level_header_name_h(ix)
+   ld e, level_header_name_l(ix)
+
+
+   cp d
+   jr nz, menu_level_screen_print_name
+   cp e
+   jr z, menu_level_screen_no_name
+
+   menu_level_screen_print_name:
+   push ix
+   render_draw_message_from_level #1, #0x20, #0, #1
+   pop ix
+
+   menu_level_screen_no_name:
+   xor a
+   ld d, level_header_advice_h(ix)
+   ld e, level_header_advice_l(ix)
+
+   cp d
+   jr nz, menu_level_screen_print_advice
+   cp e
+   jr z, menu_level_screen_no_advice
+
+   menu_level_screen_print_advice:
+   render_draw_message_from_level #1, #0x50, #0, #1
+
+   menu_level_screen_no_advice:
+   ld a, #70
+   call general_wait_cycles
+   
    ret
 
    ;; Game waits until you press space

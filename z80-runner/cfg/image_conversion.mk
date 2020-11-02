@@ -51,6 +51,7 @@ $(eval $(call IMG2SP, CONVERT         , img/cloud.png , 16, 16, cloud))
 $(eval $(call IMG2SP, CONVERT         , img/plant.png , 8, 16, plant))
 $(eval $(call IMG2SP, CONVERT         , img/goal.png , 2, 64, goal))
 $(eval $(call IMG2SP, CONVERT         , img/ice.png , 4, 8, ice))
+$(eval $(call IMG2SP, CONVERT         , img/grass.png , 4, 2, grass))
 
 $(eval $(call IMG2SP, SET_FOLDER      , src/img/screens               ))
 $(eval $(call IMG2SP, SET_IMG_FORMAT  , screen            ))

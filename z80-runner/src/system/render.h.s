@@ -21,6 +21,12 @@
 .globl _bunny_2
 .globl _goal
 .globl _ice
+.globl _grass
+
+;;ONLY CAN BE 0 OR 1
+;;Allows you to see the bounding box of things
+;;At the cost of weird trails of unfathomable madness
+render_see_bounding_box = 0
 
 .macro call_render_for_type _FUNCTION, _TYPE
 	ld a, entity_render_type(ix)
@@ -55,6 +61,19 @@ render_max_x = 0x50
 .endm
 
 ;;INPUT:
+;; STRING DIRECTION IS AT DE!
+;;USER MUST INCLUDE UNDOCUMENTED OPCODES
+.macro  render_draw_message_from_level _X, _Y, _BACKGROUND_COLOR, _FONT_COLOR
+    ld__iyh_d
+	ld__iyl_e
+    ld   h, _BACKGROUND_COLOR ;; background dark blue
+    ld   l, _FONT_COLOR ;; letters yellow
+    ld   a, _Y
+    ld	 b, _X
+    call render_draw_text_at
+.endm
+
+;;INPUT:
 ;;	_X:		X coordinate (c for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
 ;;	_Y:		Y coordinate (b for getScreenPtr) can be *, a, b, c, d, e, h, l, (hl), (ix+*), (iy+*)
 ;;DESTROYS: AF, BC, DE, HL
@@ -64,6 +83,19 @@ render_max_x = 0x50
 	ld		de, #render_vid_mem_start
 	ld		b, _Y
 	ld		c, _X
+	call	cpct_getScreenPtr_asm
+.endm
+
+;;INPUT
+;; IX: ENTITY
+.macro render_get_screen_pointer_from_entity
+	ld		de, #render_vid_mem_start
+	ld		a, entity_x_coord(ix)
+	add		entity_x_offset(ix)
+	ld		c, a
+	ld		a, entity_y_coord(ix)
+	add		entity_y_offset(ix)
+	ld		b, a
 	call	cpct_getScreenPtr_asm
 .endm
 

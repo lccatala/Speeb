@@ -1,4 +1,5 @@
 .include "physics.h.s"
+.include "manager/grassfield.h.s"
 .include "manager/entity.h.s"
 .include "manager/game.h.s"
 .include "manager/level.h.s"
@@ -7,7 +8,10 @@
 
 
 physics_collision_detected:: .db #physics_collision_no ;; flag for collision detection, should be changed to an array
-physics_main_player_dashing:: .db #0x00 ;; flag for dashing detection
+;;permanent state, must clean when loading
+physics_main_player_dashing:: .db #physics_dashing_no
+physics_main_player_dashing_double:: .db #physics_dashing_no
+
 
 ;;INPUT
 ;;	A:		level length
@@ -30,6 +34,9 @@ physics_load_level::
 	;;kils the end
 	ld  entity_is_dead(ix), #1
 
+	ld a, #physics_dashing_no
+	ld (physics_main_player_dashing), a
+
 	;; sets the coord x to max
 	ld	a, #render_max_x
 	sub	entity_width(ix)
@@ -45,13 +52,32 @@ physics_load_level::
 	ret
 
 
-physics_current_speed:: .db #-1 ;; This has to be at -1 or the enemy won't restart to the right of the screen (end of screen detection problem)
+physics_current_speed:: .db #-1
 physics_current_length:: .db #-1
 
 physics_current_coord: .db #0x00
 physics_current_section: .db #0x00
 
 physics_current_spawning_x: .db #render_max_x
+
+;;INPUT:
+;; IX:	GRASS
+physics_move_grass:
+	ld  a, grass_x_coord(ix)
+	ld hl, #physics_current_speed
+	ld c, a
+	add a, (hl)
+	;;compares new value(a) with original value (c)
+	cp c
+	;; c<=a means it got out of the level
+	jp nc, physics_move_grass_died
+
+	ld  grass_x_coord(ix), a
+	ret
+
+	physics_move_grass_died:
+	ld grass_is_dead(ix), #0x01
+	ret
 
 ;; call the action specified on the entity, destroys whatever that action destroys
 ;; INPUT:
@@ -146,6 +172,7 @@ physics_action_dodge_left::
 	ld		a, (physics_main_player_dashing)
 	xor		#1
 	ld		(physics_main_player_dashing), a
+
 	ld		entity_x_speed(ix), #physics_dodge_initial_speed_left
 	ret
 ;; Action: dodge right!
@@ -191,7 +218,7 @@ physics_entity_move_y:
 ;; move x
 ;; INPUT:
 ;;	IX:		entity to move
-;; DESTROYS: AF, BC
+;; DESTROYS: AF, BC, HL
 physics_entity_move_x:
 	ld	bc,	#entity_main_player
 	ld	a,	c
@@ -234,53 +261,71 @@ physics_main_player_dash:
 	cp 		#0
 	jr		z, physics_main_player_return
 
-	;;direction of dash?
-	ld		a, entity_x_coord(ix)
-	sub		#physics_dodge_initial_x_coord
-	jp		p, physics_main_player_dash_right ;;positive
-	
-	;;left//negative
-	ld		a, entity_x_coord(ix)
-	sub 	#physics_dodge_limit_x_coord_left
-	ret 	p
-	ld		a, #physics_dodge_limit_x_coord_left
-	ld 		entity_x_coord(ix), a		;; puts entity on the limit
-	ld		entity_x_speed(ix), #0
-	ret
+		;;direction of dash?
+		ld		a, entity_x_coord(ix)
+		sub		#physics_dodge_initial_x_coord
+		jp		p, physics_main_player_dash_right ;;positive
+		
+		;;left//negative
+		ld		a, entity_x_coord(ix)
+		sub 	#physics_dodge_limit_x_coord_left
+		ret 	p
+		ld		a, #physics_dodge_limit_x_coord_left
+		ld 		entity_x_coord(ix), a		;; puts entity on the limit
+		ld		entity_x_speed(ix), #0
+		ret
 
-	physics_main_player_dash_right:
-	ld		a, entity_x_coord(ix)
-	sub 	#physics_dodge_limit_x_coord_right
-	ret		m
-	ld		a, #physics_dodge_limit_x_coord_right
-	ld 		entity_x_coord(ix), a		;; puts entity on the limit
-	ld		entity_x_speed(ix), #0
-	ret
+		physics_main_player_dash_right:
+		ld		a, entity_x_coord(ix)
+		sub 	#physics_dodge_limit_x_coord_right
+		ret		m
+		ld		a, #physics_dodge_limit_x_coord_right
+		ld 		entity_x_coord(ix), a		;; puts entity on the limit
+		ld		entity_x_speed(ix), #0
+		ret
 
 
 	physics_main_player_return:
-	;;direction of dash?
-	ld		a, entity_x_speed(ix)
-	cp		#0
-	jp		m, physics_main_player_return_left ;;positive
-	
-	;;return to inital moving with right dash
-	ld		a, entity_x_coord(ix)
-	sub 	#physics_dodge_initial_x_coord
-	ret		m
-	ld		a, #physics_dodge_initial_x_coord
-	ld 		entity_x_coord(ix), a		;; puts entity on the limit
-	ld		entity_x_speed(ix), #0
-	ret
+		;;direction of dash?
+		ld		a, entity_x_speed(ix)
+		cp		#0
+		jp		m, physics_main_player_return_left ;;positive
+		
+		;;return to inital moving with right dash
+		ld		a, entity_x_coord(ix)
+		sub 	#physics_dodge_initial_x_coord
+		ret		m
+		ld		a, #physics_dodge_initial_x_coord
+		ld 		entity_x_coord(ix), a		;; puts entity on the limit
+		ld		entity_x_speed(ix), #0
+		;; check double dash
+		ld		a, (physics_main_player_dashing_double)
+		cp		#physics_dashing_no
+		ret		z
+		ld		a, #physics_dashing_no
+		ld		(physics_main_player_dashing_double), a
+    	ld      hl, #physics_action_dodge_right
+		ld		entity_next_action_h(ix), h
+		ld		entity_next_action_l(ix), l
+		ret
 
-	physics_main_player_return_left:
-	ld		a, entity_x_coord(ix)
-	sub 	#physics_dodge_initial_x_coord
-	ret		p
-	ld		a, #physics_dodge_initial_x_coord
-	ld 		entity_x_coord(ix), a		;; puts entity on the limit
-	ld		entity_x_speed(ix), #0
-	ret
+		physics_main_player_return_left:
+		ld		a, entity_x_coord(ix)
+		sub 	#physics_dodge_initial_x_coord
+		ret		p
+		ld		a, #physics_dodge_initial_x_coord
+		ld 		entity_x_coord(ix), a		;; puts entity on the limit
+		ld		entity_x_speed(ix), #0
+		;; check double dash
+		ld		a, (physics_main_player_dashing_double)
+		cp		#physics_dashing_no
+		ret		z
+		ld		a, #physics_dashing_no
+		ld		(physics_main_player_dashing_double), a
+    	ld      hl, #physics_action_dodge_left
+		ld		entity_next_action_h(ix), h
+		ld		entity_next_action_l(ix), l
+		ret
 	
 
 ;; Collision considers entities as squares, having starting and ending points for both their x and y.
@@ -323,7 +368,7 @@ physics_update_entity:
 ;; Update speed and position of all entities in the level
 ;; INPUT: none
 ;; OUTPUT: none
-;; BREAKS: AF, BC, IX, IY
+;; BREAKS: AF, BC, HL, IX, IY
 physics_update::
 	;; Resets the collision flag
 	ld a, #physics_collision_no
@@ -354,5 +399,34 @@ physics_update::
 	ld  d,  #physics_collision_with_end
 	call	physics_check_collision
 
+	;ld ix, #grassfield_grass
+	;call physics_move_grass
+	ld hl, #physics_move_grass
+	call grassfield_for_all_grass
+
+	ld  a, (grassfield_advance_count)
+	ld hl, #physics_current_speed
+	ld c, a
+	add a, (hl)
+	;;compares new value(a) with original value (c)
+	cp c
+	;; c<=a means it got out of the level
+	jp nc, physics_update_counter_ended
+
+	ld (grassfield_advance_count), a
+	ret
+
+	physics_update_counter_ended:
+	ld b, a
+	xor a
+	ld (grassfield_advance_offset), a ;; reset the offset jic
+	sub b
+	ret z ;;nothing to be done if counter ended on 0
+
+	;;save the offset
+	ld (grassfield_advance_offset), a
+	;;save a 0 instead of the count
+	xor a
+	ld (grassfield_advance_count), a
 
 	ret

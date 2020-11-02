@@ -13,11 +13,11 @@ entity_end:: entity_define
 entity_enemy_array:: entity_define_array #entity_max_enemies
 entity_next_enemy: .dw #entity_enemy_array
 
-entity_prototype_main_player: entity_create_prototype #0, #8, #16, #0x0000, _bunny_0, #render_type_xor_low, #8, #16
-entity_prototype_plant_enemy: entity_create_prototype #0, #2, #16, #0x0000, _plant, #render_type_xor_low, #2, #16
-entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal, #render_type_xor_low, #1, #64
-entity_prototype_cloud_enemy: entity_create_prototype #0, #8, #16, #ai_control_move_to_x, _cloud, #render_type_xor_high, #8, #16
-entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice, #render_type_xor_high, #2, #8
+entity_prototype_main_player: entity_create_prototype #0, #5, #11, #0x0000, _bunny_0, #render_type_xor_low, #8, #16, #-2, #-5
+entity_prototype_plant_enemy: entity_create_prototype #0, #2, #16, #0x0000, _plant, #render_type_xor_low, #2, #16, #0, #0
+entity_prototype_end: entity_create_prototype #0, #1, #64, #0x0000, _goal, #render_type_xor_low, #1, #64, #0, #0
+entity_prototype_cloud_enemy: entity_create_prototype #0, #8, #16, #ai_control_move_to_x, _cloud, #render_type_xor_high, #8, #16, #0, #0
+entity_prototype_ice_enemy:: entity_create_prototype #0, #2, #8, #ai_control_suicide, _ice, #render_type_xor_high, #2, #8, #0, #0
 
 
 

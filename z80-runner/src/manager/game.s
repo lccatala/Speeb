@@ -1,6 +1,7 @@
 .module game
 .include "game.h.s"
 
+.include "manager/grassfield.h.s"
 .include "manager/entity.h.s"
 .include "system/render.h.s"
 .include "manager/menu.h.s"
@@ -11,11 +12,21 @@
 .include "system/ai_control.h.s"
 .include "system/sound.h.s"
 .include "manager/level.h.s"
+.include "macros/cpct_undocumentedOpcodes.h.s"
 
 ;;INPUT
 ;; IX:      Level to load
 ;;DESTROYS: AF, BC, IX
 game_load_level:
+   push ix
+   call     menu_level_screen
+   ;;if you load a level you restart the entities and the render
+   call     grassfield_init
+   call     entity_init
+   call     render_init
+
+   pop ix
+
    call level_load
    ld  ix, (level_current)
    ld  b, level_header_speed(ix)
@@ -25,12 +36,48 @@ game_load_level:
 
 ;;DESTROYS: AF, BC, DE, HL, IX
 game_init::
-   call     entity_init
-   call     render_init
+   ;; This needs to be called here or we won't have sound in the title screen
+   call     sound_init
+   call     sound_play_menu_theme
+   
+   call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
+
    call     control_init
 
    ld  ix, #level_first
    call game_load_level
+   ret
+
+game_win:
+   call sound_play_victory_theme
+   call menu_win_screen
+   call game_restart
+   ret
+
+game_level_end:
+   ld ix, (level_current)
+   ld h, level_header_next_h(ix)
+   ld l, level_header_next_l(ix)
+   xor a
+   cp  h
+   jr  nz, game_level_end_next
+   cp  l
+   jr  nz, game_level_end_next
+   call game_win
+   ret
+
+   game_level_end_next:
+   ex de, hl
+   ld__ixh_d
+   ld__ixl_e
+   call game_load_level
+   ret
+
+
+game_die:
+   call sound_play_death_theme
+   call menu_death_screen
+   call game_restart
    ret
 
 ;; DESTROYS: A
@@ -38,20 +85,13 @@ game_check_end_conditions:
    ;; Collision with level end
 	ld a, (physics_collision_detected)
    cp #physics_collision_with_end
-   call z, sound_play_victory_theme
-   call z, menu_win_screen
+   call z, game_level_end
 
    ;; Collision with enemy
 	ld a, (physics_collision_detected)
    cp #physics_collision_with_enemy
-   call z, sound_play_death_theme
-   call z, menu_death_screen
+   call z, game_die
 
-	ld a, (physics_collision_detected)
-   cp #physics_collision_no
-   ret z
-
-   call game_restart
    ret
 
 ;;DESTROYS: AF, BC, DE, HL, IX, IY
@@ -62,6 +102,7 @@ game_loop::
    call     physics_update
    call     render_update
    call     entity_update
+   call     grassfield_update
    
    
    ;; Screen synchronization, the more repts, the more the game slows down
@@ -73,7 +114,6 @@ game_loop::
 
 game_restart:
    ;; After you press space screen gets cleaned and game is restarted
-   call  sound_play_menu_theme
    call  render_clean
    call  game_init
    ret

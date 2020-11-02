@@ -2,6 +2,7 @@
 .include "cpctelera.h.s"
 .include "manager/entity.h.s"
 .include "img/screens/screenbackground_z.h.s"
+.include "manager/grassfield.h.s"
 
 ;;DESTROYS: AF, BC, DE, HL
 render_clean:
@@ -19,6 +20,44 @@ render_init::
 	ld 		hl, #_screenbackground_z_end
 	ld		de, #0xFFFF
     call cpct_zx7b_decrunch_s_asm
+	ret
+
+;;INPUT
+;; IX:	Grass
+render_redraw_grass:
+	;;doesnt erase new grass
+	xor a
+	ld d, grass_last_screen_h(ix)
+	ld e, grass_last_screen_l(ix)
+	cp d
+	jr nz, render_redraw_grass_not_new
+	cp e
+	jr nz, render_redraw_grass_not_new
+	jr render_redraw_grass_new
+	;;erase
+	render_redraw_grass_not_new:
+	render_draw_solid_box #0xF3, #2, #2 
+	;;test
+	
+	render_redraw_grass_new:
+
+	;;only draw if not dead
+	xor a
+	cp grass_is_dead(ix)
+	ret nz
+	
+	render_get_screen_pointer grass_x_coord(ix), grass_y_coord(ix)
+	ld grass_last_screen_h(ix), h
+	ld grass_last_screen_l(ix), l
+	ex de, hl
+	ld hl, #_grass
+	ld b, #2
+	ld c, #2
+	call cpct_drawSprite_asm
+;;F3 light green
+;;0F dark green
+;; X 0x50 -> 0x00
+;; Y 0xA2 -> 0xC8
 
 	ret
 
@@ -33,7 +72,7 @@ render_entity_redraw_xor_high::
 ;;DESTROY: AF, BC, DE, HL 
 render_entity_redraw_xor::
     ;; doesn't draw non moved entities
-	render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
+	render_get_screen_pointer_from_entity
 	ld  a, l
 	cp  entity_last_screen_l(ix)
 	jr  nz, render_entity_redraw_xor_moved
@@ -65,6 +104,7 @@ render_entity_redraw_xor::
 	ld		b, entity_sprite_width(ix)
 	ld		c, entity_sprite_height(ix)
 	call	cpct_drawSpriteBlended_asm
+
 	pop		hl
     
 	render_entity_redraw_xor_no_erase:
@@ -82,6 +122,15 @@ render_entity_redraw_xor::
 	ld		b, entity_sprite_width(ix)
 	ld		c, entity_sprite_height(ix)
 	call	cpct_drawSpriteBlended_asm
+
+	;;Allows you to see the bounding box of things
+	;;At the cost of weird trails of unfathomable madness
+    .if render_see_bounding_box
+		;;if bounding box
+		render_get_screen_pointer entity_x_coord(ix), entity_y_coord(ix)
+		ex de, hl
+		render_draw_solid_box #0xC0, entity_width(ix), entity_height(ix)
+	.endif
 	ret
 
 ;; Not use direcly, render_message makes it more readable
@@ -137,10 +186,18 @@ render_update::
 	ld      ix, #entity_main_player
 	call	render_entity_redraw_xor
 
+
+	;ld ix, #grassfield_grass
+	;call render_redraw_grass
+
+	ld hl, #render_redraw_grass
+	call grassfield_for_all_grass
+
 	;;STOP, it goes way too fast
 	call cpct_waitVSYNC_asm
 	halt
 	halt
+
 
 	ret
 	
