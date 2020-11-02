@@ -5,36 +5,11 @@
 .include "macros/cpct_undocumentedOpcodes.h.s"
 
 level_current:: .dw #level_no_next_level
-; level_first_name: .asciz "LEVEL 1"
-; level_first_advice: .asciz "Jump!"
-; level_first::
-;     level_create_header #-1, #1, #level_second, #level_first_name, #level_first_advice
-;     level_add_spawn #entity_prototype_largeplant_enemy, #0, #80, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #0, #140, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #0, #180, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #0, #240, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #1, #70, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #1, #100, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #1, #130, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #1, #160, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #1, #190, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #1, #230, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #2, #130, #physics_ground_level
-;     level_add_spawn #entity_prototype_plant_enemy, #2, #160, #physics_ground_level
-;     level_add_spawn #entity_prototype_cloud_enemy, #2, #190, #30
-; ;    level_add_spawn #entity_prototype_bird_enemy, #2, #190, #30
-; ;    level_add_spawn #entity_prototype_bat_enemy, #2, #190, #30
-; ;    level_add_spawn #entity_prototype_cloud_enemy, #1, #50, #30
-;     level_end
 
 level_first_name: .asciz "LEVEL 1"
 level_first_advice: .asciz "Jump!"
 level_first::
     level_create_header #-1, #1, #level_second, #level_first_name, #level_first_advice
-
-    
-
-
     level_add_spawn #entity_prototype_plant_enemy, #0, #100, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #0, #180, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #0, #240, #physics_ground_level
