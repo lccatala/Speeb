@@ -25,45 +25,28 @@ level_current:: .dw #level_no_next_level
 level_first_name: .asciz "LEVEL 1"
 level_first_advice: .asciz "Jump!"
 level_first::
+    level_create_header #-1, #3, #level_second, #level_first_name, #level_first_advice
     
-    level_create_header #-4, #7, #level_eighth, #level_seventh_name, #level_seventh_advice
-    level_add_spawn #entity_prototype_largeplant_enemy, #0, #140, #physics_ground_level
-    level_add_spawn #entity_prototype_bird_enemy, #0, #200, #physics_ground_level
-    level_add_spawn #entity_prototype_largeplant_enemy, #1, #80, #physics_ground_level
-    level_add_spawn #entity_prototype_largeplant_enemy, #1, #90, #physics_ground_level
-    level_add_spawn #entity_prototype_largeplant_enemy, #1, #100, #physics_ground_level
-
-    
-
-
-   
-
-
-
-
-
-    ; level_create_header #-1, #3, #level_second, #level_first_name, #level_first_advice
-    
-    ; level_add_spawn #entity_prototype_plant_enemy, #0, #80, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #0, #110, #physics_ground_level
-    ; level_add_spawn #entity_prototype_largeplant_enemy, #0, #160, #physics_ground_level
-    ; level_add_spawn #entity_prototype_largeplant_enemy, #0, #200, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #0, #250, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #1, #15, #physics_ground_level
-    ; level_add_spawn #entity_prototype_largeplant_enemy, #1, #50, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #1, #80, #physics_ground_level
-    ; level_add_spawn #entity_prototype_largeplant_enemy, #1, #110, #physics_ground_level
-    ; level_add_spawn #entity_prototype_largeplant_enemy, #1, #140, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #1, #190, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #1, #220, #physics_ground_level
-    ; level_add_spawn #entity_prototype_largeplant_enemy, #1, #240, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #2, #10, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #2, #15, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #2, #60, #physics_ground_level
-    ; level_add_spawn #entity_prototype_largeplant_enemy, #2, #150, #physics_ground_level
-    ; level_add_spawn #entity_prototype_largeplant_enemy, #2, #190, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #2, #220, #physics_ground_level
-    ; level_add_spawn #entity_prototype_plant_enemy, #2, #225, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #80, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #110, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #0, #160, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #0, #200, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #0, #250, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #15, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #50, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #80, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #110, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #140, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #190, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #220, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #240, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #10, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #15, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #60, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #2, #150, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #2, #190, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #220, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #2, #225, #physics_ground_level
 
 
 
@@ -238,14 +221,38 @@ level_sixth::
 level_seventh_name: .asciz "LEVEL 7"
 level_seventh_advice: .asciz "Unless..."
 level_seventh::
-    level_add_spawn #entity_prototype_plant_enemy, #0, #80, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #85, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #90, #physics_ground_level
-    level_add_spawn #entity_prototype_largeplant_enemy, #0, #170, #physics_ground_level
-    level_add_spawn #entity_prototype_largeplant_enemy, #0, #175, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #220, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #225, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #0, #230, #physics_ground_level
+    level_create_header #-2, #6, #level_eighth, #level_seventh_name, #level_seventh_advice
+    level_add_spawn #entity_prototype_largeplant_enemy, #0, #160, #physics_ground_level
+    level_add_spawn #entity_prototype_bird_enemy, #0, #200, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #80, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #90, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #100, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #120, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #130, #physics_ground_level
+    level_add_spawn #entity_prototype_bird_enemy, #1, #170, #physics_ground_level-20
+    level_add_spawn #entity_prototype_bat_enemy, #1, #210, #30
+    level_add_spawn #entity_prototype_cloud_enemy, #2, #20, #30
+    level_add_spawn #entity_prototype_bird_enemy, #2, #140, #physics_ground_level
+    level_add_spawn #entity_prototype_bird_enemy, #2, #200, #physics_ground_level-30
+    level_add_spawn #entity_prototype_cloud_enemy, #2, #250, #30
+    level_add_spawn #entity_prototype_plant_enemy, #3, #40, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #3, #50, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #3, #60, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #3, #100, #physics_ground_level
+    level_add_spawn #entity_prototype_bird_enemy, #3, #110, #50
+    level_add_spawn #entity_prototype_largeplant_enemy, #3, #180, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #3, #190, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #3, #200, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #3, #250, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #4, #20, #physics_ground_level
+    level_add_spawn #entity_prototype_bird_enemy, #4, #100, #physics_ground_level-20
+    level_add_spawn #entity_prototype_bird_enemy, #4, #120, #physics_ground_level
+    level_add_spawn #entity_prototype_bird_enemy, #4, #180, #physics_ground_level-30
+    level_add_spawn #entity_prototype_bat_enemy, #4, #180, #30
+    level_add_spawn #entity_prototype_bird_enemy, #5, #0, #physics_ground_level-20
+    level_add_spawn #entity_prototype_bird_enemy, #5, #30, #physics_ground_level
+    level_add_spawn #entity_prototype_bird_enemy, #5, #50, #physics_ground_level-20
+    level_add_spawn #entity_prototype_bat_enemy, #5, #130, #30
     level_end
 
 level_eighth_name: .asciz "LEVEL 8"
