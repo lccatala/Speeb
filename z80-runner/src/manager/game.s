@@ -62,6 +62,7 @@ game_init::
    
    call     menu_title_screen ;;handle here the menu output (maybe call other menus and do stuff)
 
+   game_init_screenless:
    call     control_init
 
    game_init_level_reset = .+2
@@ -100,7 +101,10 @@ game_level_end:
 game_die:
    call sound_play_death_theme
    call menu_death_screen
-   call game_restart
+   call  render_clean
+   call     sound_init
+   call     sound_play_menu_theme
+   call  game_init_screenless
    ret
 
 ;; DESTROYS: A
