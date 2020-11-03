@@ -38,7 +38,7 @@ level_first::
     level_add_spawn #entity_prototype_largeplant_enemy, #1, #110, #physics_ground_level
     level_add_spawn #entity_prototype_largeplant_enemy, #1, #140, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #1, #190, #physics_ground_level
-    level_add_spawn #entity_prototype_plant_enemy, #1, #210, #physics_ground_level
+    level_add_spawn #entity_prototype_plant_enemy, #1, #220, #physics_ground_level
     level_add_spawn #entity_prototype_largeplant_enemy, #1, #240, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #2, #10, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #2, #15, #physics_ground_level
@@ -63,7 +63,7 @@ level_second::
     level_add_spawn #entity_prototype_cloud_enemy, #1, #30, #30
     level_add_spawn #entity_prototype_plant_enemy, #1, #80, #physics_ground_level
     level_add_spawn #entity_prototype_largeplant_enemy, #1, #105, #physics_ground_level
-    level_add_spawn #entity_prototype_largeplant_enemy, #1, #125, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #1, #130, #physics_ground_level
     level_add_spawn #entity_prototype_cloud_enemy, #1, #170, #30
     level_add_spawn #entity_prototype_plant_enemy, #1, #170, #physics_ground_level
     level_add_spawn #entity_prototype_largeplant_enemy, #1, #225, #physics_ground_level
@@ -73,8 +73,8 @@ level_second::
     level_add_spawn #entity_prototype_plant_enemy, #2, #140, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #2, #145, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #2, #150, #physics_ground_level
-    level_add_spawn #entity_prototype_largeplant_enemy, #2, #180, #physics_ground_level
     level_add_spawn #entity_prototype_largeplant_enemy, #2, #185, #physics_ground_level
+    level_add_spawn #entity_prototype_largeplant_enemy, #2, #190, #physics_ground_level
     level_add_spawn #entity_prototype_plant_enemy, #2, #220, #physics_ground_level
     level_add_spawn #entity_prototype_cloud_enemy, #2, #250, #30
     level_add_spawn #entity_prototype_cloud_enemy, #3, #10, #30
