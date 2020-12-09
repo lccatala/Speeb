@@ -33,7 +33,7 @@
 # or to any mobile phone. Please, configure your ID once and do not change it afterwards. Otherwise,
 # newer versions of your game will be considered a different APP. You may use here any 
 # combination of letters, numbers, '.' and '_'
-GAME_ID := $(basename $(SNA))
+GAME_ID := Speeb
 $(eval $(call APKMAN, SET_APPID         , $(GAME_ID) ))
 
 # This is the name that your mobile phone will display for your game in the installed APPs. You may
